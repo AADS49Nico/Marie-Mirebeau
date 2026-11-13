@@ -236,7 +236,7 @@ async function sbFetch(path, method, body, extraHeaders) {
 async function sbGet(table) {
   return sbFetch(table + "?contrat=eq." + CLIENT_CONFIG.contrat + filtreSite(table) + "&order=id.asc", "GET");
 }
-async function sbUpsert(table, data) {
+async function sbUpsert(table, data, opts) {
   if (tableParSite(table) && !SITE_ACTIF) {
     console.error("Ecriture refusee sur " + table + " : aucun site actif. La ligne serait orpheline.");
     return null;
@@ -244,10 +244,14 @@ async function sbUpsert(table, data) {
   const d = !tableParSite(table) ? data
     : Array.isArray(data) ? data.map(x => ({ ...x, site: (x && x.site) || SITE_ACTIF }))
     : { ...data, site: (data && data.site) || SITE_ACTIF };
-  return sbFetch(table, "POST", d, { Prefer: "resolution=merge-duplicates,return=representation" });
+  // return=minimal : ne renvoie pas la ligne ecrite (evite de re-serialiser de
+  // grosses lignes, ex: audits avec photos base64 -> plus de statement timeout).
+  const ret = (opts && opts.minimal) ? "return=minimal" : "return=representation";
+  return sbFetch(table, "POST", d, { Prefer: "resolution=merge-duplicates," + ret });
 }
-async function sbUpdate(table, id, data) {
-  return sbFetch(table + "?id=eq." + id + "&contrat=eq." + CLIENT_CONFIG.contrat + filtreSite(table), "PATCH", data, { Prefer: "return=representation" });
+async function sbUpdate(table, id, data, opts) {
+  const ret = (opts && opts.minimal) ? "return=minimal" : "return=representation";
+  return sbFetch(table + "?id=eq." + id + "&contrat=eq." + CLIENT_CONFIG.contrat + filtreSite(table), "PATCH", data, { Prefer: ret });
 }
 // Variante stricte : leve une exception en cas d'echec HTTP reel, avec le detail de l'erreur Supabase.
 // A utiliser uniquement la ou l'appelant gere explicitement l'echec (ex: ajout de postes sur un plan).
@@ -7355,25 +7359,25 @@ function SaisiePassage({ seuilsGlobaux, setSeuilsGlobaux, setReinterventions, se
             <div style={{display:"flex",gap:10,flexWrap:"wrap"}}>
               <div>
                 <label style={{fontSize:10,color:"#7a90aa",fontWeight:600,textTransform:"uppercase",display:"block",marginBottom:3}}>Captures min rouge</label>
-                <input type="number" min="0" value={seuils.rongeurs.capture_rouge}
+                <input type="number" min="0" value={(seuils.rongeurs||{}).capture_rouge}
                   onChange={e=>setSeuils(prev=>({...prev,rongeurs:{...prev.rongeurs,capture_rouge:parseInt(e.target.value)||0}}))}
                   style={{...inpStyle,width:80}}/>
               </div>
               <div>
                 <label style={{fontSize:10,color:"#7a90aa",fontWeight:600,textTransform:"uppercase",display:"block",marginBottom:3}}>Taux activite vigilance (%)</label>
-                <input type="number" min="0" max="100" value={seuils.rongeurs.taux_vigilance||5}
+                <input type="number" min="0" max="100" value={(seuils.rongeurs||{}).taux_vigilance||5}
                   onChange={e=>setSeuils(prev=>({...prev,rongeurs:{...prev.rongeurs,taux_vigilance:parseInt(e.target.value)||0}}))}
                   style={{...inpStyle,width:80}}/>
               </div>
               <div>
                 <label style={{fontSize:10,color:"#7a90aa",fontWeight:600,textTransform:"uppercase",display:"block",marginBottom:3}}>Taux activite critique (%)</label>
-                <input type="number" min="0" max="100" value={seuils.rongeurs.taux_critique||10}
+                <input type="number" min="0" max="100" value={(seuils.rongeurs||{}).taux_critique||10}
                   onChange={e=>setSeuils(prev=>({...prev,rongeurs:{...prev.rongeurs,taux_critique:parseInt(e.target.value)||0}}))}
                   style={{...inpStyle,width:80}}/>
               </div>
               <div>
                 <label style={{fontSize:10,color:"#f59e0b",fontWeight:600,textTransform:"uppercase",display:"block",marginBottom:3}}>Conso. appât → Orange</label>
-                <select value={seuils.rongeurs.conso_orange||"25%"}
+                <select value={(seuils.rongeurs||{}).conso_orange||"25%"}
                   onChange={e=>setSeuils(prev=>({...prev,rongeurs:{...prev.rongeurs,conso_orange:e.target.value}}))}
                   style={{...inpStyle,width:100}}>
                   <option value="25%">25%</option>
@@ -7383,7 +7387,7 @@ function SaisiePassage({ seuilsGlobaux, setSeuilsGlobaux, setReinterventions, se
               </div>
               <div>
                 <label style={{fontSize:10,color:"#ef4444",fontWeight:600,textTransform:"uppercase",display:"block",marginBottom:3}}>Conso. appât → Rouge</label>
-                <select value={seuils.rongeurs.conso_rouge||"75%"}
+                <select value={(seuils.rongeurs||{}).conso_rouge||"75%"}
                   onChange={e=>setSeuils(prev=>({...prev,rongeurs:{...prev.rongeurs,conso_rouge:e.target.value}}))}
                   style={{...inpStyle,width:100}}>
                   <option value="50%">50%</option>
@@ -7452,13 +7456,13 @@ function SaisiePassage({ seuilsGlobaux, setSeuilsGlobaux, setReinterventions, se
             <div style={{display:"flex",gap:10,flexWrap:"wrap"}}>
               <div>
                 <label style={{fontSize:10,color:"#7a90aa",fontWeight:600,textTransform:"uppercase",display:"block",marginBottom:3}}>Orange min</label>
-                <input type="number" min="0" value={seuils.blattes.leger}
+                <input type="number" min="0" value={(seuils.blattes||{}).leger}
                   onChange={e=>setSeuils(prev=>({...prev,blattes:{...prev.blattes,leger:parseInt(e.target.value)||0}}))}
                   style={{...inpStyle,width:80}}/>
               </div>
               <div>
                 <label style={{fontSize:10,color:"#7a90aa",fontWeight:600,textTransform:"uppercase",display:"block",marginBottom:3}}>Rouge min</label>
-                <input type="number" min="0" value={seuils.blattes.moyen}
+                <input type="number" min="0" value={(seuils.blattes||{}).moyen}
                   onChange={e=>setSeuils(prev=>({...prev,blattes:{...prev.blattes,moyen:parseInt(e.target.value)||0}}))}
                   style={{...inpStyle,width:80}}/>
               </div>
@@ -7469,13 +7473,13 @@ function SaisiePassage({ seuilsGlobaux, setSeuilsGlobaux, setReinterventions, se
             <div style={{display:"flex",gap:10,flexWrap:"wrap"}}>
               <div>
                 <label style={{fontSize:10,color:"#7a90aa",fontWeight:600,textTransform:"uppercase",display:"block",marginBottom:3}}>Orange min</label>
-                <input type="number" min="0" value={seuils.teignes.leger}
+                <input type="number" min="0" value={(seuils.teignes||{}).leger}
                   onChange={e=>setSeuils(prev=>({...prev,teignes:{...prev.teignes,leger:parseInt(e.target.value)||0}}))}
                   style={{...inpStyle,width:80}}/>
               </div>
               <div>
                 <label style={{fontSize:10,color:"#7a90aa",fontWeight:600,textTransform:"uppercase",display:"block",marginBottom:3}}>Rouge min</label>
-                <input type="number" min="0" value={seuils.teignes.moyen}
+                <input type="number" min="0" value={(seuils.teignes||{}).moyen}
                   onChange={e=>setSeuils(prev=>({...prev,teignes:{...prev.teignes,moyen:parseInt(e.target.value)||0}}))}
                   style={{...inpStyle,width:80}}/>
               </div>
@@ -7490,13 +7494,13 @@ function SaisiePassage({ seuilsGlobaux, setSeuilsGlobaux, setReinterventions, se
                   <div style={{display:"flex",gap:8}}>
                     <div style={{flex:1}}>
                       <label style={{fontSize:9,color:"#7a90aa",display:"block",marginBottom:2}}>Orange min</label>
-                      <input type="number" min="0" value={(seuils.iv[cat]||{}).leger||0}
+                      <input type="number" min="0" value={((seuils.iv||{})[cat]||{}).leger||0}
                         onChange={e=>setSeuils(prev=>({...prev,iv:{...prev.iv,[cat]:{...(prev.iv[cat]||{}),leger:parseInt(e.target.value)||0}}}))}
                         style={{...inpStyle,fontSize:11,padding:"3px 6px",width:60}}/>
                     </div>
                     <div style={{flex:1}}>
                       <label style={{fontSize:9,color:"#7a90aa",display:"block",marginBottom:2}}>Rouge min</label>
-                      <input type="number" min="0" value={(seuils.iv[cat]||{}).moyen||0}
+                      <input type="number" min="0" value={((seuils.iv||{})[cat]||{}).moyen||0}
                         onChange={e=>setSeuils(prev=>({...prev,iv:{...prev.iv,[cat]:{...(prev.iv[cat]||{}),moyen:parseInt(e.target.value)||0}}}))}
                         style={{...inpStyle,fontSize:11,padding:"3px 6px",width:60}}/>
                     </div>
@@ -7510,13 +7514,13 @@ function SaisiePassage({ seuilsGlobaux, setSeuilsGlobaux, setReinterventions, se
             <div style={{display:"flex",gap:10,flexWrap:"wrap"}}>
               <div>
                 <label style={{fontSize:10,color:"#7a90aa",fontWeight:600,textTransform:"uppercase",display:"block",marginBottom:3}}>Orange min</label>
-                <input type="number" min="0" value={seuils.ips.leger}
+                <input type="number" min="0" value={(seuils.ips||{}).leger}
                   onChange={e=>setSeuils(prev=>({...prev,ips:{...prev.ips,leger:parseInt(e.target.value)||0}}))}
                   style={{...inpStyle,width:80}}/>
               </div>
               <div>
                 <label style={{fontSize:10,color:"#7a90aa",fontWeight:600,textTransform:"uppercase",display:"block",marginBottom:3}}>Rouge min</label>
-                <input type="number" min="0" value={seuils.ips.moyen}
+                <input type="number" min="0" value={(seuils.ips||{}).moyen}
                   onChange={e=>setSeuils(prev=>({...prev,ips:{...prev.ips,moyen:parseInt(e.target.value)||0}}))}
                   style={{...inpStyle,width:80}}/>
               </div>
@@ -13163,6 +13167,17 @@ function AuditObservationsParZoneChart({ audits }) {
 }
 
 // ============================================================
+// Brouillon d'audit en MEMOIRE (survit au changement d'onglet = demontage du
+// composant). Variable module-level : lue/ecrite de maniere synchrone.
+let __AUDIT_BROUILLON = null; // { key, data:{draft,reponses,obsItems,editId} }
+function __auditBrouillonVide(d) {
+  if (!d) return true;
+  const dr = d.draft || {};
+  const texteVide = !dr.date && !dr.auditeur && !dr.observations && !dr.actionsDepuis;
+  const repVide = !d.reponses || Object.keys(d.reponses).length === 0;
+  const obsVide = !d.obsItems || d.obsItems.length === 0;
+  return texteVide && repVide && obsVide;
+}
 function Audit({ seuilsGlobaux }) {
   const TECHNICIENS = useTechniciens();
 
@@ -13237,12 +13252,19 @@ function Audit({ seuilsGlobaux }) {
   const NOTES = { "Conforme": 2, "Partiel": 1, "Non conforme": 0, "Non applicable": null };
   const NOTE_COL = { "Conforme": "#22c55e", "Partiel": "#f59e0b", "Non conforme": "#ef4444", "Non applicable": "#7a90aa" };
 
+  // Brouillon : cle par contrat. Init SYNCHRONE depuis la memoire si un brouillon
+  // est en cours pour CE contrat -> rien ne disparait au changement d'onglet.
+  const BROUILLON_KEY = "aads_audit_brouillon_" + (CLIENT_CONFIG.contrat || "x");
+  const __bro = (__AUDIT_BROUILLON && __AUDIT_BROUILLON.key === BROUILLON_KEY && !__auditBrouillonVide(__AUDIT_BROUILLON.data)) ? __AUDIT_BROUILLON.data : null;
   const [audits, setAudits] = useState([]);
-  const [showForm, setShowForm] = useState(false);
-  const [draft, setDraft] = useState({ date:"", auditeur:"", observations:"" });
-  const [obsItems, setObsItems] = useState([]); // observations dynamiques
-  const [reponses, setReponses] = useState({});
-  const [editId, setEditId] = useState(null);
+  const [showForm, setShowForm] = useState(!!__bro);
+  const [draft, setDraft] = useState(() => (__bro && __bro.draft) ? { date:__bro.draft.date||"", auditeur:__bro.draft.auditeur||"", observations:__bro.draft.observations||"", actionsDepuis:__bro.draft.actionsDepuis||"" } : { date:"", auditeur:"", observations:"", actionsDepuis:"" });
+  const [obsItems, setObsItems] = useState(() => (__bro && Array.isArray(__bro.obsItems)) ? __bro.obsItems : []); // observations dynamiques
+  const [reponses, setReponses] = useState(() => (__bro && __bro.reponses) ? __bro.reponses : {});
+  const [editId, setEditId] = useState(() => (__bro && __bro.editId) ? __bro.editId : null);
+  const brouillonCharge = React.useRef(false);
+  const showFormRef = React.useRef(false);
+  const [brouillonDispo, setBrouillonDispo] = useState(null); // brouillon recuperable (banniere)
   const [sel, setSel] = useState(null);
   const [actionsStatuts, setActionsStatuts] = useState({}); // { actionId: statut } pour le badge de suivi
   const [creatingAction, setCreatingAction] = useState(null); // id de l'observation en cours de creation
@@ -13317,19 +13339,65 @@ function Audit({ seuilsGlobaux }) {
   function scoreColor(s) { return s>=85?"#22c55e":s>=60?"#f59e0b":"#ef4444"; }
 
   function resetForm() {
-    setDraft({date:"",auditeur:"",observations:""});
+    setDraft({date:"",auditeur:"",observations:"",actionsDepuis:""});
     setReponses({});
     setObsItems([]);
     setEditId(null);
+    setBrouillonDispo(null);
+    __AUDIT_BROUILLON = null;
+    saveCacheData(BROUILLON_KEY, null).catch(()=>{});
   }
 
   function openEdit(a) {
-    setDraft({date:a.date||"",auditeur:a.auditeur||"",observations:a.observations||""});
+    setDraft({date:a.date||"",auditeur:a.auditeur||"",observations:a.observations||"",actionsDepuis:a.actions_depuis||a.actionsDepuis||""});
     setReponses(a.reponses||{});
     setObsItems(a.obsItems||[]);
     setEditId(a.id);
     setShowForm(true);
   }
+
+  function appliquerBrouillon(b) {
+    setDraft({ date:(b.draft&&b.draft.date)||"", auditeur:(b.draft&&b.draft.auditeur)||"", observations:(b.draft&&b.draft.observations)||"", actionsDepuis:(b.draft&&b.draft.actionsDepuis)||"" });
+    setReponses(b.reponses || {});
+    setObsItems(b.obsItems || []);
+    setEditId(b.editId || null);
+    setShowForm(true);
+  }
+
+  // RECUPERATION au montage : le cas "changement d'onglet" est deja gere par l'init
+  // synchrone de l'etat (__bro). Ici on ne gere que le rechargement complet de page :
+  // le brouillon est dans IndexedDB -> banniere "Reprendre" (non destructif).
+  useEffect(() => {
+    if (brouillonCharge.current) return;
+    brouillonCharge.current = true;
+    if (__bro) return;
+    getCacheData(BROUILLON_KEY).then(b => {
+      if (!b || __auditBrouillonVide(b) || showFormRef.current) return;
+      setBrouillonDispo(b);
+    }).catch(()=>{});
+  }, []);
+
+  function reprendreBrouillon() {
+    const b = brouillonDispo; if (!b) return;
+    appliquerBrouillon(b);
+    setBrouillonDispo(null);
+  }
+  function supprimerBrouillon() {
+    setBrouillonDispo(null);
+    __AUDIT_BROUILLON = null;
+    saveCacheData(BROUILLON_KEY, null).catch(()=>{});
+  }
+
+  // SAUVEGARDE SYNCHRONE (useLayoutEffect) a chaque modif tant que le formulaire est
+  // ouvert : ecrite AVANT que React demonte le composant -> jamais de perte.
+  React.useLayoutEffect(() => {
+    if (!showForm) return;
+    const data = { draft, reponses, obsItems, editId };
+    __AUDIT_BROUILLON = { key: BROUILLON_KEY, data };
+    saveCacheData(BROUILLON_KEY, data).catch(()=>{});
+  }, [draft, reponses, obsItems, editId, showForm]);
+
+  useEffect(() => { showFormRef.current = showForm; }, [showForm]);
 
   function save() {
     if (!draft.date) return;
@@ -13341,22 +13409,24 @@ function Audit({ seuilsGlobaux }) {
     const seuilPartiel  = seuilsGlobaux?.audit?.partiel  ?? 60;
     const statut = score>=seuilConforme?"Conforme":score>=seuilPartiel?"Partiel":"Non conforme";
     if (editId) {
-      const updated = {...audits.find(a=>a.id===editId), date:dateFmt, auditeur:draft.auditeur, observations:draft.observations, reponses, obsItems, score, statut};
+      const updated = {...audits.find(a=>a.id===editId), date:dateFmt, auditeur:draft.auditeur, observations:draft.observations, actions_depuis:draft.actionsDepuis, reponses, obsItems, score, statut};
       setAudits(prev=>prev.map(a=>a.id===editId?updated:a));
-      sbUpdate("audits", editId, {date:dateFmt, auditeur:draft.auditeur, observations:draft.observations, reponses:JSON.stringify(reponses), score, statut, obs_items:JSON.stringify(obsItems)});
+      sbUpdate("audits", editId, {date:dateFmt, auditeur:draft.auditeur, observations:draft.observations, actions_depuis:draft.actionsDepuis||"", reponses:JSON.stringify(reponses), score, statut, obs_items:JSON.stringify(obsItems)}, {minimal:true})
+        .catch(e=>{ console.error("Audit update error:", e); alert("L'enregistrement de l'audit a échoué (réseau ou délai dépassé). Vérifiez la connexion et réessayez."); });
     } else {
       const id = String(Date.now());
-      const newAudit = {id, contrat:CLIENT_CONFIG.contrat, date:dateFmt, auditeur:draft.auditeur, observations:draft.observations, reponses, obsItems, score, statut};
+      const newAudit = {id, contrat:CLIENT_CONFIG.contrat, date:dateFmt, auditeur:draft.auditeur, observations:draft.observations, actions_depuis:draft.actionsDepuis, reponses, obsItems, score, statut};
       setAudits(prev=>[newAudit,...prev]);
       const auditData = {
         id, contrat:CLIENT_CONFIG.contrat, date:dateFmt,
         auditeur:draft.auditeur, observations:draft.observations,
+        actions_depuis:draft.actionsDepuis||"",
         reponses:JSON.stringify(reponses),
         obs_items:JSON.stringify(obsItems),
         score, statut
       };
       if (navigator.onLine) {
-        sbUpsert("audits", auditData).catch(e=>console.error("Audit save error:", e));
+        sbUpsert("audits", auditData, {minimal:true}).catch(e=>{ console.error("Audit save error:", e); alert("L'enregistrement de l'audit a échoué (réseau ou délai dépassé). Vérifiez la connexion et réessayez."); });
       } else {
         savePendingSaisie({ id:"pending_audit_"+id, data:auditData, table:"audits" }).then(()=>{
           if (window.__setPendingCount) getPendingSaisies().then(p=>window.__setPendingCount(p.length)).catch(()=>{});
@@ -13379,9 +13449,11 @@ function Audit({ seuilsGlobaux }) {
 
     const scoreCol = scoreColor(a.score||0);
 
-    const conclusionHtml = a.observations
-      ? "<div style='margin-top:16px'><strong>Conclusion :</strong><p style='color:#374151;margin-top:6px'>"+a.observations+"</p></div>"
-      : "";
+    // Texte avec mise en forme preservee (sauts de ligne, lignes vides).
+    const escTxt = t => String(t==null?"":t).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");
+    const blocTexte = (titre,txt) => txt ? "<div style='margin-top:16px'><strong>"+titre+" :</strong><div style='color:#374151;margin-top:6px;white-space:pre-wrap;line-height:1.55'>"+escTxt(txt)+"</div></div>" : "";
+    const actionsDepuisHtml = blocTexte("Actions depuis le dernier audit", a.actions_depuis||a.actionsDepuis);
+    const conclusionHtml = blocTexte("Conclusion", a.observations);
 
     const obsHtml = (a.obsItems||[]).length > 0
       ? "<div style='margin-top:20px'><h2 style='color:#0f2864;border-bottom:2px solid #0f2864;padding-bottom:6px'>Observations</h2>" +
@@ -13412,6 +13484,7 @@ function Audit({ seuilsGlobaux }) {
         "</div>" +
       "</div>" +
       "<table style='width:100%;border-collapse:collapse;margin-bottom:16px'>"+photosRows+"</table>" +
+      actionsDepuisHtml +
       conclusionHtml +
       obsHtml
     );
@@ -13439,6 +13512,21 @@ function Audit({ seuilsGlobaux }) {
           <div style={{fontSize:12,color:"#94a3b8",lineHeight:1.6}}>Vérification périodique de la conformité du dispositif 3D : état des postes, fréquence des passages, produits biocides, documents réglementaires et actions correctives. Conforme au référentiel IFS Food v8 section 4.14 et aux exigences de traçabilité du plan de lutte intégrée.</div>
         </div>
       </div>
+
+      {brouillonDispo && !showForm && (
+        <Card style={{marginBottom:16, border:"1px solid #f59e0b55", background:"#f59e0b11"}}>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:10}}>
+            <div>
+              <div style={{fontSize:13,fontWeight:700,color:"#f59e0b",marginBottom:2}}>Audit en cours non enregistré</div>
+              <div style={{fontSize:11,color:"#94a3b8"}}>Un brouillon d'audit a été retrouvé. Tu peux le reprendre là où tu t'étais arrêté.</div>
+            </div>
+            <div style={{display:"flex",gap:8}}>
+              <button onClick={reprendreBrouillon} style={{background:"#f59e0b",color:"#000",border:"none",borderRadius:8,padding:"8px 16px",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>Reprendre l'audit</button>
+              <button onClick={supprimerBrouillon} style={{background:"transparent",color:"#7a90aa",border:"1px solid #3d5270",borderRadius:8,padding:"8px 14px",fontSize:12,cursor:"pointer",fontFamily:"inherit"}}>Supprimer</button>
+            </div>
+          </div>
+        </Card>
+      )}
 
       {showForm && (
         <Card style={{marginBottom:16}}>
@@ -13588,10 +13676,14 @@ function Audit({ seuilsGlobaux }) {
                 </div>
               </div>
             ))}
-            <button onClick={()=>setObsItems(prev=>[...prev,{id:String(Date.now()),zone:"",statut:"Non conforme",priorite:"moyenne",description:"",action:"",photos:[]}])}
+            <button onClick={()=>setObsItems(prev=>[...prev,{id:"obs_"+Date.now()+"_"+Math.random().toString(36).slice(2,8),zone:"",statut:"Non conforme",priorite:"moyenne",description:"",action:"",photos:[]}])}
               style={{background:"#243352",color:"#3b82f6",border:"1px dashed #3b82f644",borderRadius:8,padding:"8px 16px",fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:"inherit",width:"100%"}}>
               + Ajouter une observation
             </button>
+          </div>
+          <div style={{marginBottom:12}}>
+            <label style={{fontSize:10,color:"#7a90aa",fontWeight:600,textTransform:"uppercase",display:"block",marginBottom:3}}>Actions depuis le dernier audit</label>
+            <textarea rows={3} value={draft.actionsDepuis||""} onChange={e=>setDraft(p=>({...p,actionsDepuis:e.target.value}))} placeholder="Actions réalisées depuis le dernier audit..." style={{...inp(),resize:"vertical"}}/>
           </div>
           <div style={{marginBottom:12}}>
             <label style={{fontSize:10,color:"#7a90aa",fontWeight:600,textTransform:"uppercase",display:"block",marginBottom:3}}>Conclusion</label>
@@ -14519,7 +14611,21 @@ function AppPortail({ isAdmin, onLogout }) {
     sbGet("seuils").then(data => {
       if (data && data.length > 0 && data[0].data) {
         const parsed = typeof data[0].data === "string" ? JSON.parse(data[0].data) : data[0].data;
-        setSeuilsGlobauxState(parsed);
+        // FUSION avec les valeurs par defaut : un enregistrement ancien peut ne pas
+        // contenir toutes les cles (iv, teignes, audit, rongeursExt...). Sans fusion,
+        // l'onglet Seuils plante (ecran blanc) en lisant une cle absente.
+        setSeuilsGlobauxState(prev => ({
+          ...prev,
+          ...parsed,
+          rongeurs:    { ...prev.rongeurs,    ...(parsed.rongeurs||{}) },
+          rongeursExt: { ...prev.rongeursExt, ...(parsed.rongeursExt||{}) },
+          rongeursInt: { ...prev.rongeursInt, ...(parsed.rongeursInt||{}) },
+          audit:       { ...prev.audit,       ...(parsed.audit||{}) },
+          blattes:     { ...prev.blattes,     ...(parsed.blattes||{}) },
+          teignes:     { ...prev.teignes,     ...(parsed.teignes||{}) },
+          ips:         { ...prev.ips,         ...(parsed.ips||{}) },
+          iv:          { ...prev.iv,          ...(parsed.iv||{}) },
+        }));
       }
     }).catch(()=>{});
   }, []);
