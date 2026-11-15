@@ -1820,6 +1820,10 @@ function Interventions({ reinterventions, setReinterventions, passagesGlobaux, s
                           {reinvLiees.length} réintervention(s)
                         </span>
                       )}
+                      <button onClick={(e)=>{ e.stopPropagation(); try { genererFicheIntervention(p, postesTous, []); } catch(err){ console.error(err); alert("La génération de la fiche a échoué : "+(err&&err.message||err)); } }}
+                        style={{ fontSize:11, fontWeight:700, background:"#22c55e22", color:"#22c55e", border:"1px solid #22c55e44", borderRadius:7, padding:"5px 12px", cursor:"pointer", fontFamily:"inherit" }}>
+                        Fiche
+                      </button>
                     </div>
                     {isOpen && (
                       <div style={{ marginTop:14, paddingTop:14, borderTop:"1px solid var(--border)" }}>
@@ -11511,7 +11515,9 @@ function GestionPostes({ postes, setPostes }) {
                   </select>
                   <select value={editData.statut||"Actif"} onChange={e=>setEditData(d=>({...d,statut:e.target.value}))} style={inpS}>{STATUTS_POSTES.map(s=><option key={s}>{s}</option>)}</select>
                   <label style={{display:"flex",justifyContent:"center",alignItems:"center",cursor:"pointer"}} title="Zone de produits nus"><input type="checkbox" checked={!!editData.zone_produits_nus} onChange={e=>setEditData(d=>({...d,zone_produits_nus:e.target.checked}))}/></label>
-                  <select value={editData.deiv_type||""} onChange={e=>setEditData(d=>({...d,deiv_type:e.target.value}))} style={inpS} title="Type DEIV"><option value="">—</option><option value="moniteur">Moni.</option><option value="destructeur">Dest.</option></select>
+                  {(editData.nuisible==="Insectes volants"||editData.type==="DEIV")
+                    ? <select value={editData.deiv_type||""} onChange={e=>setEditData(d=>({...d,deiv_type:e.target.value}))} style={inpS} title="Type DEIV"><option value="">—</option><option value="moniteur">Moni.</option><option value="destructeur">Dest.</option></select>
+                    : <div style={{textAlign:"center",color:"var(--text-faint)",fontSize:10}}>—</div>}
                   <div style={{display:"flex",gap:4}}>
                     <button onClick={saveEdit} style={{background:"#22c55e",color:"#fff",border:"none",borderRadius:5,padding:"2px 8px",fontSize:10,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>OK</button>
                     <button onClick={()=>setEditId(null)} style={{background:"transparent",color:"var(--text-label)",border:"1px solid var(--border)",borderRadius:5,padding:"2px 6px",fontSize:10,cursor:"pointer",fontFamily:"inherit"}}>X</button>
@@ -11527,7 +11533,7 @@ function GestionPostes({ postes, setPostes }) {
                   <div style={{fontSize:10,color:p.appat?"var(--text-1)":"var(--text-faint)"}}>{p.appat||"—"}</div>
                   <div style={{fontSize:10,color:p.statut==="Actif"||!p.statut?"#22c55e":p.statut==="Disparu"?"#ef4444":"#f59e0b",fontWeight:600}}>{p.statut||"Actif"}</div>
                   <div style={{textAlign:"center",fontSize:12,fontWeight:700,color:p.zone_produits_nus?"#22c55e":"var(--text-faint)"}} title={p.zone_produits_nus?"Zone de produits nus":"Hors produits nus"}>{p.zone_produits_nus?"✓":"—"}</div>
-                  <div style={{fontSize:10,fontWeight:600,color:p.deiv_type?"#3b82f6":"var(--text-faint)"}}>{p.deiv_type==="moniteur"?"Moniteur":p.deiv_type==="destructeur"?"Destructeur":"—"}</div>
+                  <div style={{fontSize:10,fontWeight:600,color:p.deiv_type?"#3b82f6":"var(--text-faint)"}}>{(p.nuisible==="Insectes volants"||p.type==="DEIV") ? (p.deiv_type==="moniteur"?"Moniteur":p.deiv_type==="destructeur"?"Destructeur":"—") : ""}</div>
                   <div style={{display:"flex",gap:4}}>
                     <button onClick={()=>startEdit(p)} style={{background:"#1d4ed822",color:"#3b82f6",border:"1px solid #3b82f644",borderRadius:5,padding:"2px 7px",fontSize:10,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>Edit</button>
                     <button onClick={()=>deletePoste(p.id)} style={{background:"#ef444422",color:"#ef4444",border:"1px solid #ef444433",borderRadius:5,padding:"2px 6px",fontSize:10,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>X</button>
@@ -12264,6 +12270,24 @@ function PlanImplantation({ seuilsGlobaux }) {
     else if (forme === "ovale") { st.width = taille * 1.35; st.height = taille * 0.8; st.borderRadius = "50%"; }
     else st.borderRadius = "50%";
     return <div style={st}>{labelNode}</div>;
+  }
+
+  // Style d'une pastille du plan (mode consultation) : applique la FORME configurée
+  // (rond/carre/rect/ovale/triangle) + les réglages (taille, contour, couleur numéro).
+  function stylePastillePlan(poste, col, label){
+    var forme = (posteFormes[categorieForme(poste)]||"rond");
+    var T = pastilleCfg.taille;
+    var st = { position:"absolute", transform:"translate(-50%,-50%)", background:col,
+      border:pastilleCfg.contourSize+"px solid "+pastilleCfg.contourColor,
+      boxShadow:"0 1px 4px rgba(0,0,0,0.5)", display:"flex", alignItems:"center", justifyContent:"center",
+      fontSize:posteLabelFontSize(label,pastilleCfg.numSize), fontWeight:900, color:pastilleCfg.labelColor||"#fff",
+      width:T, height:T, boxSizing:"border-box" };
+    if (forme==="carre") st.borderRadius=3;
+    else if (forme==="rect"){ st.width=Math.round(T*1.5); st.height=Math.round(T*0.72); st.borderRadius=3; }
+    else if (forme==="ovale"){ st.width=Math.round(T*1.35); st.height=Math.round(T*0.82); st.borderRadius="50%"; }
+    else if (forme==="triangle"){ st.clipPath="polygon(50% 0%, 100% 100%, 0% 100%)"; st.border="none"; }
+    else st.borderRadius="50%";
+    return st;
   }
 
   useEffect(() => {
@@ -13253,7 +13277,7 @@ function PlanImplantation({ seuilsGlobaux }) {
                       const col = getPosteColor(p, selDate);
                       const label = posteLabel(p.id);
                       return (
-                        <div key={pt.id} style={{position:"absolute",left:pt.x+"%",top:pt.y+"%",transform:"translate(-50%,-50%)",width:pastilleCfg.taille,height:pastilleCfg.taille,borderRadius:"50%",background:col,border:pastilleCfg.contourSize+"px solid "+pastilleCfg.contourColor,boxShadow:"0 1px 4px rgba(0,0,0,0.5)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:posteLabelFontSize(label,pastilleCfg.numSize),fontWeight:900,color:pastilleCfg.labelColor||"#fff"}}>
+                        <div key={pt.id} style={{...stylePastillePlan(p,col,label),left:pt.x+"%",top:pt.y+"%"}}>
                           {label}
                         </div>
                       );
