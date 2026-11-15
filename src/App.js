@@ -12170,9 +12170,9 @@ function PlanImplantation({ seuilsGlobaux }) {
       .then(function(r){
         // Si la ligne main n existe pas encore, la creer avec le reglage.
         if (!r || (Array.isArray(r) && r.length === 0)) {
-          sbFetch("config_logos", "POST", { id: "main", affichage_pastilles: payload }, { Prefer: "resolution=merge-duplicates" }).catch(function(){});
+          sbFetch("config_logos", "POST", { id: "main", affichage_pastilles: payload }, { Prefer: "resolution=merge-duplicates" }).catch(function(e){ console.error("[pastilles] POST config_logos échoué:", e && (e.message||e)); });
         }
-      }).catch(function(){});
+      }).catch(function(e){ console.error("[pastilles] PATCH config_logos échoué:", e && (e.message||e)); });
   }
 
   // Au demarrage : charger les reglages depuis Supabase. S ils existent, ils
@@ -12193,8 +12193,18 @@ function PlanImplantation({ seuilsGlobaux }) {
     const next = {...pastilleCfg, [cle]: val};
     setPastilleCfg(next);
     try { localStorage.setItem("aads_pastille_reglages", JSON.stringify(next)); } catch(_e) {}
+    // Persistance INFAILLIBLE : IndexedDB (survit au vidage du cache / unregister SW),
+    // en plus de localStorage et de la base config_logos.
+    saveCacheData("pastille_reglages_marie", next).catch(function(){});
     sauverAffichage(posteFormes, nuisibleColors, nuisiblesMasques, next);
   }
+
+  // Au montage : relire les réglages depuis IndexedDB (source la plus fiable, locale).
+  useEffect(function(){
+    getCacheData("pastille_reglages_marie").then(function(r){
+      if (r && typeof r === "object") setPastilleCfg(function(prev){ return {...prev, ...r}; });
+    }).catch(function(){});
+  }, []);
 
   function toggleNuisibleMasque(cle) {
     setNuisiblesMasques(prev=>{
