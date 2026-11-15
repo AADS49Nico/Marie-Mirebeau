@@ -12258,13 +12258,13 @@ function PlanImplantation({ seuilsGlobaux }) {
       return (
         <div style={{ position:"relative", width:w, height:h, transform:scale, transition:"transform 0.05s", cursor:"grab", filter:"drop-shadow("+ombre+")" }}>
           <svg width={w} height={h} viewBox="0 0 100 90" style={{ display:"block" }}>
-            <polygon points="50,4 96,86 4,86" fill={col} stroke="#fff" strokeWidth="7" strokeLinejoin="round"/>
+            <polygon points="50,4 96,86 4,86" fill={col} stroke={pastilleCfg.contourColor||"#fff"} strokeWidth={Math.max(3,(pastilleCfg.contourSize||1.5)*4)} strokeLinejoin="round"/>
           </svg>
           <div style={{ ...labelWrap, top:"18%" }}>{labelNode}</div>
         </div>
       );
     }
-    var st = { width:taille, height:taille, background:col, border:"2px solid #fff", boxShadow:ombre, display:"flex", alignItems:"center", justifyContent:"center", cursor:"grab", userSelect:"none", boxSizing:"border-box", transform:scale, transition:"transform 0.05s", position:"relative" };
+    var st = { width:taille, height:taille, background:col, border:(pastilleCfg.contourSize||1.5)+"px solid "+(pastilleCfg.contourColor||"#fff"), boxShadow:ombre, display:"flex", alignItems:"center", justifyContent:"center", cursor:"grab", userSelect:"none", boxSizing:"border-box", transform:scale, transition:"transform 0.05s", position:"relative" };
     if (forme === "carre") st.borderRadius = 3;
     else if (forme === "rect") { st.width = taille * 1.5; st.height = taille * 0.75; st.borderRadius = 3; }
     else if (forme === "ovale") { st.width = taille * 1.35; st.height = taille * 0.8; st.borderRadius = "50%"; }
@@ -13385,8 +13385,8 @@ function PlanImplantation({ seuilsGlobaux }) {
                   onContextMenu={e=>{e.preventDefault();e.stopPropagation();removePosteFromPlan(pt.id);}}
                   onMouseEnter={()=>setHover(pt.id)} onMouseLeave={()=>setHover(null)}>
                   {renderPastille(
-                    posteFormes[categorieForme(p)] || "rond", 22, col,
-                    <span style={{fontSize:posteLabelFontSize(pt.id,7),fontWeight:900,color:"#fff",textShadow:"0 1px 2px rgba(0,0,0,0.6)"}}>{posteLabel(pt.id)}</span>,
+                    posteFormes[categorieForme(p)] || "rond", pastilleCfg.taille, col,
+                    <span style={{fontSize:posteLabelFontSize(pt.id,pastilleCfg.numSize),fontWeight:900,color:pastilleCfg.labelColor||"#fff",textShadow:"0 1px 2px rgba(0,0,0,0.6)"}}>{posteLabel(pt.id)}</span>,
                     isHov
                   )}
                   {isHov&&(
