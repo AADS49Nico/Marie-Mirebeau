@@ -12252,19 +12252,22 @@ function PlanImplantation({ seuilsGlobaux }) {
   function renderPastille(forme, taille, col, labelNode, isHov) {
     var scale = isHov ? "scale(1.2)" : "scale(1)";
     var ombre = "0 2px 8px rgba(0,0,0,0.7)";
+    // Epaisseur de contour configuree : 0 => AUCUN contour (ne pas retomber sur 1.5).
+    var bw = (pastilleCfg.contourSize==null ? 1.5 : pastilleCfg.contourSize);
+    var bc = pastilleCfg.contourColor || "#fff";
     var labelWrap = { position:"absolute", inset:0, display:"flex", alignItems:"center", justifyContent:"center", pointerEvents:"none" };
     if (forme === "triangle") {
       var w = taille * 1.25, h = taille * 1.1;
       return (
         <div style={{ position:"relative", width:w, height:h, transform:scale, transition:"transform 0.05s", cursor:"grab", filter:"drop-shadow("+ombre+")" }}>
           <svg width={w} height={h} viewBox="0 0 100 90" style={{ display:"block" }}>
-            <polygon points="50,4 96,86 4,86" fill={col} stroke={pastilleCfg.contourColor||"#fff"} strokeWidth={Math.max(3,(pastilleCfg.contourSize||1.5)*4)} strokeLinejoin="round"/>
+            <polygon points="50,4 96,86 4,86" fill={col} stroke={bw>0?bc:"none"} strokeWidth={bw>0?bw*4:0} strokeLinejoin="round"/>
           </svg>
           <div style={{ ...labelWrap, top:"18%" }}>{labelNode}</div>
         </div>
       );
     }
-    var st = { width:taille, height:taille, background:col, border:(pastilleCfg.contourSize||1.5)+"px solid "+(pastilleCfg.contourColor||"#fff"), boxShadow:ombre, display:"flex", alignItems:"center", justifyContent:"center", cursor:"grab", userSelect:"none", boxSizing:"border-box", transform:scale, transition:"transform 0.05s", position:"relative" };
+    var st = { width:taille, height:taille, background:col, border:(bw>0?(bw+"px solid "+bc):"none"), boxShadow:ombre, display:"flex", alignItems:"center", justifyContent:"center", cursor:"grab", userSelect:"none", boxSizing:"border-box", transform:scale, transition:"transform 0.05s", position:"relative" };
     if (forme === "carre") st.borderRadius = 3;
     else if (forme === "rect") { st.width = taille * 1.5; st.height = taille * 0.75; st.borderRadius = 3; }
     else if (forme === "ovale") { st.width = taille * 1.35; st.height = taille * 0.8; st.borderRadius = "50%"; }
@@ -12277,8 +12280,9 @@ function PlanImplantation({ seuilsGlobaux }) {
   function stylePastillePlan(poste, col, label){
     var forme = (posteFormes[categorieForme(poste)]||"rond");
     var T = pastilleCfg.taille;
+    var _bw = (pastilleCfg.contourSize==null ? 1.5 : pastilleCfg.contourSize);
     var st = { position:"absolute", transform:"translate(-50%,-50%)", background:col,
-      border:pastilleCfg.contourSize+"px solid "+pastilleCfg.contourColor,
+      border:(_bw>0?(_bw+"px solid "+pastilleCfg.contourColor):"none"),
       boxShadow:"0 1px 4px rgba(0,0,0,0.5)", display:"flex", alignItems:"center", justifyContent:"center",
       fontSize:posteLabelFontSize(label,pastilleCfg.numSize), fontWeight:900, color:pastilleCfg.labelColor||"#fff",
       width:T, height:T, boxSizing:"border-box" };
@@ -13462,7 +13466,9 @@ function PlanImplantation({ seuilsGlobaux }) {
             <div style={{display:"flex",alignItems:"center",gap:8}}>
               <span style={{fontSize:11,color:"var(--text-2)",fontWeight:600}}>Épaisseur du contour</span>
               <input type="range" min="0" max="6" step="0.5" value={pastilleCfg.contourSize} onChange={e=>setReglage("contourSize",parseFloat(e.target.value))}/>
-              <span style={{fontSize:11,color:"var(--text-label)",width:28}}>{pastilleCfg.contourSize}</span>
+              <span style={{fontSize:11,color:"var(--text-label)",width:40}}>{pastilleCfg.contourSize>0?pastilleCfg.contourSize:"Aucun"}</span>
+              <button onClick={()=>setReglage("contourSize",0)} title="Supprimer le contour"
+                style={{fontSize:10,fontWeight:700,padding:"3px 8px",borderRadius:5,cursor:"pointer",border:"1px solid var(--border)",background:pastilleCfg.contourSize>0?"transparent":"var(--accent,#3b82f6)",color:pastilleCfg.contourSize>0?"var(--text-2)":"#fff"}}>Aucun contour</button>
             </div>
             <div style={{display:"flex",alignItems:"center",gap:8}}>
               <span style={{fontSize:11,color:"var(--text-2)",fontWeight:600}}>Couleur du contour</span>
