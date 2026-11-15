@@ -905,7 +905,7 @@ async function construirePlanFiche(p, postesTous, saisies){
       var _reg = null;
       try { var lr = localStorage.getItem("aads_pastille_reglages"); if (lr) _reg = JSON.parse(lr); } catch(_e){}
       if (!_reg) { try { var cl2 = await sbFetch("config_logos?id=eq.main","GET"); var ap2 = cl2 && cl2[0] && cl2[0].affichage_pastilles; if (ap2 && ap2.reglages) _reg = ap2.reglages; } catch(_e){} }
-      if (_reg) PASTILLE_CONFIG = { labelSize:_reg.numSize, cercleSize:_reg.contourSize, cercleColor:_reg.contourColor, size:_reg.taille, labelColor:"#ffffff" };
+      if (_reg) PASTILLE_CONFIG = { labelSize:_reg.numSize, cercleSize:_reg.contourSize, cercleColor:_reg.contourColor, size:_reg.taille, labelColor:_reg.labelColor||"#ffffff" };
     } catch(_e){}
 
     var seuils = {};
@@ -12155,7 +12155,7 @@ function PlanImplantation({ seuilsGlobaux }) {
     try { const s = localStorage.getItem("aads_nuisibles_masques"); return s ? JSON.parse(s) : []; } catch(e) { return []; }
   });
   // Réglages d'apparence des pastilles : taille du numéro, taille et couleur du contour.
-  const PASTILLE_CFG_DEFAUT = { numSize:6, contourSize:1.5, contourColor:"#ffffff", taille:18 };
+  const PASTILLE_CFG_DEFAUT = { numSize:6, contourSize:1.5, contourColor:"#ffffff", taille:18, labelColor:"#ffffff" };
   const [pastilleCfg, setPastilleCfg] = useState(()=>{
     try { const s = localStorage.getItem("aads_pastille_reglages"); return s ? {...PASTILLE_CFG_DEFAUT, ...JSON.parse(s)} : {...PASTILLE_CFG_DEFAUT}; } catch(e){ return {...PASTILLE_CFG_DEFAUT}; }
   });
@@ -13208,7 +13208,7 @@ function PlanImplantation({ seuilsGlobaux }) {
                       const col = getPosteColor(p, selDate);
                       const label = posteLabel(p.id);
                       return (
-                        <div key={pt.id} style={{position:"absolute",left:pt.x+"%",top:pt.y+"%",transform:"translate(-50%,-50%)",width:pastilleCfg.taille,height:pastilleCfg.taille,borderRadius:"50%",background:col,border:pastilleCfg.contourSize+"px solid "+pastilleCfg.contourColor,boxShadow:"0 1px 4px rgba(0,0,0,0.5)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:posteLabelFontSize(label,pastilleCfg.numSize),fontWeight:900,color:"#fff"}}>
+                        <div key={pt.id} style={{position:"absolute",left:pt.x+"%",top:pt.y+"%",transform:"translate(-50%,-50%)",width:pastilleCfg.taille,height:pastilleCfg.taille,borderRadius:"50%",background:col,border:pastilleCfg.contourSize+"px solid "+pastilleCfg.contourColor,boxShadow:"0 1px 4px rgba(0,0,0,0.5)",display:"flex",alignItems:"center",justifyContent:"center",fontSize:posteLabelFontSize(label,pastilleCfg.numSize),fontWeight:900,color:pastilleCfg.labelColor||"#fff"}}>
                           {label}
                         </div>
                       );
@@ -13391,6 +13391,13 @@ function PlanImplantation({ seuilsGlobaux }) {
               <input type="color" value={pastilleCfg.contourColor} onChange={e=>setReglage("contourColor",e.target.value)} style={{width:34,height:26,border:"1px solid var(--border)",borderRadius:5,background:"transparent",cursor:"pointer"}}/>
               {["#ffffff","#000000","#1d4ed8","#ef4444","#22c55e","#f59e0b"].map(c=>(
                 <button key={c} onClick={()=>setReglage("contourColor",c)} title={c} style={{width:18,height:18,borderRadius:"50%",background:c,border:pastilleCfg.contourColor===c?"3px solid var(--text-label)":"1px solid var(--border)",cursor:"pointer",padding:0}}/>
+              ))}
+            </div>
+            <div style={{display:"flex",alignItems:"center",gap:8}}>
+              <span style={{fontSize:11,color:"var(--text-2)",fontWeight:600}}>Couleur du numéro</span>
+              <input type="color" value={pastilleCfg.labelColor||"#ffffff"} onChange={e=>setReglage("labelColor",e.target.value)} style={{width:34,height:26,border:"1px solid var(--border)",borderRadius:5,background:"transparent",cursor:"pointer"}}/>
+              {["#ffffff","#000000","#1d4ed8","#ef4444","#22c55e","#f59e0b"].map(c=>(
+                <button key={c} onClick={()=>setReglage("labelColor",c)} title={c} style={{width:18,height:18,borderRadius:"50%",background:c,border:(pastilleCfg.labelColor||"#ffffff")===c?"3px solid var(--text-label)":"1px solid var(--border)",cursor:"pointer",padding:0}}/>
               ))}
             </div>
           </div>
