@@ -6982,7 +6982,12 @@ function SaisiePassage({ seuilsGlobaux, setSeuilsGlobaux, setReinterventions, se
   const [form, setForm]       = useState({ date:"", technicien:"", type:"Rongeurs", notes:"" });
   const [saisies, setSaisies] = useState({});
   const [postes, setPostes]   = useState(POSTES_INIT);
-  const [produitsBiocides, setProduitsBiocides] = useState([]);
+  // Liste des produits biocides = identique a l'onglet "Produits biocides" (meme table,
+  // meme init par defaut) -> la saisie propose toujours tous les produits.
+  const [produitsBiocides, setProduitsBiocides] = useState(PRODUITS.map(p => ({...p, id: String(p.id)})));
+  // Snapshot de la molecule precedente par poste, figee a l'ouverture de la saisie :
+  // choisir une nouvelle molecule ne modifie PAS l'affichage "ancienne molecule".
+  const ancMolRef = React.useRef({});
   const [showReinvForm, setShowReinvForm] = useState(false);
   const [reinvForm, setReinvForm] = useState({ date:"", technicien:"", poste:"", anomalie:"", statut:"En cours", observations:"", actions:[] });
   const [reinvPhotos, setReinvPhotos] = useState([]);
@@ -7026,6 +7031,12 @@ function SaisiePassage({ seuilsGlobaux, setSeuilsGlobaux, setReinterventions, se
     });
     sbGet("produits_biocides").then(data => { if(data&&data.length>0) setProduitsBiocides(data); }).catch(()=>{});
   }, []);
+
+  // Fige la molecule precedente de chaque poste (premiere valeur vue) ; les choix de
+  // nouvelle molecule ne l'ecrasent pas -> l'affichage "ancienne molecule" reste stable.
+  useEffect(() => {
+    postes.forEach(p => { if (ancMolRef.current[p.id] === undefined) ancMolRef.current[p.id] = p.molecule_actuelle || "Placebo"; });
+  }, [postes]);
 
   function startNew() { setForm({date:"",technicien:"",type:"Rongeurs",notes:""}); setSaisies(initSaisiesAvecMolecule({})); setView("saisie"); }
   // Mode telephone : meme form + saisies (donc meme enregistrement, meme branchement
@@ -7595,7 +7606,7 @@ function SaisiePassage({ seuilsGlobaux, setSeuilsGlobaux, setReinterventions, se
                       <div>
                         <div style={{ marginBottom:12 }}>
                           <label style={{ fontSize:10, color:"#7a90aa", fontWeight:700, display:"block", marginBottom:4 }}>ANCIENNE MOLECULE (derniere connue)</label>
-                          <div style={{ background:"#1a2540", border:"1px solid #3d5270", borderRadius:8, padding:"9px 12px", color:"#94a3b8", fontSize:13 }}>{poste.molecule_actuelle || "Placebo"}</div>
+                          <div style={{ background:"#1a2540", border:"1px solid #3d5270", borderRadius:8, padding:"9px 12px", color:"#94a3b8", fontSize:13 }}>{(ancMolRef.current[poste.id] !== undefined ? ancMolRef.current[poste.id] : (poste.molecule_actuelle || "Placebo"))}</div>
                         </div>
                         <div style={{ marginBottom:14 }}>
                           <label style={{ fontSize:10, color:"#7a90aa", fontWeight:700, display:"block", marginBottom:4 }}>NOUVELLE MOLECULE</label>
@@ -10927,7 +10938,10 @@ function GestionPostes({ postes, setPostes }) {
   const [filterMacro, setFilterMacro] = useState("Toutes");
   const [filterNuisible, setFilterNuisible] = useState("Tous");
   const [showAdd, setShowAdd]       = useState(false);
-  const [newP, setNewP]             = useState({ id:"", zone:"", macro:"Extérieur", type:"RE", nuisible:"Rongeurs", appat:"Toxique", statut:"Actif" });
+  const [newP, setNewP]             = useState({ id:"", zone:"", macro:"Extérieur", type:"RE", nuisible:"Rongeurs", appat:"Toxique", statut:"Actif", zone_produits_nus:false, deiv_type:"" });
+  // Filtres liste postes : zone produits nus (tous/oui/non) + DEIV moniteur/destructeur.
+  const [filtreProduitsNus, setFiltreProduitsNus] = useState("tous"); // tous | oui | non
+  const [filtreDeivType, setFiltreDeivType] = useState("tous"); // tous | moniteur | destructeur
   const [editId, setEditId]         = useState(null);
   const [editData, setEditData]     = useState({});
   const [prevPostes, setPrevPostes] = useState(null);
@@ -10968,7 +10982,7 @@ function GestionPostes({ postes, setPostes }) {
     const p = {...newP, id:newP.id.trim()};
     setPostes(prev=>[...prev,p]);
     sbUpsert("postes",{...p,contrat:CLIENT_CONFIG.contrat,statut:p.statut||"Actif"});
-    setNewP({id:"",zone:"",macro:"Extérieur",type:"RE",nuisible:"Rongeurs",appat:"Toxique"});
+    setNewP({id:"",zone:"",macro:"Extérieur",type:"RE",nuisible:"Rongeurs",appat:"Toxique",statut:"Actif",zone_produits_nus:false,deiv_type:""});
     setShowAdd(false);
   }
 
@@ -11007,6 +11021,9 @@ function GestionPostes({ postes, setPostes }) {
 
   const filtered = sortPostesNat(postes.filter(p => {
     if (filterNuisible !== "Tous" && (p.nuisible||"Rongeurs") !== filterNuisible) return false;
+    if (filtreProduitsNus === "oui" && !p.zone_produits_nus) return false;
+    if (filtreProduitsNus === "non" && p.zone_produits_nus) return false;
+    if (filtreDeivType !== "tous" && (p.deiv_type||"") !== filtreDeivType) return false;
     if (search) { const s = search.toLowerCase(); return p.id.toLowerCase().includes(s)||(p.zone||"").toLowerCase().includes(s); }
     return true;
   }));
@@ -11032,6 +11049,21 @@ function GestionPostes({ postes, setPostes }) {
             Export Excel
           </button>
           <button onClick={()=>setShowAdd(v=>!v)} style={{background:"#db2777",color:"#fff",border:"none",borderRadius:8,padding:"7px 14px",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>+ Ajouter poste</button>
+        </div>
+      </div>
+      {/* Filtres : zone de produits nus + type DEIV (moniteur/destructeur) */}
+      <div style={{display:"flex",gap:14,flexWrap:"wrap",alignItems:"center",marginBottom:12}}>
+        <div style={{display:"flex",alignItems:"center",gap:6}}>
+          <span style={{fontSize:10,color:"#7a90aa",fontWeight:600,textTransform:"uppercase"}}>Zone produits nus</span>
+          {[["tous","Toutes"],["oui","Produits nus"],["non","Hors produits nus"]].map(([v,l])=>(
+            <button key={v} onClick={()=>setFiltreProduitsNus(v)} style={{background:filtreProduitsNus===v?"#db2777":"transparent",color:filtreProduitsNus===v?"#fff":"#7a90aa",border:"1px solid "+(filtreProduitsNus===v?"#db2777":"#3d5270"),borderRadius:6,padding:"4px 10px",fontSize:11,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>{l}</button>
+          ))}
+        </div>
+        <div style={{display:"flex",alignItems:"center",gap:6}}>
+          <span style={{fontSize:10,color:"#7a90aa",fontWeight:600,textTransform:"uppercase"}}>DEIV</span>
+          {[["tous","Tous"],["moniteur","Moniteur"],["destructeur","Destructeur"]].map(([v,l])=>(
+            <button key={v} onClick={()=>setFiltreDeivType(v)} style={{background:filtreDeivType===v?"#ec4899":"transparent",color:filtreDeivType===v?"#fff":"#7a90aa",border:"1px solid "+(filtreDeivType===v?"#ec4899":"#3d5270"),borderRadius:6,padding:"4px 10px",fontSize:11,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>{l}</button>
+          ))}
         </div>
       </div>
       {showManageLists && (
@@ -11093,6 +11125,8 @@ function GestionPostes({ postes, setPostes }) {
               <select value={newP.nuisible} onChange={e=>setNewP(p=>({...p,nuisible:e.target.value}))} style={inpS}>{NUISIBLES_P.map(n=><option key={n}>{n}</option>)}</select></div>
             <div><label style={{fontSize:9,color:"#7a90aa",display:"block",marginBottom:2}}>Appât</label><input value={newP.appat} onChange={e=>setNewP(p=>({...p,appat:e.target.value}))} style={inpS}/></div>
             <div><label style={{fontSize:9,color:"#7a90aa",display:"block",marginBottom:2}}>Statut</label><select value={newP.statut||"Actif"} onChange={e=>setNewP(p=>({...p,statut:e.target.value}))} style={inpS}>{STATUTS_POSTES.map(s=><option key={s}>{s}</option>)}</select></div>
+            <div><label style={{fontSize:9,color:"#7a90aa",display:"block",marginBottom:2}}>Type DEIV</label><select value={newP.deiv_type||""} onChange={e=>setNewP(p=>({...p,deiv_type:e.target.value}))} style={inpS}><option value="">—</option><option value="moniteur">Moniteur</option><option value="destructeur">Destructeur</option></select></div>
+            <div style={{display:"flex",alignItems:"flex-end"}}><label style={{fontSize:10,color:"#f1f5f9",display:"flex",alignItems:"center",gap:6,cursor:"pointer"}}><input type="checkbox" checked={!!newP.zone_produits_nus} onChange={e=>setNewP(p=>({...p,zone_produits_nus:e.target.checked}))}/> Zone produits nus</label></div>
           </div>
           <div style={{display:"flex",gap:6}}>
             <button onClick={addPoste} style={{background:"#22c55e",color:"#fff",border:"none",borderRadius:7,padding:"6px 12px",fontSize:11,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>Ajouter</button>
