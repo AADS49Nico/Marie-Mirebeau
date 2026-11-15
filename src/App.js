@@ -11488,12 +11488,12 @@ function GestionPostes({ postes, setPostes }) {
         <span style={{fontSize:11,color:"var(--text-faint)",alignSelf:"center"}}>{filtered.length} postes</span>
       </div>
       <Card style={{padding:0,overflow:"hidden"}}>
-        <div style={{background:"var(--bg-1)",padding:"8px 14px",display:"grid",gridTemplateColumns:"70px 1fr 110px 70px 80px 70px 80px 80px",gap:8,fontSize:9,fontWeight:700,color:"var(--text-label)",textTransform:"uppercase"}}>
-          <div>N°</div><div>Zone</div><div>Macro</div><div>Type</div><div>Nuisible</div><div>Capture</div><div>Statut</div><div>Actions</div>
+        <div style={{background:"var(--bg-1)",padding:"8px 14px",display:"grid",gridTemplateColumns:"54px 1fr 86px 46px 72px 56px 58px 52px 74px 56px",gap:8,fontSize:9,fontWeight:700,color:"var(--text-label)",textTransform:"uppercase"}}>
+          <div>N°</div><div>Zone</div><div>Macro</div><div>Type</div><div>Nuisible</div><div>Appât</div><div>Statut</div><div>Nus</div><div>DEIV</div><div>Actions</div>
         </div>
         <div style={{maxHeight:400,overflowY:"auto"}}>
           {filtered.map((p,i)=>(
-            <div key={p.id} style={{padding:"7px 14px",display:"grid",gridTemplateColumns:"70px 1fr 110px 70px 80px 70px 80px 80px",gap:8,alignItems:"center",borderTop:"1px solid var(--line)",background:i%2===0?"transparent":"#ffffff04"}}>
+            <div key={p.id} style={{padding:"7px 14px",display:"grid",gridTemplateColumns:"54px 1fr 86px 46px 72px 56px 58px 52px 74px 56px",gap:8,alignItems:"center",borderTop:"1px solid var(--line)",background:i%2===0?"transparent":"#ffffff04"}}>
               {editId===p.id ? (
                 <>
                   <input value={editData.id} onChange={e=>setEditData(d=>({...d,id:e.target.value}))} style={{...inpS,width:"100%"}}/>
@@ -11510,6 +11510,8 @@ function GestionPostes({ postes, setPostes }) {
                     <option value="Autre">Autre</option>
                   </select>
                   <select value={editData.statut||"Actif"} onChange={e=>setEditData(d=>({...d,statut:e.target.value}))} style={inpS}>{STATUTS_POSTES.map(s=><option key={s}>{s}</option>)}</select>
+                  <label style={{display:"flex",justifyContent:"center",alignItems:"center",cursor:"pointer"}} title="Zone de produits nus"><input type="checkbox" checked={!!editData.zone_produits_nus} onChange={e=>setEditData(d=>({...d,zone_produits_nus:e.target.checked}))}/></label>
+                  <select value={editData.deiv_type||""} onChange={e=>setEditData(d=>({...d,deiv_type:e.target.value}))} style={inpS} title="Type DEIV"><option value="">—</option><option value="moniteur">Moni.</option><option value="destructeur">Dest.</option></select>
                   <div style={{display:"flex",gap:4}}>
                     <button onClick={saveEdit} style={{background:"#22c55e",color:"#fff",border:"none",borderRadius:5,padding:"2px 8px",fontSize:10,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>OK</button>
                     <button onClick={()=>setEditId(null)} style={{background:"transparent",color:"var(--text-label)",border:"1px solid var(--border)",borderRadius:5,padding:"2px 6px",fontSize:10,cursor:"pointer",fontFamily:"inherit"}}>X</button>
@@ -11524,6 +11526,8 @@ function GestionPostes({ postes, setPostes }) {
                   <div style={{fontSize:10,color:NUISIBLE_COLORS[p.nuisible||"Rongeurs"]||"var(--text-label)",fontWeight:600}}>{p.nuisible||"Rongeurs"}</div>
                   <div style={{fontSize:10,color:p.appat?"var(--text-1)":"var(--text-faint)"}}>{p.appat||"—"}</div>
                   <div style={{fontSize:10,color:p.statut==="Actif"||!p.statut?"#22c55e":p.statut==="Disparu"?"#ef4444":"#f59e0b",fontWeight:600}}>{p.statut||"Actif"}</div>
+                  <div style={{textAlign:"center",fontSize:12,fontWeight:700,color:p.zone_produits_nus?"#22c55e":"var(--text-faint)"}} title={p.zone_produits_nus?"Zone de produits nus":"Hors produits nus"}>{p.zone_produits_nus?"✓":"—"}</div>
+                  <div style={{fontSize:10,fontWeight:600,color:p.deiv_type?"#3b82f6":"var(--text-faint)"}}>{p.deiv_type==="moniteur"?"Moniteur":p.deiv_type==="destructeur"?"Destructeur":"—"}</div>
                   <div style={{display:"flex",gap:4}}>
                     <button onClick={()=>startEdit(p)} style={{background:"#1d4ed822",color:"#3b82f6",border:"1px solid #3b82f644",borderRadius:5,padding:"2px 7px",fontSize:10,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>Edit</button>
                     <button onClick={()=>deletePoste(p.id)} style={{background:"#ef444422",color:"#ef4444",border:"1px solid #ef444433",borderRadius:5,padding:"2px 6px",fontSize:10,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>X</button>
@@ -12111,6 +12115,8 @@ function PlanImplantation({ seuilsGlobaux }) {
   const [showAllPlans, setShowAllPlans] = useState(false);
   const [selDate, setSelDate]         = useState(null);
   const [filterNuisibleArr, setFilterNuisibleArr] = useState([]);
+  const [filtreProduitsNusPlan, setFiltreProduitsNusPlan] = useState("tous"); // tous | oui | non
+  const [filtreDeivTypePlan, setFiltreDeivTypePlan] = useState("tous"); // tous | moniteur | destructeur
   const [modeColor, setModeColor]     = useState("type");
   const [zoom, setZoom]               = useState(()=>{
     try { const saved = window.localStorage && window.localStorage.getItem("aads_plan_zoom"); return saved ? parseInt(saved) : 80; } catch(e) { return 80; }
@@ -12159,11 +12165,15 @@ function PlanImplantation({ seuilsGlobaux }) {
   const [pastilleCfg, setPastilleCfg] = useState(()=>{
     try { const s = localStorage.getItem("aads_pastille_reglages"); return s ? {...PASTILLE_CFG_DEFAUT, ...JSON.parse(s)} : {...PASTILLE_CFG_DEFAUT}; } catch(e){ return {...PASTILLE_CFG_DEFAUT}; }
   });
+  const [pastillesSaved, setPastillesSaved] = useState(false);
   // Ecrit les 3 reglages d affichage dans Supabase (config_logos.affichage_pastilles),
   // pour qu ils soient communs a tous les appareils et tous les techniciens.
   // Le localStorage reste utilise comme cache pour un affichage instantane.
   function sauverAffichage(formes, couleurs, masques, reglages) {
     var payload = { formes: formes, couleurs: couleurs, masques: masques, reglages: reglages || pastilleCfg };
+    // Persistance locale FIABLE (IndexedDB) de tout l'affichage pastilles : survit au
+    // vidage du cache / unregister SW, indépendamment de la base.
+    saveCacheData("affichage_pastilles_marie", payload).catch(function(){});
     // PATCH cible : ne modifie QUE affichage_pastilles, sans toucher au logo
     // (banner_url) ni aux autres colonnes de la ligne config_logos.
     sbFetch("config_logos?id=eq.main", "PATCH", { affichage_pastilles: payload }, { Prefer: "return=representation" })
@@ -12199,10 +12209,14 @@ function PlanImplantation({ seuilsGlobaux }) {
     sauverAffichage(posteFormes, nuisibleColors, nuisiblesMasques, next);
   }
 
-  // Au montage : relire les réglages depuis IndexedDB (source la plus fiable, locale).
+  // Au montage : relire TOUT l'affichage pastilles depuis IndexedDB (source locale fiable).
   useEffect(function(){
-    getCacheData("pastille_reglages_marie").then(function(r){
-      if (r && typeof r === "object") setPastilleCfg(function(prev){ return {...prev, ...r}; });
+    getCacheData("affichage_pastilles_marie").then(function(a){
+      if (!a || typeof a !== "object") return;
+      if (a.formes)   setPosteFormes(function(prev){ return {...POSTE_FORMES_DEFAUT, ...prev, ...a.formes}; });
+      if (a.couleurs) setNuisibleColors(function(prev){ return {...prev, ...a.couleurs}; });
+      if (a.masques)  setNuisiblesMasques(a.masques);
+      if (a.reglages) setPastilleCfg(function(prev){ return {...prev, ...a.reglages}; });
     }).catch(function(){});
   }, []);
 
@@ -12808,6 +12822,24 @@ function PlanImplantation({ seuilsGlobaux }) {
         ))}
       </div>
 
+      {/* Filtres zone produits nus + DEIV moniteur/destructeur */}
+      <Card style={{marginBottom:14,padding:"10px 16px"}}>
+        <div style={{display:"flex",gap:18,flexWrap:"wrap",alignItems:"center"}}>
+          <div style={{display:"flex",alignItems:"center",gap:6}}>
+            <span style={{fontSize:10,fontWeight:700,color:"var(--text-label)",textTransform:"uppercase"}}>Zone produits nus</span>
+            {[["tous","Toutes"],["oui","Produits nus"],["non","Hors"]].map(([v,l])=>(
+              <button key={v} onClick={()=>setFiltreProduitsNusPlan(v)} style={{background:filtreProduitsNusPlan===v?"#1d4ed8":"transparent",color:filtreProduitsNusPlan===v?"#fff":"var(--text-label)",border:"1px solid "+(filtreProduitsNusPlan===v?"#1d4ed8":"var(--border)"),borderRadius:6,padding:"4px 10px",fontSize:11,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>{l}</button>
+            ))}
+          </div>
+          <div style={{display:"flex",alignItems:"center",gap:6}}>
+            <span style={{fontSize:10,fontWeight:700,color:"var(--text-label)",textTransform:"uppercase"}}>DEIV</span>
+            {[["tous","Tous"],["moniteur","Moniteur"],["destructeur","Destructeur"]].map(([v,l])=>(
+              <button key={v} onClick={()=>setFiltreDeivTypePlan(v)} style={{background:filtreDeivTypePlan===v?"#1d4ed8":"transparent",color:filtreDeivTypePlan===v?"#fff":"var(--text-label)",border:"1px solid "+(filtreDeivTypePlan===v?"#1d4ed8":"var(--border)"),borderRadius:6,padding:"4px 10px",fontSize:11,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>{l}</button>
+            ))}
+          </div>
+        </div>
+      </Card>
+
       {/* Filtre nuisible */}
       <Card style={{marginBottom:14,padding:"12px 16px"}}>
         <div style={{fontSize:10,fontWeight:700,color:"var(--text-label)",textTransform:"uppercase",letterSpacing:1,marginBottom:8}}>Filtrer par nuisible (selection multiple)</div>
@@ -13215,6 +13247,9 @@ function PlanImplantation({ seuilsGlobaux }) {
                     {pts.map(pt=>{
                       const p = postes.find(x=>x.id===pt.id);
                       if (!p) return null;
+                      if (filtreProduitsNusPlan==="oui" && !p.zone_produits_nus) return null;
+                      if (filtreProduitsNusPlan==="non" && p.zone_produits_nus) return null;
+                      if (filtreDeivTypePlan!=="tous" && (p.deiv_type||"")!==filtreDeivTypePlan) return null;
                       const col = getPosteColor(p, selDate);
                       const label = posteLabel(p.id);
                       return (
@@ -13260,6 +13295,9 @@ function PlanImplantation({ seuilsGlobaux }) {
               const p=postes.find(p=>p.id===pt.id);
               if(!p)return null;
               if(filterNuisibleArr.length>0&&!filterNuisibleArr.some(f=>{const id=p.id||"";if(f==="__RE")return /^RE/i.test(id);if(f==="__RI")return /^(RI|R\d|S\d)/i.test(id)&&!/^RE/i.test(id);return (p.nuisible||"Rongeurs")===f;}))return null;
+              if(filtreProduitsNusPlan==="oui" && !p.zone_produits_nus) return null;
+              if(filtreProduitsNusPlan==="non" && p.zone_produits_nus) return null;
+              if(filtreDeivTypePlan!=="tous" && (p.deiv_type||"")!==filtreDeivTypePlan) return null;
               const col=getPosteColor(p,selDate);
               const isHov=hover===pt.id;
               const isMov=movingPoste===pt.id;
@@ -13378,7 +13416,13 @@ function PlanImplantation({ seuilsGlobaux }) {
 
       {showFormesEditor && (
         <div style={{ marginTop:10, background:"var(--bg-2)", border:"1px solid var(--border)", borderRadius:10, padding:14 }}>
-          <div style={{ fontSize:12, color:"var(--text-muted)", fontWeight:700, marginBottom:10 }}>Gestion des pastilles — forme, couleur (en mode Type), et affichage dans les legendes</div>
+          <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",flexWrap:"wrap",gap:8,marginBottom:10}}>
+            <div style={{ fontSize:12, color:"var(--text-muted)", fontWeight:700 }}>Gestion des pastilles — forme, couleur (en mode Type), tailles et affichage dans les legendes</div>
+            <button onClick={()=>{ sauverAffichage(posteFormes, nuisibleColors, nuisiblesMasques, pastilleCfg); setPastillesSaved(true); setTimeout(()=>setPastillesSaved(false),2500); }}
+              style={{background:"#22c55e",color:"#fff",border:"none",borderRadius:8,padding:"7px 16px",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>
+              {pastillesSaved ? "✓ Enregistré" : "Enregistrer"}
+            </button>
+          </div>
           {/* Réglages d'apparence : taille du numéro, taille et couleur du contour */}
           <div style={{ display:"flex", gap:20, flexWrap:"wrap", alignItems:"center", background:"var(--bg-1)", border:"1px solid var(--border)", borderRadius:8, padding:"10px 14px", marginBottom:12 }}>
             <div style={{display:"flex",alignItems:"center",gap:8}}>
