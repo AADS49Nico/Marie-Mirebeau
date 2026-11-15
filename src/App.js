@@ -11299,6 +11299,18 @@ function GestionPostes({ postes, setPostes }) {
   const [newTypeInput, setNewTypeInput] = useState("");
   const [showManageLists, setShowManageLists] = useState(false);
 
+  // Les macro-zones déjà portées par des postes alimentent la liste déroulante,
+  // pour que les macros créées à la main réapparaissent après rechargement.
+  useEffect(()=>{
+    const used = [...new Set((postes||[]).map(p=>p.macro).filter(Boolean))];
+    if (!used.length) return;
+    setMacrosList(prev=>{
+      const base = prev.filter(m=>m!=="Autres");
+      used.forEach(m=>{ if(!base.includes(m)) base.push(m); });
+      return [...base, "Autres"];
+    });
+  }, [postes]);
+
   function addMacro(value, applyTo) {
     const v = value.trim();
     if (!v || macrosList.includes(v)) return;
@@ -11502,7 +11514,10 @@ function GestionPostes({ postes, setPostes }) {
                 <>
                   <input value={editData.id} onChange={e=>setEditData(d=>({...d,id:e.target.value}))} style={{...inpS,width:"100%"}}/>
                   <input value={editData.zone||""} onChange={e=>setEditData(d=>({...d,zone:e.target.value}))} style={{...inpS,width:"100%"}}/>
-                  <select value={editData.macro||""} onChange={e=>setEditData(d=>({...d,macro:e.target.value}))} style={inpS}>{macrosList.map(m=><option key={m}>{m}</option>)}</select>
+                  <div style={{display:"flex",flexDirection:"column",gap:3}}>
+                    <select value={editData.macro||""} onChange={e=>setEditData(d=>({...d,macro:e.target.value}))} style={inpS}>{macrosList.map(m=><option key={m}>{m}</option>)}</select>
+                    <input value={newMacroInput} onChange={e=>setNewMacroInput(e.target.value)} onKeyDown={e=>{if(e.key==="Enter"){e.preventDefault();addMacro(newMacroInput,"edit");}}} placeholder="+ nouvelle macro" style={{...inpS,fontSize:9,padding:"3px 6px"}}/>
+                  </div>
                   <select value={editData.type||""} onChange={e=>setEditData(d=>({...d,type:e.target.value}))} style={inpS}>{typesList.map(t=><option key={t}>{t}</option>)}</select>
                   <select value={editData.nuisible||""} onChange={e=>setEditData(d=>({...d,nuisible:e.target.value}))} style={inpS}>{NUISIBLES_P.map(n=><option key={n}>{n}</option>)}</select>
                   <select value={editData.appat||""} onChange={e=>setEditData(d=>({...d,appat:e.target.value}))} style={inpS}>
