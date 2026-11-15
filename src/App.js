@@ -426,7 +426,7 @@ function canvasPastilleForme(ctx, forme, x, y, r, col) {
   ctx.strokeStyle = "#fff"; ctx.lineWidth = 2; ctx.lineJoin = "round"; ctx.stroke();
 }
 const NUISIBLE_COLORS = {
-  Rongeurs: "#3b82f6",
+  Rongeurs: "#ec4899",
   Blattes: "#ef4444",
   "Insectes volants": "#eab308",
   Teignes: "#8b5cf6",
@@ -634,13 +634,13 @@ const NAV_GROUPS_CONFIG = [
 // COMPOSANTS UI DE BASE
 // ============================================================
 function sc(s) {
-  return { "Conforme": "#22c55e", "Action requise": "#ef4444", "Vigilance": "#f59e0b", "Résolu": "#3b82f6", "En cours": "#f59e0b", "Planifiée": "#3b82f6", "Traité": "#22c55e", "Actif": "#22c55e", "Valide": "#22c55e" }[s] || "#94a3b8";
+  return { "Conforme": "#22c55e", "Action requise": "#ef4444", "Vigilance": "#f59e0b", "Résolu": "#ec4899", "En cours": "#f59e0b", "Planifiée": "#ec4899", "Traité": "#22c55e", "Actif": "#22c55e", "Valide": "#22c55e" }[s] || "#94a3b8";
 }
 
 function Spinner({ label }) {
   return (
     <div style={{ display:"flex", flexDirection:"column", alignItems:"center", justifyContent:"center", padding:60, gap:16 }}>
-      <div style={{ width:40, height:40, border:"4px solid #3d5270", borderTop:"4px solid #3b82f6", borderRadius:"50%", animation:"spin 0.8s linear infinite" }}/>
+      <div style={{ width:40, height:40, border:"4px solid #3d5270", borderTop:"4px solid #ec4899", borderRadius:"50%", animation:"spin 0.8s linear infinite" }}/>
       {label && <div style={{ fontSize:13, color:"#7a90aa", fontWeight:500 }}>{label}</div>}
       <style>{`@keyframes spin { 0%{transform:rotate(0deg)} 100%{transform:rotate(360deg)} }`}</style>
     </div>
@@ -660,14 +660,14 @@ function Badge({ label, color }) {
 function Card({ children, selected, onClick, style }) {
   return (
     <div onClick={onClick}
-      style={{ background: selected ? "#2d4a7a" : "#243352", border: "1px solid " + (selected ? "#3b82f6" : "#3d5270"), borderRadius: 12, padding: "16px 18px", cursor: onClick ? "pointer" : "default", transition: "all .15s", ...style }}>
+      style={{ background: selected ? "#2d4a7a" : "#243352", border: "1px solid " + (selected ? "#ec4899" : "#3d5270"), borderRadius: 12, padding: "16px 18px", cursor: onClick ? "pointer" : "default", transition: "all .15s", ...style }}>
       {children}
     </div>
   );
 }
 
 function Kpi({ label, value, color, fontSize, plain, noborder }) {
-  const c = color || "#3b82f6";
+  const c = color || "#ec4899";
   const noBorder = plain || noborder;
   return (
     <div style={{ background: "#243352", border: "1px solid #3d5270", borderTop: noBorder ? "1px solid #3d5270" : "3px solid "+c, borderRadius: 10, padding: "14px 16px", textAlign: "center", position:"relative", overflow:"hidden" }}>
@@ -682,7 +682,7 @@ function inp(extra) {
   return { background: "#1a2540", border: "1px solid #3d5270", borderRadius: 7, padding: "7px 10px", color: "#f1f5f9", fontSize: 12, fontFamily: "inherit", width: "100%", boxSizing: "border-box", ...extra };
 }
 function inpBlue(extra) {
-  return { ...inp(), border: "1px solid #3b82f6", ...extra };
+  return { ...inp(), border: "1px solid #ec4899", ...extra };
 }
 
 // Rend un element texte de plan en SVG, avec gras / italique / surlignage.
@@ -849,7 +849,7 @@ function exportHTML(title, htmlBody) {
 function exportRapport(prestation, item) {
   const photos = (item.photos||[]).filter(p=>p.url);
   const photosHtml = photos.length > 0
-    ? `<div style="margin-top:16px"><div style="font-weight:700;margin-bottom:8px;color:#1d4ed8">Photos</div><div style="display:flex;flex-wrap:wrap;gap:10px">${photos.map(p=>`<img src="${p.url}" style="max-width:200px;max-height:150px;border-radius:6px;border:1px solid #e2e8f0;object-fit:cover"/>`).join("")}</div></div>`
+    ? `<div style="margin-top:16px"><div style="font-weight:700;margin-bottom:8px;color:#db2777">Photos</div><div style="display:flex;flex-wrap:wrap;gap:10px">${photos.map(p=>`<img src="${p.url}" style="max-width:200px;max-height:150px;border-radius:6px;border:1px solid #e2e8f0;object-fit:cover"/>`).join("")}</div></div>`
     : "";
 
   const fields = {
@@ -927,7 +927,7 @@ function SiteSwitcher({ compact }) {
   return (
     <select value={SITE_ACTIF}
       onChange={function(e){ var id = e.target.value; if (id && id !== SITE_ACTIF) changerSite(id); }}
-      style={{ background:"#1d4ed8", color:"#fff", border:"1px solid #3b82f6",
+      style={{ background:"#db2777", color:"#fff", border:"1px solid #ec4899",
                borderRadius:9, padding:"9px 32px 9px 14px", fontSize:13, fontWeight:700,
                fontFamily:"inherit", cursor:"pointer", minHeight:38, maxWidth:"70vw",
                appearance:"none", WebkitAppearance:"none", MozAppearance:"none",
@@ -943,7 +943,7 @@ function SiteSwitcher({ compact }) {
 function ExportBtn({ onClick, label }) {
   return (
     <button onClick={onClick}
-      style={{ background: "#1d4ed822", color: "#3b82f6", border: "1px solid #3b82f644", borderRadius: 8, padding: "6px 14px", fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>
+      style={{ background: "#db277722", color: "#ec4899", border: "1px solid #ec489944", borderRadius: 8, padding: "6px 14px", fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>
       ↓ PDF {label || ""}
     </button>
   );
@@ -1060,7 +1060,7 @@ function Dashboard({ onNav, reinterventions, onLogoClick, onParamsClick, passage
       "<h1>Tableau de bord - " + CLIENT_CONFIG.nom + anneeHtml + "</h1>" +
       "<p style='color:#7a90aa;margin-bottom:16px'>" + CLIENT_CONFIG.type_site + " - " + new Date().toLocaleDateString("fr-FR") + "</p>" +
       "<div class='kpi-grid'>" +
-        "<div class='kpi'><div class='kpi-v' style='color:#1d4ed8'>" + postesTotal + "</div><div class='kpi-l'>Postes controles</div></div>" +
+        "<div class='kpi'><div class='kpi-v' style='color:#db2777'>" + postesTotal + "</div><div class='kpi-l'>Postes controles</div></div>" +
         "<div class='kpi'><div class='kpi-v' style='color:#7c3aed'>" + passagesSorted.length + "</div><div class='kpi-l'>Passages periodiques</div></div>" +
         "<div class='kpi'><div class='kpi-v' style='color:#d97706'>" + passagesDeivSorted.length + "</div><div class='kpi-l'>Passages DEIV</div></div>" +
         "<div class='kpi'><div class='kpi-v' style='color:#dc2626'>" + reinterventionsAnnee.length + "</div><div class='kpi-l'>Réinterventions</div></div>" +
@@ -1078,13 +1078,13 @@ function Dashboard({ onNav, reinterventions, onLogoClick, onParamsClick, passage
     <div style={{ paddingBottom: 40 }}>
       <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: 12 }}>
         <button onClick={handleExport}
-          style={{ background: "#1d4ed822", color: "#3b82f6", border: "1px solid #3b82f644", borderRadius: 8, padding: "7px 16px", fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>
+          style={{ background: "#db277722", color: "#ec4899", border: "1px solid #ec489944", borderRadius: 8, padding: "7px 16px", fontSize: 12, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>
           Export PDF
         </button>
       </div>
 
-      <div style={{ background: "linear-gradient(135deg,#0f2356 0%,#1d3f7a 45%,#1a5a99 80%,#0e7490 100%)", borderRadius: 16, padding: "28px 32px", marginBottom: 24, position:"relative", overflow:"hidden" }}>
-        <div style={{position:"absolute",inset:0,backgroundImage:"radial-gradient(circle at 20% 50%, rgba(59,130,246,0.15) 0%, transparent 60%), radial-gradient(circle at 80% 20%, rgba(14,116,144,0.2) 0%, transparent 50%)",pointerEvents:"none"}}/>
+      <div style={{ background: "linear-gradient(135deg,#4a0e2e 0%,#7a1d4a 45%,#a61a5f 80%,#be185d 100%)", borderRadius: 16, padding: "28px 32px", marginBottom: 24, position:"relative", overflow:"hidden" }}>
+        <div style={{position:"absolute",inset:0,backgroundImage:"radial-gradient(circle at 20% 50%, rgba(236,72,153,0.15) 0%, transparent 60%), radial-gradient(circle at 80% 20%, rgba(190,24,93,0.2) 0%, transparent 50%)",pointerEvents:"none"}}/>
         <div style={{position:"absolute",right:-20,top:-20,width:180,height:180,borderRadius:"50%",background:"rgba(255,255,255,0.04)",pointerEvents:"none"}}/>
         <div style={{position:"absolute",right:60,bottom:-40,width:120,height:120,borderRadius:"50%",background:"rgba(255,255,255,0.03)",pointerEvents:"none"}}/>
         <div style={{ fontSize: 10, color: "#94a3b8", fontWeight: 600, letterSpacing: 1.5, textTransform: "uppercase", marginBottom: 10 }}>Portail Client Sanitation</div>
@@ -1099,12 +1099,12 @@ function Dashboard({ onNav, reinterventions, onLogoClick, onParamsClick, passage
         <div style={{ fontSize: 13, color: "#7a90aa", display:"flex", alignItems:"center", gap:8, flexWrap:"wrap" }}>
           <span>{CLIENT_CONFIG.type_site} - Contrat N {CLIENT_CONFIG.contrat}</span>
           {(CLIENT_CONFIG.certifications||[]).map(c=>(
-            <span key={c} style={{ fontSize:10, fontWeight:700, background:"#1d4ed822", color:"#3b82f6", border:"1px solid #3b82f644", borderRadius:10, padding:"2px 9px" }}>{c}</span>
+            <span key={c} style={{ fontSize:10, fontWeight:700, background:"#db277722", color:"#ec4899", border:"1px solid #ec489944", borderRadius:10, padding:"2px 9px" }}>{c}</span>
           ))}
         </div>
         <div style={{ marginTop: 20, display: "flex", gap: 14, flexWrap: "wrap" }}>
           <div style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 10, padding: "10px 18px" }}>
-            <div style={{ fontSize: 18, fontWeight: 800, color: "#3b82f6" }}>{postesTotal}</div>
+            <div style={{ fontSize: 18, fontWeight: 800, color: "#ec4899" }}>{postesTotal}</div>
             <div style={{ fontSize: 10, color: "#7a90aa", marginTop: 2 }}>Postes controles</div>
           </div>
           <div style={{ background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 10, padding: "10px 18px" }}>
@@ -1197,7 +1197,7 @@ function Dashboard({ onNav, reinterventions, onLogoClick, onParamsClick, passage
         return (
           <div style={{marginBottom:20}}>
             {alertes.map((a,i)=>{
-              const col = a.type==="critique"?"#ef4444":a.type==="alerte"?"#f59e0b":"#3b82f6";
+              const col = a.type==="critique"?"#ef4444":a.type==="alerte"?"#f59e0b":"#ec4899";
               return (
                 <div key={i} style={{ background:col+"11", border:"1px solid "+col+"33", borderRadius:10, padding:"10px 16px", marginBottom:8, display:"flex", gap:12, alignItems:"flex-start" }}>
                   <span style={{fontSize:18,flexShrink:0}}>{a.icon}</span>
@@ -1218,7 +1218,7 @@ function Dashboard({ onNav, reinterventions, onLogoClick, onParamsClick, passage
           <div style={{ display: "flex", gap: 4 }}>
             {["Tout", ...anneesList].map(y => (
               <button key={y} onClick={() => setFilterYear(y)}
-                style={{ background: filterYear === y ? "#1d4ed8" : "#1a2540", color: filterYear === y ? "#fff" : "#7a90aa", border: "1px solid " + (filterYear === y ? "#1d4ed8" : "#3d5270"), borderRadius: 6, padding: "3px 10px", fontSize: 11, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
+                style={{ background: filterYear === y ? "#db2777" : "#1a2540", color: filterYear === y ? "#fff" : "#7a90aa", border: "1px solid " + (filterYear === y ? "#db2777" : "#3d5270"), borderRadius: 6, padding: "3px 10px", fontSize: 11, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
                 {y}
               </button>
             ))}
@@ -1234,7 +1234,7 @@ function Dashboard({ onNav, reinterventions, onLogoClick, onParamsClick, passage
           });
           return Object.keys(byYear).sort((a,b) => b-a).map(year => (
             <div key={year} style={{ marginBottom: 16 }}>
-              <div style={{ fontSize: 11, fontWeight: 800, color: "#3b82f6", textTransform: "uppercase", letterSpacing: 1, marginBottom: 8, borderLeft: "3px solid #3b82f6", paddingLeft: 8 }}>
+              <div style={{ fontSize: 11, fontWeight: 800, color: "#ec4899", textTransform: "uppercase", letterSpacing: 1, marginBottom: 8, borderLeft: "3px solid #ec4899", paddingLeft: 8 }}>
                 {year}
               </div>
               {byYear[year].map(p => {
@@ -1386,7 +1386,7 @@ function Interventions({ reinterventions, setReinterventions, passagesGlobaux, s
         return pd(b.date) - pd(a.date);
       })[0].date
     : null;
-  const SREINV  = { Traité:"#22c55e", "En cours":"#f59e0b", Planifié:"#3b82f6" };
+  const SREINV  = { Traité:"#22c55e", "En cours":"#f59e0b", Planifié:"#ec4899" };
 
   return (
     <div style={{ paddingBottom: 40 }}>
@@ -1415,7 +1415,7 @@ function Interventions({ reinterventions, setReinterventions, passagesGlobaux, s
               "<h1>Suivi des passages — " + CLIENT_CONFIG.nom + " — " + anneeLabel + "</h1>" +
               "<p style='color:#7a90aa;margin-bottom:16px'>Edite le " + new Date().toLocaleDateString("fr-FR") + "</p>" +
               "<div class='kpi-grid'>" +
-                "<div class='kpi'><div class='kpi-v' style='color:#1d4ed8'>" + passagesAnnee.length + "</div><div class='kpi-l'>Passages</div></div>" +
+                "<div class='kpi'><div class='kpi-v' style='color:#db2777'>" + passagesAnnee.length + "</div><div class='kpi-l'>Passages</div></div>" +
                 "<div class='kpi'><div class='kpi-v' style='color:#dc2626'>" + nbReinv + "</div><div class='kpi-l'>Réinterventions</div></div>" +
                 "<div class='kpi'><div class='kpi-v' style='color:#7c3aed'>" + (passagesAnnee.length + nbReinv) + "</div><div class='kpi-l'>Total interventions</div></div>" +
                 "<div class='kpi'><div class='kpi-v' style='color:#16a34a;font-size:14px'>" + (passagesAnnee.length>0 ? passagesAnnee.slice().filter(p=>p.type!=="Insectes volants").sort((a,b)=>{const pd=d=>{const p=(d||"").split("/");return p.length===3?new Date(p[2]+"-"+p[1]+"-"+p[0]):new Date(0);};return pd(b.date)-pd(a.date);})[0]?.date||"—" : "—") + "</div><div class='kpi-l'>Dernier passage</div></div>" +
@@ -1426,7 +1426,7 @@ function Interventions({ reinterventions, setReinterventions, passagesGlobaux, s
               (reinvRows ? "<h2>Réinterventions</h2><table><thead><tr><th>Date</th><th>Technicien</th><th>Poste</th><th>Anomalie</th><th>Statut</th></tr></thead><tbody>" + reinvRows + "</tbody></table>" : "")
             );
           }}
-            style={{ background:"#1d4ed822", color:"#3b82f6", border:"1px solid #3b82f644", borderRadius:8, padding:"9px 16px", fontSize:12, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>
+            style={{ background:"#db277722", color:"#ec4899", border:"1px solid #ec489944", borderRadius:8, padding:"9px 16px", fontSize:12, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>
             Export PDF
           </button>
           <button onClick={() => {
@@ -1443,7 +1443,7 @@ function Interventions({ reinterventions, setReinterventions, passagesGlobaux, s
 
       {/* KPIs globaux */}
       <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(130px,1fr))", gap:10, marginBottom:16 }}>
-        <Kpi label="Passages"         value={nbPassages}  color="#3b82f6"/>
+        <Kpi label="Passages"         value={nbPassages}  color="#ec4899"/>
         <Kpi label="Passages DEIV"    value={nbDeiv}           color="#f59e0b"/>
         <Kpi label="Réinterventions"  value={nbReinv}           color="#ef4444"/>
         <Kpi label="Total interventions" value={passagesAnnee.length + nbReinv} color="#a78bfa"/>
@@ -1456,7 +1456,7 @@ function Interventions({ reinterventions, setReinterventions, passagesGlobaux, s
         <div style={{ display:"flex", gap:4, background:"#1a2540", borderRadius:10, padding:3, width:"fit-content" }}>
           {[["tous","Tout voir"],["passages","Passages ("+nbPassages+")"],["deiv","DEIV ("+nbDeiv+")"],["reinterventions","Reinterventions ("+nbReinv+")"]].map(([id,label]) => (
             <button key={id} onClick={()=>setTab(id)}
-              style={{ background:tab===id?(id==="deiv"?"#f59e0b":"#1d4ed8"):"transparent", color:tab===id?"#fff":"#7a90aa", border:"none", borderRadius:7, padding:"6px 14px", fontSize:12, fontWeight:600, cursor:"pointer", fontFamily:"inherit" }}>
+              style={{ background:tab===id?(id==="deiv"?"#f59e0b":"#db2777"):"transparent", color:tab===id?"#fff":"#7a90aa", border:"none", borderRadius:7, padding:"6px 14px", fontSize:12, fontWeight:600, cursor:"pointer", fontFamily:"inherit" }}>
               {label}
             </button>
           ))}
@@ -1520,7 +1520,7 @@ function Interventions({ reinterventions, setReinterventions, passagesGlobaux, s
                           <div style={{ fontSize:14, fontWeight:700, color:"#f1f5f9" }}>
                             {p.type==="Insectes volants" ? "Passage DEIV" : "Contrôle périodique"}
                           </div>
-                          <span style={{ fontSize:10, fontWeight:700, background:p.type==="Insectes volants"?"#f59e0b22":"#3b82f622", color:p.type==="Insectes volants"?"#f59e0b":"#3b82f6", border:"1px solid "+(p.type==="Insectes volants"?"#f59e0b44":"#3b82f644"), borderRadius:10, padding:"1px 8px" }}>
+                          <span style={{ fontSize:10, fontWeight:700, background:p.type==="Insectes volants"?"#f59e0b22":"#ec489922", color:p.type==="Insectes volants"?"#f59e0b":"#ec4899", border:"1px solid "+(p.type==="Insectes volants"?"#f59e0b44":"#ec489944"), borderRadius:10, padding:"1px 8px" }}>
                             {p.type==="Insectes volants" ? "DEIV" : "PASSAGE"}
                           </span>
                           {p.technicien&&<span style={{fontSize:11,color:"#7a90aa"}}>{p.technicien}</span>}
@@ -1553,7 +1553,7 @@ function Interventions({ reinterventions, setReinterventions, passagesGlobaux, s
                       <div style={{ marginTop:14, paddingTop:14, borderTop:"1px solid #3d5270" }}>
                         {p.type==="Insectes volants" ? (()=>{
                           const CATS = ["Moucherons","Mouches","Moustiques","Hyménoptères","Lépidoptères","Coléoptères","Punaises","Tipules"];
-                          const CAT_COLORS = {"Moucherons":"#f59e0b","Mouches":"#ef4444","Moustiques":"#3b82f6","Hyménoptères":"#22c55e","Lépidoptères":"#8b5cf6","Coléoptères":"#06b6d4","Punaises":"#f97316","Tipules":"#7a90aa"};
+                          const CAT_COLORS = {"Moucherons":"#f59e0b","Mouches":"#ef4444","Moustiques":"#ec4899","Hyménoptères":"#22c55e","Lépidoptères":"#8b5cf6","Coléoptères":"#06b6d4","Punaises":"#f97316","Tipules":"#7a90aa"};
                           const totParCat = {};
                           CATS.forEach(cat=>{ totParCat[cat]=0; });
                           Object.values(saisiesP).forEach(s=>{ if(!s)return; CATS.forEach(cat=>{ totParCat[cat]+=(parseInt(s["iv_"+cat]||0)); }); });
@@ -1640,7 +1640,7 @@ function Interventions({ reinterventions, setReinterventions, passagesGlobaux, s
                       <div style={{ fontSize:12, color:"#7a90aa" }}>Postes : {r.poste}</div>
                     </div>
                     {(r.actions||[]).slice(0,2).map(a => (
-                      <span key={a} style={{ fontSize:10, fontWeight:600, background:"#1d4ed822", color:"#3b82f6", border:"1px solid #3b82f644", borderRadius:4, padding:"2px 7px" }}>{a}</span>
+                      <span key={a} style={{ fontSize:10, fontWeight:600, background:"#db277722", color:"#ec4899", border:"1px solid #ec489944", borderRadius:4, padding:"2px 7px" }}>{a}</span>
                     ))}
                     {(r.actions||[]).length > 2 && <span style={{ fontSize:10, color:"#7a90aa" }}>+{r.actions.length-2}</span>}
                     <Badge label={r.statut||"En cours"} color={SREINV[r.statut]||"#7a90aa"}/>
@@ -1648,7 +1648,7 @@ function Interventions({ reinterventions, setReinterventions, passagesGlobaux, s
                       style={{ background:"#ef444422", color:"#ef4444", border:"1px solid #ef444444", borderRadius:7, padding:"3px 9px", fontSize:11, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>✕</button>
                   </div>
                   {isOpen && r.observations && (
-                    <div style={{ marginTop:12, background:"#1a3360", border:"1px solid #1d4ed844", borderRadius:8, padding:"10px 14px", fontSize:13, color:"#93c5fd" }}>
+                    <div style={{ marginTop:12, background:"#1a3360", border:"1px solid #db277744", borderRadius:8, padding:"10px 14px", fontSize:13, color:"#f9a8d4" }}>
                       {r.observations}
                     </div>
                   )}
@@ -1703,7 +1703,7 @@ function Cartographie({ seuilsGlobaux }) {
 
   const RONGEURS_TYPES = ["Rongeurs"];
   const INSECTES_TYPES = ["Blattes", "Insectes volants", "Teignes", "IPS"];
-  const NUISIBLE_COLORS = { Blattes: "#ef4444", "Insectes volants": "#eab308", Teignes: "#8b5cf6", IPS: "#22c55e", Rongeurs: "#3b82f6" };
+  const NUISIBLE_COLORS = { Blattes: "#ef4444", "Insectes volants": "#eab308", Teignes: "#8b5cf6", IPS: "#22c55e", Rongeurs: "#ec4899" };
 
   useEffect(() => {
     // Charger postes
@@ -1938,7 +1938,7 @@ function Cartographie({ seuilsGlobaux }) {
               "<table><thead><tr><th>N°</th><th>Zone</th><th>Nuisible</th>"+DATES.map(d=>"<th>"+d.slice(0,5)+"</th>").join("")+"<th>Tendance</th></tr></thead><tbody>"+rows+"</tbody></table>"
             );
           }}
-            style={{ background:"#1d4ed822", color:"#3b82f6", border:"1px solid #3b82f644", borderRadius:9, padding:"9px 16px", fontSize:12, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>
+            style={{ background:"#db277722", color:"#ec4899", border:"1px solid #ec489944", borderRadius:9, padding:"9px 16px", fontSize:12, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>
             Export PDF
           </button>
           <button onClick={() => {
@@ -1953,7 +1953,7 @@ function Cartographie({ seuilsGlobaux }) {
             Export Excel
           </button>
           <div style={{ display: "flex", gap: 4, background: "#1a2540", borderRadius: 10, padding: 3 }}>
-            {[["rongeurs", "Rongeurs", "#3b82f6"], ["insectes", "Insectes", "#f59e0b"]].map(t => (
+            {[["rongeurs", "Rongeurs", "#ec4899"], ["insectes", "Insectes", "#f59e0b"]].map(t => (
               <button key={t[0]} onClick={() => { setSubtab(t[0]); setSel(null); setSearch(""); setFilterInsecte("Tous"); }}
                 style={{ background: subtab === t[0] ? t[2] : "transparent", color: subtab === t[0] ? "#fff" : "#7a90aa", border: "none", borderRadius: 7, padding: "7px 18px", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>
                 {t[1]}
@@ -2048,7 +2048,7 @@ function Cartographie({ seuilsGlobaux }) {
               <div style={{ display: "flex", gap: 6 }}>
                 {!editingConso
                   ? <button onClick={e => { e.stopPropagation(); startEditConso(displaySel); }}
-                      style={{ background: "#1d4ed822", color: "#3b82f6", border: "1px solid #3b82f644", borderRadius: 7, padding: "4px 12px", fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>Saisir</button>
+                      style={{ background: "#db277722", color: "#ec4899", border: "1px solid #ec489944", borderRadius: 7, padding: "4px 12px", fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>Saisir</button>
                   : <><button className="aads-action-btn" onClick={e => { e.stopPropagation(); saveConso(displaySel.id); }}
                         style={{ background: "#22c55e22", color: "#22c55e", border: "1px solid #22c55e44", borderRadius: 7, padding: "4px 10px", fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>Enregistrer</button>
                     <button onClick={() => setEditingConso(false)}
@@ -2087,7 +2087,7 @@ function Cartographie({ seuilsGlobaux }) {
                       const saisiesP = typeof pa.saisies==="string"?JSON.parse(pa.saisies||"{}"):pa.saisies||{};
                       const mol = saisiesP[displaySel.id]?.molecule;
                       if (!mol) return null;
-                      const molColor = mol==="Placebo"?"#3b82f6":"#8b5cf6";
+                      const molColor = mol==="Placebo"?"#ec4899":"#8b5cf6";
                       return <span style={{background:molColor+"22",color:molColor,border:"1px solid "+molColor+"44",borderRadius:4,padding:"1px 7px",fontSize:9,fontWeight:700}}>{mol}</span>;
                     })()}
                   </div>
@@ -2095,7 +2095,7 @@ function Cartographie({ seuilsGlobaux }) {
                     isInsecte ? (
                       <input type="number" min="0" placeholder="captures" value={val || ""}
                         onChange={e => setConsoEdit(prev => ({ ...prev, [d]: e.target.value }))}
-                        style={{ background: "#243352", border: "1px solid #3b82f6", borderRadius: 6, padding: "4px 8px", color: "#f1f5f9", fontSize: 13, fontFamily: "inherit", width: 80 }} />
+                        style={{ background: "#243352", border: "1px solid #ec4899", borderRadius: 6, padding: "4px 8px", color: "#f1f5f9", fontSize: 13, fontFamily: "inherit", width: 80 }} />
                     ) : isPlaceboToxique ? (
                       /* Placebo/Toxique : RAS, 25%, 50%, 75%, 100% */
                       <div style={{ display: "flex", gap: 5, flexWrap: "wrap" }}>
@@ -2173,7 +2173,7 @@ function Cartographie({ seuilsGlobaux }) {
                   "<table><thead><tr><th>Nuisible</th><th>Leger</th><th>Moyen</th><th>Eleve</th></tr></thead><tbody>" + rows + "</tbody></table>"
                 );
               }}
-                style={{ background: "#1d4ed822", color: "#3b82f6", border: "1px solid #3b82f644", borderRadius: 8, padding: "6px 12px", fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>
+                style={{ background: "#db277722", color: "#ec4899", border: "1px solid #ec489944", borderRadius: 8, padding: "6px 12px", fontSize: 11, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>
                 Export PDF
               </button>
               <button onClick={() => {
@@ -2421,10 +2421,10 @@ function MaintenanceDEIV() {
             const pctMaint = Math.round(maintenus/total*100);
             const captureCounts = {};
             postes.forEach(p => { const k = p.appat||"Non renseigne"; captureCounts[k]=(captureCounts[k]||0)+1; });
-            const captureColors = { "Glue":"#d97706","Grille":"#2563eb","Toxique":"#dc2626","Lumiere":"#7c3aed","Autre":"#64748b","Non renseigne":"#94a3b8" };
+            const captureColors = { "Glue":"#d97706","Grille":"#db2777","Toxique":"#dc2626","Lumiere":"#7c3aed","Autre":"#64748b","Non renseigne":"#94a3b8" };
             const typeCounts = {};
             postes.forEach(p => { const app=appareils[p.id]||{}; const k=app.typeAppareil||"Non renseigne"; typeCounts[k]=(typeCounts[k]||0)+1; });
-            const typeColorList = ["#2563eb","#16a34a","#d97706","#dc2626","#7c3aed","#0891b2","#ea580c","#64748b"];
+            const typeColorList = ["#db2777","#16a34a","#d97706","#dc2626","#7c3aed","#0891b2","#ea580c","#64748b"];
             const captureHtml = Object.entries(captureCounts).sort((a,b)=>b[1]-a[1]).map(([k,v])=>{
               const pct=Math.round(v/total*100); const col=captureColors[k]||"#64748b";
               return "<div style='display:inline-block;text-align:center;margin:0 6px;width:60px'><div style='font-size:11px;font-weight:700;color:"+col+"'>"+pct+"%</div><div style='width:100%;height:"+(Math.max(4,pct*0.8))+"px;background:"+col+";border-radius:3px 3px 0 0;margin-bottom:4px'></div><div style='font-size:9px;color:#6b7280'>"+k+"<br/>("+v+")</div></div>";
@@ -2435,7 +2435,7 @@ function MaintenanceDEIV() {
             }).join("");
             const kpiHtml = "<div style='margin-top:28px'><h2 style='color:#0f2864;border-bottom:2px solid #0f2864;padding-bottom:6px'>Indicateurs</h2>" +
               "<div style='display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;margin-top:16px'>" +
-              "<div style='border:1px solid #e5e7eb;border-radius:8px;padding:16px'><div style='font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;margin-bottom:8px'>Couverture maintenance</div><div style='font-size:24px;font-weight:800;color:#2563eb;margin-bottom:6px'>"+maintenus+" <span style='font-size:14px;color:#9ca3af'>/ "+total+" DEIV</span></div><div style='height:10px;background:#e5e7eb;border-radius:6px;margin-bottom:6px'><div style='height:100%;width:"+pctMaint+"%;background:"+(pctMaint===100?"#16a34a":pctMaint>50?"#2563eb":"#d97706")+";border-radius:6px'></div></div><div style='font-size:11px;font-weight:700;color:"+(pctMaint===100?"#16a34a":pctMaint>50?"#2563eb":"#d97706")+"'>"+pctMaint+"% du parc maintenu</div></div>" +
+              "<div style='border:1px solid #e5e7eb;border-radius:8px;padding:16px'><div style='font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;margin-bottom:8px'>Couverture maintenance</div><div style='font-size:24px;font-weight:800;color:#db2777;margin-bottom:6px'>"+maintenus+" <span style='font-size:14px;color:#9ca3af'>/ "+total+" DEIV</span></div><div style='height:10px;background:#e5e7eb;border-radius:6px;margin-bottom:6px'><div style='height:100%;width:"+pctMaint+"%;background:"+(pctMaint===100?"#16a34a":pctMaint>50?"#db2777":"#d97706")+";border-radius:6px'></div></div><div style='font-size:11px;font-weight:700;color:"+(pctMaint===100?"#16a34a":pctMaint>50?"#db2777":"#d97706")+"'>"+pctMaint+"% du parc maintenu</div></div>" +
               "<div style='border:1px solid #e5e7eb;border-radius:8px;padding:16px'><div style='font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;margin-bottom:12px'>Type de capture</div><div style='display:flex;align-items:flex-end;height:80px;margin-bottom:8px'>"+captureHtml+"</div></div>" +
               "<div style='border:1px solid #e5e7eb;border-radius:8px;padding:16px'><div style='font-size:11px;font-weight:700;color:#6b7280;text-transform:uppercase;margin-bottom:12px'>Type d'appareil</div>"+typeHtml+"</div>" +
               "</div></div>";
@@ -2446,7 +2446,7 @@ function MaintenanceDEIV() {
               kpiHtml
             );
           }}
-            style={{ background:"#1d4ed822", color:"#3b82f6", border:"1px solid #3b82f644", borderRadius:9, padding:"10px 18px", fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>
+            style={{ background:"#db277722", color:"#ec4899", border:"1px solid #ec489944", borderRadius:9, padding:"10px 18px", fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>
             PDF Tableau
           </button>
           <button onClick={() => {
@@ -2477,7 +2477,7 @@ function MaintenanceDEIV() {
               "<table><thead><tr><th>Date</th><th>Technicien(s)</th><th>Type</th><th>Nb appareils</th><th>DEIV verifies</th><th>Notes</th></tr></thead><tbody>" + maintRows + "</tbody></table>"
             );
           }}
-            style={{ background:"#1d4ed822", color:"#3b82f6", border:"1px solid #3b82f644", borderRadius:9, padding:"10px 18px", fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>
+            style={{ background:"#db277722", color:"#ec4899", border:"1px solid #ec489944", borderRadius:9, padding:"10px 18px", fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>
             PDF Maintenances
           </button>
           <button onClick={() => {
@@ -2497,7 +2497,7 @@ function MaintenanceDEIV() {
             Excel Maintenances
           </button>
           <button onClick={()=>setShowForm(v=>!v)}
-            style={{ background:"#1d4ed8", color:"#fff", border:"none", borderRadius:9, padding:"10px 18px", fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>
+            style={{ background:"#db2777", color:"#fff", border:"none", borderRadius:9, padding:"10px 18px", fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>
             + Nouvelle maintenance
           </button>
         </div>
@@ -2505,7 +2505,7 @@ function MaintenanceDEIV() {
 
       <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(140px,1fr))", gap:10, marginBottom:20 }}>
         <Kpi label="DEIV total" value={postes.length} color="#f59e0b"/>
-        <Kpi label="Maintenances" value={interventions.length} color="#3b82f6"/>
+        <Kpi label="Maintenances" value={interventions.length} color="#ec4899"/>
         
         <Kpi label="Avec historique" value={new Set(interventions.map(i=>i.poste)).size} color="#a78bfa"/>
       </div>
@@ -2558,7 +2558,7 @@ function MaintenanceDEIV() {
                 ["Type intervention", typesMaint, setTypesMaint, newTypeMaint, setNewTypeMaint],
               ].map(([label, list, setList, newVal, setNewVal]) => (
                 <div key={label}>
-                  <div style={{fontSize:10,color:"#3b82f6",fontWeight:700,marginBottom:6}}>{label}</div>
+                  <div style={{fontSize:10,color:"#ec4899",fontWeight:700,marginBottom:6}}>{label}</div>
                   <div style={{display:"flex",flexWrap:"wrap",gap:4,marginBottom:6}}>
                     {list.map(t=>(
                       <span key={t} style={{display:"flex",alignItems:"center",gap:3,background:"#243352",border:"1px solid #3d5270",borderRadius:5,padding:"2px 6px",fontSize:10,color:"#f1f5f9"}}>
@@ -2595,10 +2595,10 @@ function MaintenanceDEIV() {
                     <>
                       <input value={draftApp.marque||""} onChange={e=>setDraftApp(prev=>({...prev,marque:e.target.value}))}
                         placeholder="ex: Insect-O-Cutor"
-                        style={{ background:"#243352", border:"1px solid #3b82f6", borderRadius:5, padding:"3px 6px", color:"#f1f5f9", fontSize:11, fontFamily:"inherit", width:"100%" }}/>
+                        style={{ background:"#243352", border:"1px solid #ec4899", borderRadius:5, padding:"3px 6px", color:"#f1f5f9", fontSize:11, fontFamily:"inherit", width:"100%" }}/>
                       <div>
                         <select value={draftApp.typeAppareil||"Fly-killer colle"} onChange={e=>setDraftApp(prev=>({...prev,typeAppareil:e.target.value}))}
-                          style={{ background:"#243352", border:"1px solid #3b82f6", borderRadius:5, padding:"3px 6px", color:"#f1f5f9", fontSize:11, fontFamily:"inherit", width:"100%", marginBottom:3 }}>
+                          style={{ background:"#243352", border:"1px solid #ec4899", borderRadius:5, padding:"3px 6px", color:"#f1f5f9", fontSize:11, fontFamily:"inherit", width:"100%", marginBottom:3 }}>
                           {typesAppareil.map(t=><option key={t}>{t}</option>)}
                         </select>
                         <div style={{display:"flex",gap:3,marginBottom:3}}>
@@ -2615,17 +2615,17 @@ function MaintenanceDEIV() {
                         )}
                       </div>
                       <select value={draftApp.typeTubes||"Actinique"} onChange={e=>setDraftApp(prev=>({...prev,typeTubes:e.target.value}))}
-                        style={{ background:"#243352", border:"1px solid #3b82f6", borderRadius:5, padding:"3px 6px", color:"#f1f5f9", fontSize:11, fontFamily:"inherit" }}>
+                        style={{ background:"#243352", border:"1px solid #ec4899", borderRadius:5, padding:"3px 6px", color:"#f1f5f9", fontSize:11, fontFamily:"inherit" }}>
                         {typesTubes.map(t=><option key={t}>{t}</option>)}
                       </select>
                       <input type="number" value={draftApp.puissance||""} onChange={e=>setDraftApp(prev=>({...prev,puissance:e.target.value}))}
                         placeholder="ex: 15"
-                        style={{ background:"#243352", border:"1px solid #3b82f6", borderRadius:5, padding:"3px 6px", color:"#f1f5f9", fontSize:11, fontFamily:"inherit", width:"100%" }}/>
+                        style={{ background:"#243352", border:"1px solid #ec4899", borderRadius:5, padding:"3px 6px", color:"#f1f5f9", fontSize:11, fontFamily:"inherit", width:"100%" }}/>
                       <input type="number" value={draftApp.nbTubes||""} onChange={e=>setDraftApp(prev=>({...prev,nbTubes:e.target.value}))}
                         placeholder="ex: 2"
-                        style={{ background:"#243352", border:"1px solid #3b82f6", borderRadius:5, padding:"3px 6px", color:"#f1f5f9", fontSize:11, fontFamily:"inherit", width:"100%" }}/>
+                        style={{ background:"#243352", border:"1px solid #ec4899", borderRadius:5, padding:"3px 6px", color:"#f1f5f9", fontSize:11, fontFamily:"inherit", width:"100%" }}/>
                       <select value={draftApp.appat||""} onChange={e=>setDraftApp(prev=>({...prev,appat:e.target.value}))}
-                        style={{ background:"#243352", border:"1px solid #3b82f6", borderRadius:5, padding:"3px 6px", color:"#f1f5f9", fontSize:11, fontFamily:"inherit" }}>
+                        style={{ background:"#243352", border:"1px solid #ec4899", borderRadius:5, padding:"3px 6px", color:"#f1f5f9", fontSize:11, fontFamily:"inherit" }}>
                         <option value="">—</option>
                         <option value="Glue">Glue</option>
                         <option value="Grille">Grille</option>
@@ -2634,7 +2634,7 @@ function MaintenanceDEIV() {
                         <option value="Autre">Autre</option>
                       </select>
                       <select value={draftApp.statutFonctionnel||""} onChange={e=>setDraftApp(prev=>({...prev,statutFonctionnel:e.target.value}))}
-                        style={{ background:"#243352", border:"1px solid #3b82f6", borderRadius:5, padding:"3px 6px", color:"#f1f5f9", fontSize:11, fontFamily:"inherit" }}>
+                        style={{ background:"#243352", border:"1px solid #ec4899", borderRadius:5, padding:"3px 6px", color:"#f1f5f9", fontSize:11, fontFamily:"inherit" }}>
                         <option value="">—</option>
                         <option value="ok">✓ Fonctionne</option>
                         <option value="panne">✗ En panne</option>
@@ -2657,7 +2657,7 @@ function MaintenanceDEIV() {
                         {app.statutFonctionnel==="panne" && <span style={{display:"inline-flex",alignItems:"center",gap:4,fontSize:10,fontWeight:700,color:"#ef4444"}}><span style={{width:8,height:8,borderRadius:"50%",background:"#ef4444",display:"inline-block"}}/> Panne</span>}
                         {!app.statutFonctionnel && <span style={{fontSize:10,color:"#5a7090"}}>—</span>}
                       </div>
-                      <button onClick={()=>startEditApp(p)} style={{ background:"#1d4ed822", color:"#3b82f6", border:"1px solid #3b82f644", borderRadius:5, padding:"3px 8px", fontSize:10, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>
+                      <button onClick={()=>startEditApp(p)} style={{ background:"#db277722", color:"#ec4899", border:"1px solid #ec489944", borderRadius:5, padding:"3px 8px", fontSize:10, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>
                         Modifier
                       </button>
                     </>
@@ -2680,18 +2680,18 @@ function MaintenanceDEIV() {
                 {postes.map(p=>{
                   const selected = (form.poste||"").split(",").map(x=>x.trim()).includes(p.id);
                   return (
-                    <label key={p.id} style={{display:"flex",alignItems:"center",gap:5,cursor:"pointer",background:selected?"#1d4ed822":"transparent",border:"1px solid "+(selected?"#3b82f6":"#3d5270"),borderRadius:6,padding:"3px 8px"}}>
+                    <label key={p.id} style={{display:"flex",alignItems:"center",gap:5,cursor:"pointer",background:selected?"#db277722":"transparent",border:"1px solid "+(selected?"#ec4899":"#3d5270"),borderRadius:6,padding:"3px 8px"}}>
                       <input type="checkbox" checked={selected} onChange={e=>{
                         const current=(form.poste||"").split(",").map(x=>x.trim()).filter(Boolean);
                         const next = e.target.checked ? [...current,p.id] : current.filter(x=>x!==p.id);
                         setForm(f=>({...f,poste:next.join(", ")}));
-                      }} style={{accentColor:"#3b82f6"}}/>
-                      <span style={{fontSize:10,color:selected?"#3b82f6":"#94a3b8",fontWeight:selected?700:400}}>{p.id} <span style={{color:"#5a7090"}}>- {(p.zone||"").slice(0,20)}</span></span>
+                      }} style={{accentColor:"#ec4899"}}/>
+                      <span style={{fontSize:10,color:selected?"#ec4899":"#94a3b8",fontWeight:selected?700:400}}>{p.id} <span style={{color:"#5a7090"}}>- {(p.zone||"").slice(0,20)}</span></span>
                     </label>
                   );
                 })}
               </div>
-              {form.poste && <div style={{fontSize:10,color:"#3b82f6",marginTop:4}}>Sélectionnés : {form.poste}</div>}
+              {form.poste && <div style={{fontSize:10,color:"#ec4899",marginTop:4}}>Sélectionnés : {form.poste}</div>}
             </div>
             <div><label style={{ fontSize:10, color:"#7a90aa", fontWeight:600, textTransform:"uppercase", display:"block", marginBottom:3 }}>Date *</label>
               <input type="date" value={form.date} onChange={e=>setForm(p=>({...p,date:e.target.value}))} style={inp()}/></div>
@@ -2706,13 +2706,13 @@ function MaintenanceDEIV() {
                       const next=selected?current.filter(x=>x!==t):[...current,t];
                       setForm(p=>({...p,technicien:next.join(", ")}));
                     }}
-                      style={{background:selected?"#1d4ed822":"#243352",color:selected?"#3b82f6":"#7a90aa",border:"1px solid "+(selected?"#3b82f6":"#3d5270"),borderRadius:6,padding:"4px 10px",fontSize:11,fontWeight:selected?700:400,cursor:"pointer",fontFamily:"inherit"}}>
+                      style={{background:selected?"#db277722":"#243352",color:selected?"#ec4899":"#7a90aa",border:"1px solid "+(selected?"#ec4899":"#3d5270"),borderRadius:6,padding:"4px 10px",fontSize:11,fontWeight:selected?700:400,cursor:"pointer",fontFamily:"inherit"}}>
                       {t.split(" ")[0]}
                     </button>
                   );
                 })}
               </div>
-              {form.technicien && <div style={{fontSize:10,color:"#3b82f6",marginTop:4}}>{form.technicien}</div>}
+              {form.technicien && <div style={{fontSize:10,color:"#ec4899",marginTop:4}}>{form.technicien}</div>}
             </div>
             <div><label style={{ fontSize:10, color:"#7a90aa", fontWeight:600, textTransform:"uppercase", display:"block", marginBottom:3 }}>Type d'intervention</label>
               <select value={form.type} onChange={e=>setForm(p=>({...p,type:e.target.value}))} style={inp()}>
@@ -2731,7 +2731,7 @@ function MaintenanceDEIV() {
           <div style={{ marginBottom:10 }}><label style={{ fontSize:10, color:"#7a90aa", fontWeight:600, textTransform:"uppercase", display:"block", marginBottom:3 }}>Notes</label>
             <textarea rows={2} value={form.notes} onChange={e=>setForm(p=>({...p,notes:e.target.value}))} style={{ ...inp(), resize:"vertical" }}/></div>
           <div style={{ display:"flex", gap:8 }}>
-            <button onClick={addIntervention} style={{ background:"#1d4ed8", color:"#fff", border:"none", borderRadius:8, padding:"8px 16px", fontSize:12, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>Enregistrer</button>
+            <button onClick={addIntervention} style={{ background:"#db2777", color:"#fff", border:"none", borderRadius:8, padding:"8px 16px", fontSize:12, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>Enregistrer</button>
             <button onClick={()=>setShowForm(false)} style={{ background:"transparent", color:"#7a90aa", border:"1px solid #3d5270", borderRadius:8, padding:"8px 16px", fontSize:12, cursor:"pointer", fontFamily:"inherit" }}>Annuler</button>
           </div>
         </Card>
@@ -2784,7 +2784,7 @@ function MaintenanceDEIV() {
                     {!app.statutFonctionnel && <span style={{fontSize:10,color:"#5a7090"}}>—</span>}
                   </div>
                   <div style={{ fontSize:11, color:last?"#22c55e":"#5a7090" }}>{last?last.date:"—"}</div>
-                  <div style={{ fontSize:12, fontWeight:700, color:hist.length>0?"#3b82f6":"#5a7090" }}>{hist.length}</div>
+                  <div style={{ fontSize:12, fontWeight:700, color:hist.length>0?"#ec4899":"#5a7090" }}>{hist.length}</div>
                 </div>
                 {isS && hist.length>0 && (
                   <div style={{ padding:"10px 20px", background:"#162338", borderTop:"1px solid #3d5270" }}>
@@ -2813,22 +2813,22 @@ function MaintenanceDEIV() {
         const pctMaint = Math.round(maintenus / total * 100);
         const captureCounts = {};
         postes.forEach(p => { const k = p.appat||"Non renseigne"; captureCounts[k] = (captureCounts[k]||0)+1; });
-        const captureColors = { "Glue":"#f59e0b", "Grille":"#3b82f6", "Toxique":"#ef4444", "Lumiere":"#a78bfa", "Autre":"#64748b", "Non renseigne":"#3d5270" };
+        const captureColors = { "Glue":"#f59e0b", "Grille":"#ec4899", "Toxique":"#ef4444", "Lumiere":"#a78bfa", "Autre":"#64748b", "Non renseigne":"#3d5270" };
         const typeCounts = {};
         postes.forEach(p => { const app = appareils[p.id]||{}; const k = app.typeAppareil||"Non renseigne"; typeCounts[k] = (typeCounts[k]||0)+1; });
-        const typeColors = ["#3b82f6","#22c55e","#f59e0b","#ef4444","#a78bfa","#06b6d4","#f97316","#64748b"];
+        const typeColors = ["#ec4899","#22c55e","#f59e0b","#ef4444","#a78bfa","#06b6d4","#f97316","#64748b"];
         return (
           <div style={{display:"grid",gridTemplateColumns:"1fr 1fr 1fr",gap:16,marginTop:16}}>
             <Card style={{padding:16}}>
               <div style={{fontSize:11,fontWeight:700,color:"#7a90aa",textTransform:"uppercase",marginBottom:10}}>Couverture maintenance</div>
               <div style={{display:"flex",justifyContent:"space-between",alignItems:"baseline",marginBottom:6}}>
-                <span style={{fontSize:22,fontWeight:800,color:"#3b82f6"}}>{maintenus}</span>
+                <span style={{fontSize:22,fontWeight:800,color:"#ec4899"}}>{maintenus}</span>
                 <span style={{fontSize:13,color:"#5a7090"}}>/ {total} DEIV</span>
               </div>
               <div style={{height:10,background:"#1a2540",borderRadius:6,overflow:"hidden",marginBottom:6}}>
-                <div style={{height:"100%",width:pctMaint+"%",background:pctMaint===100?"#22c55e":pctMaint>50?"#3b82f6":"#f59e0b",borderRadius:6}}/>
+                <div style={{height:"100%",width:pctMaint+"%",background:pctMaint===100?"#22c55e":pctMaint>50?"#ec4899":"#f59e0b",borderRadius:6}}/>
               </div>
-              <div style={{fontSize:11,color:pctMaint===100?"#22c55e":pctMaint>50?"#3b82f6":"#f59e0b",fontWeight:700}}>{pctMaint}% du parc maintenu</div>
+              <div style={{fontSize:11,color:pctMaint===100?"#22c55e":pctMaint>50?"#ec4899":"#f59e0b",fontWeight:700}}>{pctMaint}% du parc maintenu</div>
               {maintenus < total && <div style={{fontSize:10,color:"#5a7090",marginTop:4}}>{total-maintenus} appareil{total-maintenus>1?"s":""} sans maintenance</div>}
             </Card>
             <Card style={{padding:16}}>
@@ -2912,7 +2912,7 @@ function Conformite() {
   function handleExport() {
     const rows = criteres.map(c => {
       const col = c.statut==="Conforme"?"green":c.statut==="Non conforme"?"red":"orange";
-      return "<tr><td style='font-weight:700;color:#1d4ed8'>" + c.ref + "</td><td>" + c.libelle + "</td><td style='font-weight:700;color:" + col + "'>" + c.statut + "</td><td>" + (c.date||"") + "</td></tr>";
+      return "<tr><td style='font-weight:700;color:#db2777'>" + c.ref + "</td><td>" + c.libelle + "</td><td style='font-weight:700;color:" + col + "'>" + c.statut + "</td><td>" + (c.date||"") + "</td></tr>";
     }).join("");
     exportHTML("Conformite IFS - " + CLIENT_CONFIG.nom,
       "<h1>Conformite IFS Food v8 - " + CLIENT_CONFIG.nom + "</h1>" +
@@ -2940,7 +2940,7 @@ function Conformite() {
             + Ajouter critere
           </button>
           <button onClick={handleExport}
-            style={{ background:"#1d4ed822", color:"#3b82f6", border:"1px solid #3b82f644", borderRadius:8, padding:"8px 14px", fontSize:12, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>
+            style={{ background:"#db277722", color:"#ec4899", border:"1px solid #ec489944", borderRadius:8, padding:"8px 14px", fontSize:12, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>
             Export PDF
           </button>
         </div>
@@ -2954,7 +2954,7 @@ function Conformite() {
           <div style={{ fontSize:28, fontWeight:900, color:pctColor }}>{pct}%</div>
         </div>
         <div style={{ background:"#1a2540", borderRadius:8, height:12, overflow:"hidden" }}>
-          <div style={{ width:pct+"%", height:"100%", background:"linear-gradient(90deg,#1d4ed8,"+pctColor+")", borderRadius:8 }}/>
+          <div style={{ width:pct+"%", height:"100%", background:"linear-gradient(90deg,#db2777,"+pctColor+")", borderRadius:8 }}/>
         </div>
         <div style={{ marginTop:8, display:"flex", gap:16, fontSize:12 }}>
           <span style={{ color:"#22c55e" }}>{conformes} conformes</span>
@@ -3010,12 +3010,12 @@ function Conformite() {
               </div>
             ) : (
               <div style={{ padding:"12px 18px", display:"grid", gridTemplateColumns:"80px 1fr 130px 110px 80px", gap:10, alignItems:"center", borderTop:"1px solid #3d5270", background:i%2===0?"transparent":"#ffffff04" }}>
-                <div style={{ fontSize:12, fontWeight:700, color:"#3b82f6", fontFamily:"monospace" }}>{c.ref}</div>
+                <div style={{ fontSize:12, fontWeight:700, color:"#ec4899", fontFamily:"monospace" }}>{c.ref}</div>
                 <div style={{ fontSize:12, color:"#e2e8f0" }}>{c.libelle}</div>
                 <Badge label={c.statut}/>
                 <div style={{ fontSize:12, color:"#7a90aa" }}>{c.date}</div>
                 <div style={{ display:"flex", gap:4 }}>
-                  <button onClick={()=>startEdit(c)} style={{ background:"#1d4ed822", color:"#3b82f6", border:"1px solid #3b82f644", borderRadius:5, padding:"2px 7px", fontSize:10, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>Edit</button>
+                  <button onClick={()=>startEdit(c)} style={{ background:"#db277722", color:"#ec4899", border:"1px solid #ec489944", borderRadius:5, padding:"2px 7px", fontSize:10, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>Edit</button>
                   <button onClick={()=>deleteCritere(c.ref)} style={{ background:"#ef444422", color:"#ef4444", border:"1px solid #ef444433", borderRadius:5, padding:"2px 6px", fontSize:10, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>X</button>
                 </div>
               </div>
@@ -3114,7 +3114,7 @@ function ChartExportBtn({ onClick }) {
   }
   return (
     <button onClick={handleClick} title="Exporter ce graphique en PDF"
-      style={{ background:"#1d4ed822", color:"#3b82f6", border:"1px solid #3b82f644", borderRadius:6, padding:"4px 10px", fontSize:10, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>
+      style={{ background:"#db277722", color:"#ec4899", border:"1px solid #ec489944", borderRadius:6, padding:"4px 10px", fontSize:10, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>
       ↓ PDF
     </button>
   );
@@ -3229,7 +3229,7 @@ function PieChart({ data, title, subtitle, chartKey, filtersJsx }) {
     {collapsed && (
       <div onClick={()=>setCollapsed(false)} style={{background:"#243352",border:"1px solid #3d5270",borderRadius:10,padding:"10px 16px",marginBottom:16,cursor:"pointer",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
         <span style={{fontSize:12,color:"#94a3b8"}}>{title} - masqué</span>
-        <span style={{fontSize:11,color:"#3b82f6",fontWeight:700}}>+ Afficher</span>
+        <span style={{fontSize:11,color:"#ec4899",fontWeight:700}}>+ Afficher</span>
       </div>
     )}
     </>
@@ -3238,7 +3238,7 @@ function PieChart({ data, title, subtitle, chartKey, filtersJsx }) {
 
 function DeivEvolutionChart({ passages, anneeRef }) {
   const CATS = ["Moucherons","Mouches","Moustiques","Hyménoptères","Lépidoptères","Coléoptères","Punaises","Tipules"];
-  const CAT_COLORS = {"Moucherons":"#f59e0b","Mouches":"#ef4444","Moustiques":"#3b82f6","Hyménoptères":"#22c55e","Lépidoptères":"#8b5cf6","Coléoptères":"#06b6d4","Punaises":"#f97316","Tipules":"#7a90aa"};
+  const CAT_COLORS = {"Moucherons":"#f59e0b","Mouches":"#ef4444","Moustiques":"#ec4899","Hyménoptères":"#22c55e","Lépidoptères":"#8b5cf6","Coléoptères":"#06b6d4","Punaises":"#f97316","Tipules":"#7a90aa"};
   const pd = d=>{const p=(d||"").split("/");return p.length===3?new Date(p[2]+"-"+p[1]+"-"+p[0]):new Date(0);};
   const byMois={};
   passages.forEach(passage=>{
@@ -3324,9 +3324,9 @@ function ReinterPassagesChart({ passages, reinterventions }) {
           </select>
         </div>
         <div style={{display:"flex",gap:10,alignItems:"center"}}>
-          {[["#3b82f6",totalP,"Passages"],["#ef4444",totalR,"Reinter."],[(tauxR>20?"#ef4444":tauxR>10?"#f59e0b":"#22c55e"),tauxR+"%","Taux reinter."]].map(([c,v,l])=>(<div key={l} style={{textAlign:"center",background:"#243352",borderRadius:8,padding:"5px 12px"}}><div style={{fontSize:16,fontWeight:900,color:c}}>{v}</div><div style={{fontSize:9,color:"#7a90aa"}}>{l}</div></div>))}
+          {[["#ec4899",totalP,"Passages"],["#ef4444",totalR,"Reinter."],[(tauxR>20?"#ef4444":tauxR>10?"#f59e0b":"#22c55e"),tauxR+"%","Taux reinter."]].map(([c,v,l])=>(<div key={l} style={{textAlign:"center",background:"#243352",borderRadius:8,padding:"5px 12px"}}><div style={{fontSize:16,fontWeight:900,color:c}}>{v}</div><div style={{fontSize:9,color:"#7a90aa"}}>{l}</div></div>))}
           <ChartExportBtn onClick={(svgString)=>{
-            const rows = moisDispo.map(m=>"<tr><td style='padding:5px 8px;border:1px solid #e5e7eb'>"+MOIS[m]+"</td><td style='padding:5px 8px;border:1px solid #e5e7eb;text-align:center;color:#3b82f6;font-weight:700'>"+byMois[m].passages+"</td><td style='padding:5px 8px;border:1px solid #e5e7eb;text-align:center;color:#ef4444;font-weight:700'>"+byMois[m].reinter+"</td></tr>").join("");
+            const rows = moisDispo.map(m=>"<tr><td style='padding:5px 8px;border:1px solid #e5e7eb'>"+MOIS[m]+"</td><td style='padding:5px 8px;border:1px solid #e5e7eb;text-align:center;color:#ec4899;font-weight:700'>"+byMois[m].passages+"</td><td style='padding:5px 8px;border:1px solid #e5e7eb;text-align:center;color:#ef4444;font-weight:700'>"+byMois[m].reinter+"</td></tr>").join("");
             const svgHtml = svgString ? "<div style='margin-bottom:20px'>"+svgString+"</div>" : "";
             exportChartCard("Passages vs Réinterventions "+anneeLabel, svgHtml+"<table style='width:100%;border-collapse:collapse'><thead><tr><th style='padding:5px 8px;border:1px solid #e5e7eb'>Mois</th><th style='padding:5px 8px;border:1px solid #e5e7eb'>Passages</th><th style='padding:5px 8px;border:1px solid #e5e7eb'>Réinterventions</th></tr></thead><tbody>"+rows+"</tbody></table><p style='margin-top:12px'>Total passages: <strong>"+totalP+"</strong> - Total reinterventions: <strong>"+totalR+"</strong> - Taux: <strong>"+tauxR+"%</strong></p>");
           }}/>
@@ -3336,7 +3336,7 @@ function ReinterPassagesChart({ passages, reinterventions }) {
         <div style={{textAlign:"center",color:"#5a7090",padding:30,fontSize:12}}>Aucun passage ni réintervention pour cette année.</div>
       ) : (<>
       <div style={{display:"flex",gap:14,marginBottom:8}}>
-        {[["#3b82f6","Passages"],["#ef4444","Réinterventions"]].map(([c,l])=>(<div key={l} style={{display:"flex",alignItems:"center",gap:4}}><span style={{width:12,height:12,background:c,borderRadius:2,display:"inline-block"}}/><span style={{fontSize:10,color:"#7a90aa"}}>{l}</span></div>))}
+        {[["#ec4899","Passages"],["#ef4444","Réinterventions"]].map(([c,l])=>(<div key={l} style={{display:"flex",alignItems:"center",gap:4}}><span style={{width:12,height:12,background:c,borderRadius:2,display:"inline-block"}}/><span style={{fontSize:10,color:"#7a90aa"}}>{l}</span></div>))}
       </div>
       <div style={{overflowX:"auto"}}>
         <svg viewBox={"0 0 "+W+" "+H} style={{width:"100%",maxWidth:W,display:"block"}}>
@@ -3345,7 +3345,7 @@ function ReinterPassagesChart({ passages, reinterventions }) {
             const x=PAD+(i+0.5)*((W-PAD*2)/moisDispo.length);
             const p=byMois[m].passages,r=byMois[m].reinter;
             const bhP=(p/maxVal)*(H-PAD*2),bhR=(r/maxVal)*(H-PAD*2);
-            return(<g key={m}><rect x={x-bw-1} y={H-PAD-bhP} width={bw} height={Math.max(bhP,0)} fill="#3b82f6" rx="2"/>{p>0&&<text x={x-bw/2-1} y={H-PAD-bhP-4} fontSize="8" fill="#3b82f6" textAnchor="middle">{p}</text>}<rect x={x+1} y={H-PAD-bhR} width={bw} height={Math.max(bhR,0)} fill="#ef4444" rx="2"/>{r>0&&<text x={x+bw/2+1} y={H-PAD-bhR-4} fontSize="8" fill="#ef4444" textAnchor="middle">{r}</text>}<text x={x} y={H-8} fontSize="9" fill="#94a3b8" textAnchor="middle">{MOIS[m]}</text></g>);
+            return(<g key={m}><rect x={x-bw-1} y={H-PAD-bhP} width={bw} height={Math.max(bhP,0)} fill="#ec4899" rx="2"/>{p>0&&<text x={x-bw/2-1} y={H-PAD-bhP-4} fontSize="8" fill="#ec4899" textAnchor="middle">{p}</text>}<rect x={x+1} y={H-PAD-bhR} width={bw} height={Math.max(bhR,0)} fill="#ef4444" rx="2"/>{r>0&&<text x={x+bw/2+1} y={H-PAD-bhR-4} fontSize="8" fill="#ef4444" textAnchor="middle">{r}</text>}<text x={x} y={H-8} fontSize="9" fill="#94a3b8" textAnchor="middle">{MOIS[m]}</text></g>);
           })}
         </svg>
       </div>
@@ -3355,7 +3355,7 @@ function ReinterPassagesChart({ passages, reinterventions }) {
 }
 
 function Top10PostesChart({ passages, postes }) {
-  const SCOL={"Rongeurs":"#3b82f6","Insectes volants":"#eab308","Blattes":"#ef4444","Teignes":"#8b5cf6","IPS":"#22c55e"};
+  const SCOL={"Rongeurs":"#ec4899","Insectes volants":"#eab308","Blattes":"#ef4444","Teignes":"#8b5cf6","IPS":"#22c55e"};
   const [hiddenList, setHiddenList] = useState(() => {
     try { const saved = window.localStorage && window.localStorage.getItem("aads_chart_Top10_hiddenList"); return saved ? JSON.parse(saved) : []; } catch(e) { return []; }
   });
@@ -3534,15 +3534,15 @@ function PassagesParAnneeChart({ passages, reinterventions }) {
       const hr = (byAnnee[y].reinter/maxVal2)*(H2-PAD2*1.5);
       const yp = H2-PAD2-hp;
       const yr = yp-hr;
-      return "<rect x='"+(x-bw2)+"' y='"+yp+"' width='"+bw2+"' height='"+hp+"' fill='#3b82f6' rx='2'/>"
+      return "<rect x='"+(x-bw2)+"' y='"+yp+"' width='"+bw2+"' height='"+hp+"' fill='#ec4899' rx='2'/>"
         +(byAnnee[y].reinter>0?"<rect x='"+(x-bw2)+"' y='"+yr+"' width='"+bw2+"' height='"+hr+"' fill='#ef4444' rx='2'/>":"")
         +"<text x='"+x+"' y='"+(H2-PAD2/3)+"' font-size='10' fill='#374151' text-anchor='middle' font-weight='bold'>"+y+"</text>"
-        +"<text x='"+(x-bw2/2)+"' y='"+(yp-3)+"' font-size='9' fill='#3b82f6' text-anchor='middle'>"+byAnnee[y].passages+"</text>";
+        +"<text x='"+(x-bw2/2)+"' y='"+(yp-3)+"' font-size='9' fill='#ec4899' text-anchor='middle'>"+byAnnee[y].passages+"</text>";
     }).join("");
     const gridSvg = [0,25,50,75,100].map(pct=>{ const v=Math.round(maxVal2*pct/100); const y=yVal2(v); return "<line x1='"+PAD2+"' x2='"+(W2-PAD2)+"' y1='"+y+"' y2='"+y+"' stroke='#e5e7eb' stroke-width='1'/><text x='"+(PAD2-4)+"' y='"+(y+4)+"' font-size='9' fill='#94a3b8' text-anchor='end'>"+v+"</text>"; }).join("");
-    const legendSvg = "<rect x='"+PAD2+"' y='8' width='12' height='12' fill='#3b82f6' rx='2'/><text x='"+(PAD2+16)+"' y='19' font-size='10' fill='#374151'>Passages</text><rect x='"+(PAD2+80)+"' y='8' width='12' height='12' fill='#ef4444' rx='2'/><text x='"+(PAD2+96)+"' y='19' font-size='10' fill='#374151'>Réinterventions</text>";
+    const legendSvg = "<rect x='"+PAD2+"' y='8' width='12' height='12' fill='#ec4899' rx='2'/><text x='"+(PAD2+16)+"' y='19' font-size='10' fill='#374151'>Passages</text><rect x='"+(PAD2+80)+"' y='8' width='12' height='12' fill='#ef4444' rx='2'/><text x='"+(PAD2+96)+"' y='19' font-size='10' fill='#374151'>Réinterventions</text>";
     const svgChart = "<svg width='"+W2+"' height='"+H2+"' xmlns='http://www.w3.org/2000/svg' style='background:#f9fafb;border-radius:8px;border:1px solid #e5e7eb'>"+gridSvg+barsSvg+legendSvg+"</svg>";
-    const rows = years.map(y=>"<tr><td style='padding:5px 8px;border:1px solid #e5e7eb;font-weight:700'>"+y+"</td><td style='padding:5px 8px;border:1px solid #e5e7eb;text-align:center;color:#3b82f6;font-weight:700'>"+byAnnee[y].passages+"</td><td style='padding:5px 8px;border:1px solid #e5e7eb;text-align:center;color:#ef4444;font-weight:700'>"+byAnnee[y].reinter+"</td><td style='padding:5px 8px;border:1px solid #e5e7eb;text-align:center'>"+(byAnnee[y].passages+byAnnee[y].reinter)+"</td></tr>").join("");
+    const rows = years.map(y=>"<tr><td style='padding:5px 8px;border:1px solid #e5e7eb;font-weight:700'>"+y+"</td><td style='padding:5px 8px;border:1px solid #e5e7eb;text-align:center;color:#ec4899;font-weight:700'>"+byAnnee[y].passages+"</td><td style='padding:5px 8px;border:1px solid #e5e7eb;text-align:center;color:#ef4444;font-weight:700'>"+byAnnee[y].reinter+"</td><td style='padding:5px 8px;border:1px solid #e5e7eb;text-align:center'>"+(byAnnee[y].passages+byAnnee[y].reinter)+"</td></tr>").join("");
     exportChartCard("Passages par année", svgChart+"<table style='width:100%;border-collapse:collapse;margin-top:14px'><thead><tr><th style='padding:5px 8px;border:1px solid #e5e7eb'>Annee</th><th style='padding:5px 8px;border:1px solid #e5e7eb'>Passages</th><th style='padding:5px 8px;border:1px solid #e5e7eb'>Réinterventions</th><th style='padding:5px 8px;border:1px solid #e5e7eb'>Total</th></tr></thead><tbody>"+rows+"</tbody></table>");
   }
 
@@ -3550,7 +3550,7 @@ function PassagesParAnneeChart({ passages, reinterventions }) {
     <div style={{textAlign:"center",color:"#5a7090",padding:30,fontSize:12}}>Aucune donnee disponible.</div>
   ) : (
     <>
-    <div style={{display:"flex",gap:14,marginBottom:8}}>{[["#3b82f6","Passages"],["#ef4444","Réinterventions"]].map(([c,l])=>(<div key={l} style={{display:"flex",alignItems:"center",gap:4}}><span style={{width:12,height:12,background:c,borderRadius:2,display:"inline-block"}}/><span style={{fontSize:10,color:"#7a90aa"}}>{l}</span></div>))}</div>
+    <div style={{display:"flex",gap:14,marginBottom:8}}>{[["#ec4899","Passages"],["#ef4444","Réinterventions"]].map(([c,l])=>(<div key={l} style={{display:"flex",alignItems:"center",gap:4}}><span style={{width:12,height:12,background:c,borderRadius:2,display:"inline-block"}}/><span style={{fontSize:10,color:"#7a90aa"}}>{l}</span></div>))}</div>
     <div style={{overflowX:"auto"}}>
       <svg viewBox={"0 0 "+W+" "+H} style={{width:"100%",maxWidth:W,display:"block"}}>
         {[0,25,50,75,100].map(pct=>{const v=Math.round(maxVal*pct/100);const y=H-PAD-(pct/100)*(H-PAD*2);return(<g key={pct}><line x1={PAD} x2={W-PAD} y1={y} y2={y} stroke="#2d3f62" strokeWidth="1"/><text x={PAD-4} y={y+4} fontSize="9" fill="#5a7090" textAnchor="end">{v}</text></g>);})}
@@ -3558,7 +3558,7 @@ function PassagesParAnneeChart({ passages, reinterventions }) {
           const x=PAD+(i+0.5)*((W-PAD*2)/years.length);
           const p=byAnnee[y].passages,r=byAnnee[y].reinter,tot=p+r;
           const bhP=(p/maxVal)*(H-PAD*2),bhR=(r/maxVal)*(H-PAD*2);
-          return(<g key={y}><rect x={x-bw-2} y={H-PAD-bhP} width={bw} height={Math.max(bhP,0)} fill="#3b82f6" rx="2"/>{p>0&&<text x={x-bw/2-2} y={H-PAD-bhP-5} fontSize="9" fill="#3b82f6" textAnchor="middle">{p}</text>}<rect x={x+2} y={H-PAD-bhR} width={bw} height={Math.max(bhR,0)} fill="#ef4444" rx="2"/>{r>0&&<text x={x+bw/2+2} y={H-PAD-bhR-5} fontSize="9" fill="#ef4444" textAnchor="middle">{r}</text>}<text x={x} y={H-8} fontSize="10" fill="#94a3b8" textAnchor="middle" fontWeight="700">{y}</text><text x={x} y={H-PAD-Math.max(bhP,bhR)-14} fontSize="9" fill="#7a90aa" textAnchor="middle">{tot}</text></g>);
+          return(<g key={y}><rect x={x-bw-2} y={H-PAD-bhP} width={bw} height={Math.max(bhP,0)} fill="#ec4899" rx="2"/>{p>0&&<text x={x-bw/2-2} y={H-PAD-bhP-5} fontSize="9" fill="#ec4899" textAnchor="middle">{p}</text>}<rect x={x+2} y={H-PAD-bhR} width={bw} height={Math.max(bhR,0)} fill="#ef4444" rx="2"/>{r>0&&<text x={x+bw/2+2} y={H-PAD-bhR-5} fontSize="9" fill="#ef4444" textAnchor="middle">{r}</text>}<text x={x} y={H-8} fontSize="10" fill="#94a3b8" textAnchor="middle" fontWeight="700">{y}</text><text x={x} y={H-PAD-Math.max(bhP,bhR)-14} fontSize="9" fill="#7a90aa" textAnchor="middle">{tot}</text></g>);
         })}
       </svg>
     </div>
@@ -3606,7 +3606,7 @@ function PassagesParAnneeChart({ passages, reinterventions }) {
     {collapsed && (
       <div onClick={()=>setCollapsed(false)} style={{background:"#243352",border:"1px solid #3d5270",borderRadius:10,padding:"10px 16px",marginBottom:16,cursor:"pointer",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
         <span style={{fontSize:12,color:"#94a3b8"}}>Passages par année - masqué</span>
-        <span style={{fontSize:11,color:"#3b82f6",fontWeight:700}}>+ Afficher</span>
+        <span style={{fontSize:11,color:"#ec4899",fontWeight:700}}>+ Afficher</span>
       </div>
     )}
     </>
@@ -3615,7 +3615,7 @@ function PassagesParAnneeChart({ passages, reinterventions }) {
 
 function PlanActionsPieChart({ actions }) {
   const STATUTS=["En cours","Planifiee","Résolue","Vigilance"];
-  const SCOL={"En cours":"#f59e0b","Planifiee":"#3b82f6","Résolue":"#22c55e","Vigilance":"#ef4444"};
+  const SCOL={"En cours":"#f59e0b","Planifiee":"#ec4899","Résolue":"#22c55e","Vigilance":"#ef4444"};
   const [filterAnnee, setFilterAnnee] = usePersistedValue("PlanActionsPie_filterAnnee", anneeDefaut(actions, ["date_detection","dateDetection"]));
   function anneeDe(a){ const det=a.date_detection||a.dateDetection||""; if(!det) return null; const parts=String(det).split("/"); const y = parts.length===3?parseInt(parts[2]):new Date(det).getFullYear(); return isNaN(y)?null:y; }
   const annees=[...new Set((actions||[]).map(anneeDe).filter(Boolean))].sort((a,b)=>a-b);
@@ -3762,7 +3762,7 @@ function TauxActiviteChart({ passages, postes }) {
   const passagesFiltres = filterPassagesByPeriode(passages);
   const stats = passagesFiltres.map(getStats);
 
-  const ANNEE_COLORS = ["#3b82f6","#22c55e","#f59e0b","#ef4444","#8b5cf6","#06b6d4"];
+  const ANNEE_COLORS = ["#ec4899","#22c55e","#f59e0b","#ef4444","#8b5cf6","#06b6d4"];
 
   // Regroupement par mois : plusieurs passages dans le meme mois sont moyennes
   function statsParMois(list) {
@@ -3862,7 +3862,7 @@ function TauxActiviteChart({ passages, postes }) {
                 <div style={{display:"flex",gap:4}}>
                   {[["tous","Tous"],["RE","Exterieurs"],["RI","Interieurs"]].map(([id,label])=>(
                     <button key={id} onClick={()=>setTypeFilter(id)}
-                      style={{background:typeFilter===id?"#1d4ed8":"#243352",color:typeFilter===id?"#fff":"#94a3b8",border:"1px solid "+(typeFilter===id?"#3b82f6":"#3d5270"),borderRadius:6,padding:"6px 12px",fontSize:11,fontWeight:typeFilter===id?700:500,cursor:"pointer",fontFamily:"inherit"}}>
+                      style={{background:typeFilter===id?"#db2777":"#243352",color:typeFilter===id?"#fff":"#94a3b8",border:"1px solid "+(typeFilter===id?"#ec4899":"#3d5270"),borderRadius:6,padding:"6px 12px",fontSize:11,fontWeight:typeFilter===id?700:500,cursor:"pointer",fontFamily:"inherit"}}>
                       {label}
                     </button>
                   ))}
@@ -3874,7 +3874,7 @@ function TauxActiviteChart({ passages, postes }) {
                   {annees.map(a=>{
                     const isSel = selectedAnnees.includes(a);
                     return (<button key={a} onClick={()=>setSelectedAnnees(prev=>prev.includes(a)?prev.filter(x=>x!==a):[...prev,a])}
-                      style={{background:isSel?"#1d4ed8":"#243352",color:isSel?"#fff":"#7a90aa",border:"1px solid "+(isSel?"#3b82f6":"#3d5270"),borderRadius:6,padding:"6px 10px",fontSize:11,fontWeight:isSel?700:400,cursor:"pointer",fontFamily:"inherit"}}>{a}</button>);
+                      style={{background:isSel?"#db2777":"#243352",color:isSel?"#fff":"#7a90aa",border:"1px solid "+(isSel?"#ec4899":"#3d5270"),borderRadius:6,padding:"6px 10px",fontSize:11,fontWeight:isSel?700:400,cursor:"pointer",fontFamily:"inherit"}}>{a}</button>);
                   })}
                   {selectedAnnees.length>0&&<button onClick={()=>setSelectedAnnees([])} style={{background:"transparent",color:"#ef4444",border:"1px solid #ef444433",borderRadius:6,padding:"6px 8px",fontSize:10,cursor:"pointer",fontFamily:"inherit"}}>x</button>}
                 </div>
@@ -3938,7 +3938,7 @@ function TauxActiviteChart({ passages, postes }) {
                       {sa.stats.map((s,i)=>(<g key={i}><circle cx={xMois(s.mois)} cy={yTaux(s.tauxActivite)} r="4" fill={sa.color} stroke="#1a2540" strokeWidth="2"/><text x={xMois(s.mois)} y={yTaux(s.tauxActivite)-9} fontSize="8" fill={sa.color} textAnchor="middle">{s.tauxActivite}%</text></g>))}
                     </g>);
                   }) : (<g>
-                    {stats.length>1&&<polyline points={stats.map((s,i)=>xPos(i)+","+yTaux(s.tauxActivite)).join(" ")} fill="none" stroke="#3b82f6" strokeWidth="2.5" strokeLinejoin="round"/>}
+                    {stats.length>1&&<polyline points={stats.map((s,i)=>xPos(i)+","+yTaux(s.tauxActivite)).join(" ")} fill="none" stroke="#ec4899" strokeWidth="2.5" strokeLinejoin="round"/>}
                     {stats.map((s,i)=>(<g key={i}><circle cx={xPos(i)} cy={yTaux(s.tauxActivite)} r="5" fill={s.tauxActivite>=seuils.critique?"#ef4444":s.tauxActivite>=seuils.vigilance?"#f59e0b":"#22c55e"} stroke="#1a2540" strokeWidth="2"/><text x={xPos(i)} y={yTaux(s.tauxActivite)-10} fontSize="9" fill="#94a3b8" textAnchor="middle">{s.tauxActivite}%</text><text x={xPos(i)} y={H-8} fontSize="8" fill="#5a7090" textAnchor="middle" transform={"rotate(-30 "+xPos(i)+" "+(H-8)+")"}>{(s.date||"").slice(0,5)}</text></g>))}
                   </g>)}
                 </svg>
@@ -3978,7 +3978,7 @@ function TauxActiviteChart({ passages, postes }) {
           <div style={{display:"flex",gap:4}}>
             {[["tous","Tous"],["RE","Exterieurs"],["RI","Interieurs"]].map(([id,label])=>(
               <button key={id} onClick={()=>setTypeFilter(id)}
-                style={{background:typeFilter===id?"#1d4ed8":"#243352",color:typeFilter===id?"#fff":"#94a3b8",border:"1px solid "+(typeFilter===id?"#3b82f6":"#3d5270"),borderRadius:6,padding:"6px 12px",fontSize:11,fontWeight:typeFilter===id?700:500,cursor:"pointer",fontFamily:"inherit"}}>
+                style={{background:typeFilter===id?"#db2777":"#243352",color:typeFilter===id?"#fff":"#94a3b8",border:"1px solid "+(typeFilter===id?"#ec4899":"#3d5270"),borderRadius:6,padding:"6px 12px",fontSize:11,fontWeight:typeFilter===id?700:500,cursor:"pointer",fontFamily:"inherit"}}>
                 {label}
               </button>
             ))}
@@ -3990,7 +3990,7 @@ function TauxActiviteChart({ passages, postes }) {
             {annees.map(a=>{
               const isSel = selectedAnnees.includes(a);
               return (<button key={a} onClick={()=>setSelectedAnnees(prev=>prev.includes(a)?prev.filter(x=>x!==a):[...prev,a])}
-                style={{background:isSel?"#1d4ed8":"#243352",color:isSel?"#fff":"#7a90aa",border:"1px solid "+(isSel?"#3b82f6":"#3d5270"),borderRadius:6,padding:"6px 10px",fontSize:11,fontWeight:isSel?700:400,cursor:"pointer",fontFamily:"inherit"}}>{a}</button>);
+                style={{background:isSel?"#db2777":"#243352",color:isSel?"#fff":"#7a90aa",border:"1px solid "+(isSel?"#ec4899":"#3d5270"),borderRadius:6,padding:"6px 10px",fontSize:11,fontWeight:isSel?700:400,cursor:"pointer",fontFamily:"inherit"}}>{a}</button>);
             })}
             {selectedAnnees.length>0&&<button onClick={()=>setSelectedAnnees([])} style={{background:"transparent",color:"#ef4444",border:"1px solid #ef444433",borderRadius:6,padding:"6px 8px",fontSize:10,cursor:"pointer",fontFamily:"inherit"}}>x</button>}
           </div>
@@ -4054,7 +4054,7 @@ function TauxActiviteChart({ passages, postes }) {
                 {sa.stats.map((s,i)=>(<g key={i}><circle cx={xMois(s.mois)} cy={yTaux(s.tauxActivite)} r="4" fill={sa.color} stroke="#1a2540" strokeWidth="2"/><text x={xMois(s.mois)} y={yTaux(s.tauxActivite)-9} fontSize="8" fill={sa.color} textAnchor="middle">{s.tauxActivite}%</text></g>))}
               </g>);
             }) : (<g>
-              {stats.length>1&&<polyline points={stats.map((s,i)=>xPos(i)+","+yTaux(s.tauxActivite)).join(" ")} fill="none" stroke="#3b82f6" strokeWidth="2.5" strokeLinejoin="round"/>}
+              {stats.length>1&&<polyline points={stats.map((s,i)=>xPos(i)+","+yTaux(s.tauxActivite)).join(" ")} fill="none" stroke="#ec4899" strokeWidth="2.5" strokeLinejoin="round"/>}
               {stats.map((s,i)=>(<g key={i}><circle cx={xPos(i)} cy={yTaux(s.tauxActivite)} r="5" fill={s.tauxActivite>=seuils.critique?"#ef4444":s.tauxActivite>=seuils.vigilance?"#f59e0b":"#22c55e"} stroke="#1a2540" strokeWidth="2"/><text x={xPos(i)} y={yTaux(s.tauxActivite)-10} fontSize="9" fill="#94a3b8" textAnchor="middle">{s.tauxActivite}%</text><text x={xPos(i)} y={H-8} fontSize="8" fill="#5a7090" textAnchor="middle" transform={"rotate(-30 "+xPos(i)+" "+(H-8)+")"}>{(s.date||"").slice(0,5)}</text></g>))}
             </g>)}
           </svg>
@@ -4071,7 +4071,7 @@ function TauxActiviteChart({ passages, postes }) {
     {collapsed && (
       <div onClick={()=>setCollapsed(false)} style={{background:"#243352",border:"1px solid #3d5270",borderRadius:10,padding:"10px 16px",marginBottom:16,cursor:"pointer",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
         <span style={{fontSize:12,color:"#94a3b8"}}>Taux d'activité rongeurs (%) - masqué</span>
-        <span style={{fontSize:11,color:"#3b82f6",fontWeight:700}}>+ Afficher</span>
+        <span style={{fontSize:11,color:"#ec4899",fontWeight:700}}>+ Afficher</span>
       </div>
     )}
     </>
@@ -4132,7 +4132,7 @@ function CapturesChart({ passages, postes }) {
   const passagesFiltres = filterPassagesByPeriode(passages);
   const stats = passagesFiltres.map(getStats);
 
-  const ANNEE_COLORS = ["#3b82f6","#22c55e","#f59e0b","#ef4444","#8b5cf6","#06b6d4"];
+  const ANNEE_COLORS = ["#ec4899","#22c55e","#f59e0b","#ef4444","#8b5cf6","#06b6d4"];
   // Regroupement par mois : plusieurs passages dans le meme mois sont cumules
   function statsParMois(list) {
     const parMois = {};
@@ -4199,7 +4199,7 @@ function CapturesChart({ passages, postes }) {
         <div style={{display:"flex",gap:4}}>
           {[["tous","Tous"],["RE","Exterieurs"],["RI","Interieurs"]].map(([id,label])=>(
             <button key={id} onClick={()=>setTypeFilter(id)}
-              style={{background:typeFilter===id?"#1d4ed8":"#243352",color:typeFilter===id?"#fff":"#94a3b8",border:"1px solid "+(typeFilter===id?"#3b82f6":"#3d5270"),borderRadius:6,padding:"6px 12px",fontSize:11,fontWeight:typeFilter===id?700:500,cursor:"pointer",fontFamily:"inherit"}}>
+              style={{background:typeFilter===id?"#db2777":"#243352",color:typeFilter===id?"#fff":"#94a3b8",border:"1px solid "+(typeFilter===id?"#ec4899":"#3d5270"),borderRadius:6,padding:"6px 12px",fontSize:11,fontWeight:typeFilter===id?700:500,cursor:"pointer",fontFamily:"inherit"}}>
               {label}
             </button>
           ))}
@@ -4211,7 +4211,7 @@ function CapturesChart({ passages, postes }) {
           {annees.map(a=>{
             const isSel = selectedAnnees.includes(a);
             return (<button key={a} onClick={()=>setSelectedAnnees(prev=>prev.includes(a)?prev.filter(x=>x!==a):[...prev,a])}
-              style={{background:isSel?"#1d4ed8":"#243352",color:isSel?"#fff":"#7a90aa",border:"1px solid "+(isSel?"#3b82f6":"#3d5270"),borderRadius:6,padding:"6px 10px",fontSize:11,fontWeight:isSel?700:400,cursor:"pointer",fontFamily:"inherit"}}>{a}</button>);
+              style={{background:isSel?"#db2777":"#243352",color:isSel?"#fff":"#7a90aa",border:"1px solid "+(isSel?"#ec4899":"#3d5270"),borderRadius:6,padding:"6px 10px",fontSize:11,fontWeight:isSel?700:400,cursor:"pointer",fontFamily:"inherit"}}>{a}</button>);
           })}
           {selectedAnnees.length>0&&<button onClick={()=>setSelectedAnnees([])} style={{background:"transparent",color:"#ef4444",border:"1px solid #ef444433",borderRadius:6,padding:"6px 8px",fontSize:10,cursor:"pointer",fontFamily:"inherit"}}>x</button>}
         </div>
@@ -4306,7 +4306,7 @@ function CapturesChart({ passages, postes }) {
     {collapsed && (
       <div onClick={()=>setCollapsed(false)} style={{background:"#243352",border:"1px solid #3d5270",borderRadius:10,padding:"10px 16px",marginBottom:16,cursor:"pointer",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
         <span style={{fontSize:12,color:"#94a3b8"}}>Captures rongeurs - masqué</span>
-        <span style={{fontSize:11,color:"#3b82f6",fontWeight:700}}>+ Afficher</span>
+        <span style={{fontSize:11,color:"#ec4899",fontWeight:700}}>+ Afficher</span>
       </div>
     )}
     </>
@@ -4372,7 +4372,7 @@ function PostesTouchesChart({ passages, postes }) {
   const passagesFiltres = filterPassagesByPeriode(passages);
   const stats = passagesFiltres.map(getStats);
 
-  const ANNEE_COLORS = ["#3b82f6","#22c55e","#f59e0b","#ef4444","#8b5cf6","#06b6d4"];
+  const ANNEE_COLORS = ["#ec4899","#22c55e","#f59e0b","#ef4444","#8b5cf6","#06b6d4"];
   // Regroupement par mois : plusieurs passages dans le meme mois sont moyennes
   function statsParMois(list) {
     const parMois = {};
@@ -4443,7 +4443,7 @@ function PostesTouchesChart({ passages, postes }) {
         <div style={{display:"flex",gap:4}}>
           {[["tous","Tous"],["RE","Exterieurs"],["RI","Interieurs"]].map(([id,label])=>(
             <button key={id} onClick={()=>setTypeFilter(id)}
-              style={{background:typeFilter===id?"#1d4ed8":"#243352",color:typeFilter===id?"#fff":"#94a3b8",border:"1px solid "+(typeFilter===id?"#3b82f6":"#3d5270"),borderRadius:6,padding:"6px 12px",fontSize:11,fontWeight:typeFilter===id?700:500,cursor:"pointer",fontFamily:"inherit"}}>
+              style={{background:typeFilter===id?"#db2777":"#243352",color:typeFilter===id?"#fff":"#94a3b8",border:"1px solid "+(typeFilter===id?"#ec4899":"#3d5270"),borderRadius:6,padding:"6px 12px",fontSize:11,fontWeight:typeFilter===id?700:500,cursor:"pointer",fontFamily:"inherit"}}>
               {label}
             </button>
           ))}
@@ -4455,7 +4455,7 @@ function PostesTouchesChart({ passages, postes }) {
           {annees.map(a=>{
             const isSel = selectedAnnees.includes(a);
             return (<button key={a} onClick={()=>setSelectedAnnees(prev=>prev.includes(a)?prev.filter(x=>x!==a):[...prev,a])}
-              style={{background:isSel?"#1d4ed8":"#243352",color:isSel?"#fff":"#7a90aa",border:"1px solid "+(isSel?"#3b82f6":"#3d5270"),borderRadius:6,padding:"6px 10px",fontSize:11,fontWeight:isSel?700:400,cursor:"pointer",fontFamily:"inherit"}}>{a}</button>);
+              style={{background:isSel?"#db2777":"#243352",color:isSel?"#fff":"#7a90aa",border:"1px solid "+(isSel?"#ec4899":"#3d5270"),borderRadius:6,padding:"6px 10px",fontSize:11,fontWeight:isSel?700:400,cursor:"pointer",fontFamily:"inherit"}}>{a}</button>);
           })}
           {selectedAnnees.length>0&&<button onClick={()=>setSelectedAnnees([])} style={{background:"transparent",color:"#ef4444",border:"1px solid #ef444433",borderRadius:6,padding:"6px 8px",fontSize:10,cursor:"pointer",fontFamily:"inherit"}}>x</button>}
         </div>
@@ -4568,7 +4568,7 @@ function PostesTouchesChart({ passages, postes }) {
     {collapsed && (
       <div onClick={()=>setCollapsed(false)} style={{background:"#243352",border:"1px solid #3d5270",borderRadius:10,padding:"10px 16px",marginBottom:16,cursor:"pointer",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
         <span style={{fontSize:12,color:"#94a3b8"}}>Postes rongeurs touchés - masqué</span>
-        <span style={{fontSize:11,color:"#3b82f6",fontWeight:700}}>+ Afficher</span>
+        <span style={{fontSize:11,color:"#ec4899",fontWeight:700}}>+ Afficher</span>
       </div>
     )}
     </>
@@ -4578,7 +4578,7 @@ function PostesTouchesChart({ passages, postes }) {
 
 function DeivEvolutionStandaloneChart({ passages }) {
   const CATS = ["Moucherons","Mouches","Moustiques","Hyménoptères","Lépidoptères","Coléoptères","Punaises","Tipules"];
-  const CAT_COLORS = {"Moucherons":"#f59e0b","Mouches":"#ef4444","Moustiques":"#3b82f6","Hyménoptères":"#22c55e","Lépidoptères":"#8b5cf6","Coléoptères":"#06b6d4","Punaises":"#f97316","Tipules":"#7a90aa"};
+  const CAT_COLORS = {"Moucherons":"#f59e0b","Mouches":"#ef4444","Moustiques":"#ec4899","Hyménoptères":"#22c55e","Lépidoptères":"#8b5cf6","Coléoptères":"#06b6d4","Punaises":"#f97316","Tipules":"#7a90aa"};
   const DEFAULT_SEUILS = {
     Moucherons:   { leger:350, moyen:500 },
     Mouches:      { leger:150, moyen:250 },
@@ -4663,7 +4663,7 @@ function DeivEvolutionStandaloneChart({ passages }) {
   const passagesFiltres = filterPassagesByPeriode(passagesDeiv);
   const stats = passagesFiltres.map(getStats);
 
-  const ANNEE_COLORS = ["#3b82f6","#22c55e","#f59e0b","#ef4444","#8b5cf6","#06b6d4"];
+  const ANNEE_COLORS = ["#ec4899","#22c55e","#f59e0b","#ef4444","#8b5cf6","#06b6d4"];
 
   // Valeur tracee : somme des especes selectionnees (ou total toutes especes)
   function valeurDe(s) { return catsActives.reduce((acc,c)=>acc+(s[c]||0), 0); }
@@ -4742,7 +4742,7 @@ function DeivEvolutionStandaloneChart({ passages }) {
         <label style={{fontSize:9,color:"#7a90aa",display:"block",marginBottom:3}}>Espece(s)</label>
         <div style={{display:"flex",flexWrap:"wrap",gap:4}}>
           <button onClick={()=>setSelectedCats([])}
-            style={{background:selectedCats.length===0?"#1d4ed8":"#243352",color:selectedCats.length===0?"#fff":"#94a3b8",border:"1px solid "+(selectedCats.length===0?"#3b82f6":"#3d5270"),borderRadius:6,padding:"6px 12px",fontSize:11,fontWeight:selectedCats.length===0?700:500,cursor:"pointer",fontFamily:"inherit"}}>
+            style={{background:selectedCats.length===0?"#db2777":"#243352",color:selectedCats.length===0?"#fff":"#94a3b8",border:"1px solid "+(selectedCats.length===0?"#ec4899":"#3d5270"),borderRadius:6,padding:"6px 12px",fontSize:11,fontWeight:selectedCats.length===0?700:500,cursor:"pointer",fontFamily:"inherit"}}>
             Total toutes especes
           </button>
           {CATS.map(cat=>{
@@ -4763,7 +4763,7 @@ function DeivEvolutionStandaloneChart({ passages }) {
           {annees.map(a=>{
             const isSel = selectedAnnees.includes(a);
             return (<button key={a} onClick={()=>setSelectedAnnees(prev=>prev.includes(a)?prev.filter(x=>x!==a):[...prev,a])}
-              style={{background:isSel?"#1d4ed8":"#243352",color:isSel?"#fff":"#7a90aa",border:"1px solid "+(isSel?"#3b82f6":"#3d5270"),borderRadius:6,padding:"6px 10px",fontSize:11,fontWeight:isSel?700:400,cursor:"pointer",fontFamily:"inherit"}}>{a}</button>);
+              style={{background:isSel?"#db2777":"#243352",color:isSel?"#fff":"#7a90aa",border:"1px solid "+(isSel?"#ec4899":"#3d5270"),borderRadius:6,padding:"6px 10px",fontSize:11,fontWeight:isSel?700:400,cursor:"pointer",fontFamily:"inherit"}}>{a}</button>);
           })}
           {selectedAnnees.length>0&&<button onClick={()=>setSelectedAnnees([])} style={{background:"transparent",color:"#ef4444",border:"1px solid #ef444433",borderRadius:6,padding:"6px 8px",fontSize:10,cursor:"pointer",fontFamily:"inherit"}}>x</button>}
         </div>
@@ -4881,7 +4881,7 @@ function DeivEvolutionStandaloneChart({ passages }) {
     {collapsed && (
       <div onClick={()=>setCollapsed(false)} style={{background:"#243352",border:"1px solid #3d5270",borderRadius:10,padding:"10px 16px",marginBottom:16,cursor:"pointer",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
         <span style={{fontSize:12,color:"#94a3b8"}}>Évolution insectes volants DEIV - masqué</span>
-        <span style={{fontSize:11,color:"#3b82f6",fontWeight:700}}>+ Afficher</span>
+        <span style={{fontSize:11,color:"#ec4899",fontWeight:700}}>+ Afficher</span>
       </div>
     )}
     </>
@@ -4929,7 +4929,7 @@ function DeivParAppareilChart({ passages, postes }) {
   const pd = d => { if(!d) return new Date(0); const p=(d||"").split("/"); return p.length===3?new Date(p[2]+"-"+p[1]+"-"+p[0]):new Date(d); };
   const MOIS_LABELS = ["Jan.","Fév","Mar","Avr","Mai","Jun","Jul","Aoû","Sep","Oct","Nov","Dec"];
   const CATS = ["Moucherons","Mouches","Moustiques","Hyménoptères","Lépidoptères","Coléoptères","Punaises","Tipules"];
-  const CAT_COLORS = {"Moucherons":"#f59e0b","Mouches":"#ef4444","Moustiques":"#3b82f6","Hyménoptères":"#22c55e","Lépidoptères":"#8b5cf6","Coléoptères":"#06b6d4","Punaises":"#f97316","Tipules":"#7a90aa"};
+  const CAT_COLORS = {"Moucherons":"#f59e0b","Mouches":"#ef4444","Moustiques":"#ec4899","Hyménoptères":"#22c55e","Lépidoptères":"#8b5cf6","Coléoptères":"#06b6d4","Punaises":"#f97316","Tipules":"#7a90aa"};
 
   const deivList = postes.filter(p => p.type === "DEIV").sort((a,b) => {
     const na = parseInt((a.id.match(/\d+/)||["0"])[0]);
@@ -4986,7 +4986,7 @@ function DeivParAppareilChart({ passages, postes }) {
   const passagesFiltres = filterPassagesByPeriode(passagesDeiv);
   const stats = passagesFiltres.map(getStats).filter(Boolean);
 
-  const ANNEE_COLORS = ["#f59e0b","#22c55e","#3b82f6","#ef4444","#8b5cf6","#06b6d4"];
+  const ANNEE_COLORS = ["#f59e0b","#22c55e","#ec4899","#ef4444","#8b5cf6","#06b6d4"];
   const anneesAffichees = selectedAnnees.length > 0 ? selectedAnnees.sort() : (filterAnnee !== "Toutes" ? [parseInt(filterAnnee)] : []);
   const statsParAnnee = anneesAffichees.map((annee, idx) => ({
     annee, color: ANNEE_COLORS[idx % ANNEE_COLORS.length],
@@ -5057,7 +5057,7 @@ function DeivParAppareilChart({ passages, postes }) {
         <label style={{fontSize:9,color:"#7a90aa",display:"block",marginBottom:3}}>Espèce(s)</label>
         <div style={{display:"flex",flexWrap:"wrap",gap:4}}>
           <button onClick={()=>setSelectedCats([])}
-            style={{background:selectedCats.length===0?"#1d4ed8":"#243352",color:selectedCats.length===0?"#fff":"#94a3b8",border:"1px solid "+(selectedCats.length===0?"#3b82f6":"#3d5270"),borderRadius:6,padding:"5px 10px",fontSize:10,fontWeight:selectedCats.length===0?700:400,cursor:"pointer",fontFamily:"inherit"}}>
+            style={{background:selectedCats.length===0?"#db2777":"#243352",color:selectedCats.length===0?"#fff":"#94a3b8",border:"1px solid "+(selectedCats.length===0?"#ec4899":"#3d5270"),borderRadius:6,padding:"5px 10px",fontSize:10,fontWeight:selectedCats.length===0?700:400,cursor:"pointer",fontFamily:"inherit"}}>
             Toutes espèces
           </button>
           {CATS.map(cat=>{
@@ -5078,7 +5078,7 @@ function DeivParAppareilChart({ passages, postes }) {
           {annees.map(a=>{
             const isSel = selectedAnnees.includes(a);
             return (<button key={a} onClick={()=>setSelectedAnnees(prev=>prev.includes(a)?prev.filter(x=>x!==a):[...prev,a])}
-              style={{background:isSel?"#1d4ed8":"#243352",color:isSel?"#fff":"#7a90aa",border:"1px solid "+(isSel?"#3b82f6":"#3d5270"),borderRadius:6,padding:"6px 10px",fontSize:11,fontWeight:isSel?700:400,cursor:"pointer",fontFamily:"inherit"}}>{a}</button>);
+              style={{background:isSel?"#db2777":"#243352",color:isSel?"#fff":"#7a90aa",border:"1px solid "+(isSel?"#ec4899":"#3d5270"),borderRadius:6,padding:"6px 10px",fontSize:11,fontWeight:isSel?700:400,cursor:"pointer",fontFamily:"inherit"}}>{a}</button>);
           })}
           {selectedAnnees.length>0&&<button onClick={()=>setSelectedAnnees([])} style={{background:"transparent",color:"#ef4444",border:"1px solid #ef444433",borderRadius:6,padding:"6px 8px",fontSize:10,cursor:"pointer",fontFamily:"inherit"}}>x</button>}
         </div>
@@ -5227,7 +5227,7 @@ function DeivParAppareilChart({ passages, postes }) {
     {collapsed && (
       <div onClick={()=>setCollapsed(false)} style={{background:"#243352",border:"1px solid #3d5270",borderRadius:10,padding:"10px 16px",marginBottom:16,cursor:"pointer",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
         <span style={{fontSize:12,color:"#94a3b8"}}>Évolution captures par DEIV individuel - masqué</span>
-        <span style={{fontSize:11,color:"#3b82f6",fontWeight:700}}>+ Afficher</span>
+        <span style={{fontSize:11,color:"#ec4899",fontWeight:700}}>+ Afficher</span>
       </div>
     )}
     </>
@@ -5237,7 +5237,7 @@ function DeivParAppareilChart({ passages, postes }) {
 
 function TeignesEvolutionChart({ passages, postes }) {
   const W=700, H=260, PAD=48;
-  const ANNEE_COLORS = ["#f59e0b","#3b82f6","#22c55e","#ef4444","#8b5cf6","#06b6d4","#f97316"];
+  const ANNEE_COLORS = ["#f59e0b","#ec4899","#22c55e","#ef4444","#8b5cf6","#06b6d4","#f97316"];
 
   const teignesPostes = postes.filter(p=>(p.nuisible||"").toLowerCase().includes("teigne"));
 
@@ -5258,7 +5258,7 @@ function TeignesEvolutionChart({ passages, postes }) {
 
   const postesToShow = selPostes.length > 0 ? teignesPostes.filter(p=>selPostes.includes(p.id)) : teignesPostes;
 
-  const POSTE_COLORS = ["#8b5cf6","#f59e0b","#22c55e","#ef4444","#3b82f6","#06b6d4","#f97316","#ec4899","#84cc16","#14b8a6"];
+  const POSTE_COLORS = ["#8b5cf6","#f59e0b","#22c55e","#ef4444","#ec4899","#06b6d4","#f97316","#ec4899","#84cc16","#14b8a6"];
 
   function getVal(saisies, posteId) {
     const s = saisies[posteId];
@@ -5507,7 +5507,7 @@ function ToxiquePlaceboChart({ passages, postes }) {
 
   const pd = d => { if(!d)return new Date(0); const p=(d||"").split("/"); return p.length===3?new Date(p[2]+"-"+p[1]+"-"+p[0]):new Date(d); };
   const MOIS_LABELS = ["Jan.","Fév","Mar","Avr","Mai","Jun","Jul","Aoû","Sep","Oct","Nov","Dec"];
-  const ANNEE_COLORS = ["#3b82f6","#22c55e","#f59e0b","#ef4444","#8b5cf6","#06b6d4"];
+  const ANNEE_COLORS = ["#ec4899","#22c55e","#f59e0b","#ef4444","#8b5cf6","#06b6d4"];
   const annees = [...new Set(passages.filter(p=>p.type!=="Insectes volants").map(p=>{ const d=pd(p.date); return d&&!isNaN(d)?d.getFullYear():null; }).filter(Boolean))].sort((a,b)=>a-b);
 
   const postesRongeurs = postes.filter(p=>(p.nuisible||"Rongeurs")==="Rongeurs");
@@ -5583,8 +5583,8 @@ function ToxiquePlaceboChart({ passages, postes }) {
     const lines = moisSvg + statsParAnnee.map((sa)=>buildSvgLines(sa.stats,sa.color,false)).join("") + legende;
     const svg = "<svg width='"+W+"' height='"+H+"' xmlns='http://www.w3.org/2000/svg' style='background:#f9fafb;border-radius:8px;border:1px solid #e5e7eb'>"+grid+thresh50+lines+"</svg>";
     const src = statsParAnnee.reduce((acc,sa)=>acc.concat(sa.stats.map(x=>({...x,label:x.label+" "+sa.annee}))), []);
-    const rows = src.map(s=>"<tr><td>"+s.label+"</td><td style='color:#ef4444;font-weight:700'>"+s.toxique+"</td><td style='color:#3b82f6;font-weight:700'>"+s.placebo+"</td><td style='font-weight:700'>"+Math.round(s.toxique/(s.total||1)*100)+"%</td></tr>").join("");
-    exportChartCard("Part d'utilisation du toxique par mois", svg+"<table style='width:100%;border-collapse:collapse;margin-top:16px'><thead><tr><th style='padding:6px 10px;border:1px solid #e5e7eb'>Mois</th><th style='padding:6px 10px;border:1px solid #e5e7eb;color:#ef4444'>Toxique</th><th style='padding:6px 10px;border:1px solid #e5e7eb;color:#3b82f6'>Placebo</th><th style='padding:6px 10px;border:1px solid #e5e7eb'>% Toxique</th></tr></thead><tbody>"+rows+"</tbody></table>");
+    const rows = src.map(s=>"<tr><td>"+s.label+"</td><td style='color:#ef4444;font-weight:700'>"+s.toxique+"</td><td style='color:#ec4899;font-weight:700'>"+s.placebo+"</td><td style='font-weight:700'>"+Math.round(s.toxique/(s.total||1)*100)+"%</td></tr>").join("");
+    exportChartCard("Part d'utilisation du toxique par mois", svg+"<table style='width:100%;border-collapse:collapse;margin-top:16px'><thead><tr><th style='padding:6px 10px;border:1px solid #e5e7eb'>Mois</th><th style='padding:6px 10px;border:1px solid #e5e7eb;color:#ef4444'>Toxique</th><th style='padding:6px 10px;border:1px solid #e5e7eb;color:#ec4899'>Placebo</th><th style='padding:6px 10px;border:1px solid #e5e7eb'>% Toxique</th></tr></thead><tbody>"+rows+"</tbody></table>");
   }
 
   const filtersJsx = (
@@ -5680,8 +5680,8 @@ function MoleculesChart({ passages, postes }) {
 
   const pd = d => { if(!d)return new Date(0); const p=(d||"").split("/"); return p.length===3?new Date(p[2]+"-"+p[1]+"-"+p[0]):new Date(d); };
   const annees = [...new Set(passages.filter(p=>p.type!=="Insectes volants").map(p=>{ const d=pd(p.date); return d&&!isNaN(d)?d.getFullYear():null; }).filter(Boolean))].sort((a,b)=>a-b);
-  const ANNEE_COLORS = ["#3b82f6","#22c55e","#f59e0b","#ef4444","#8b5cf6","#06b6d4"];
-  const BAR_COLORS = ["#8b5cf6","#3b82f6","#22c55e","#f59e0b","#ef4444","#06b6d4","#f97316","#ec4899","#84cc16","#14b8a6"];
+  const ANNEE_COLORS = ["#ec4899","#22c55e","#f59e0b","#ef4444","#8b5cf6","#06b6d4"];
+  const BAR_COLORS = ["#8b5cf6","#ec4899","#22c55e","#f59e0b","#ef4444","#06b6d4","#f97316","#ec4899","#84cc16","#14b8a6"];
 
   const postesRongeurs = postes.filter(p=>(p.nuisible||"Rongeurs")==="Rongeurs");
 
@@ -5880,7 +5880,7 @@ function Statistiques() {
   const stats = passagesFiltres.map(getPassageStats);
   const anneeRef = selectedAnnees.length>0 ? selectedAnnees[0] : filterAnnee!=="Toutes" ? parseInt(filterAnnee) : new Date().getFullYear();
 
-  const ANNEE_COLORS = ["#3b82f6","#22c55e","#f59e0b","#ef4444","#8b5cf6","#06b6d4"];
+  const ANNEE_COLORS = ["#ec4899","#22c55e","#f59e0b","#ef4444","#8b5cf6","#06b6d4"];
   const anneesAffichees = selectedAnnees.length > 0 ? selectedAnnees.sort() : (filterAnnee !== "Toutes" ? [parseInt(filterAnnee)] : []);
   const statsParAnnee = anneesAffichees.map((annee, idx) => {
     const passagesAnnee = filterPassagesByPeriode(passages, String(annee));
@@ -5930,7 +5930,7 @@ function Statistiques() {
           w.document.write("</body></html>");
           w.document.close();
           setTimeout(()=>w.print(),600);
-        }} style={{background:"#1d4ed822",color:"#3b82f6",border:"1px solid #3b82f644",borderRadius:9,padding:"10px 16px",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>
+        }} style={{background:"#db277722",color:"#ec4899",border:"1px solid #ec489944",borderRadius:9,padding:"10px 16px",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>
           Export PDF - Tout
         </button>
       </div>
@@ -6000,8 +6000,8 @@ function BarChartHorizontal({ data, title, chartKey, color }) {
       {sorted.map((d,i)=>(
         <div key={i} style={{display:"flex",alignItems:"center",gap:8}}>
           <div style={{fontSize:11,color:"#f1f5f9",width:160,flexShrink:0,overflow:"hidden",textOverflow:"ellipsis",whiteSpace:"nowrap"}} title={d.label}>{d.label}</div>
-          <div style={{flex:1,background:"#1a2540",borderRadius:4,height:16,overflow:"hidden"}}><div style={{background:color||"#3b82f6",width:(d.value/maxVal*100)+"%",height:"100%",borderRadius:4}}/></div>
-          <div style={{fontSize:11,fontWeight:700,color:color||"#3b82f6",width:30,textAlign:"right",flexShrink:0}}>{d.value}</div>
+          <div style={{flex:1,background:"#1a2540",borderRadius:4,height:16,overflow:"hidden"}}><div style={{background:color||"#ec4899",width:(d.value/maxVal*100)+"%",height:"100%",borderRadius:4}}/></div>
+          <div style={{fontSize:11,fontWeight:700,color:color||"#ec4899",width:30,textAlign:"right",flexShrink:0}}>{d.value}</div>
         </div>
       ))}
     </div>
@@ -6048,7 +6048,7 @@ function BarChartHorizontal({ data, title, chartKey, color }) {
     {collapsed && (
       <div onClick={()=>setCollapsed(false)} style={{background:"#243352",border:"1px solid #3d5270",borderRadius:10,padding:"10px 16px",marginBottom:16,cursor:"pointer",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
         <span style={{fontSize:12,color:"#94a3b8"}}>{title} - masqué</span>
-        <span style={{fontSize:11,color:"#3b82f6",fontWeight:700}}>+ Afficher</span>
+        <span style={{fontSize:11,color:"#ec4899",fontWeight:700}}>+ Afficher</span>
       </div>
     )}
     </>
@@ -6093,15 +6093,15 @@ function EvolutionActionsChart({ actions }) {
     const ptsResolues = moisKeys.map(function(k,i){ return xPos2(i)+","+yVal2(byMois[k].résolues); }).join(" ");
     const circles = moisKeys.map(function(k,i){
       const x=xPos2(i);
-      return "<circle cx='"+x+"' cy='"+yVal2(byMois[k].créées)+"' r='4' fill='#3b82f6'/>"+
+      return "<circle cx='"+x+"' cy='"+yVal2(byMois[k].créées)+"' r='4' fill='#ec4899'/>"+
              "<circle cx='"+x+"' cy='"+yVal2(byMois[k].résolues)+"' r='4' fill='#22c55e'/>"+
              "<text x='"+x+"' y='"+(H2-8)+"' font-size='8' fill='#6b7280' text-anchor='middle'>"+k+"</text>";
     }).join("");
     const svgChart = "<svg width='"+W2+"' height='"+H2+"' xmlns='http://www.w3.org/2000/svg' style='background:#f9fafb;border-radius:8px;border:1px solid #e5e7eb'>"+
-      (moisKeys.length>1?"<polyline points='"+ptsCreees+"' fill='none' stroke='#3b82f6' stroke-width='2'/><polyline points='"+ptsResolues+"' fill='none' stroke='#22c55e' stroke-width='2'/>":"")+
+      (moisKeys.length>1?"<polyline points='"+ptsCreees+"' fill='none' stroke='#ec4899' stroke-width='2'/><polyline points='"+ptsResolues+"' fill='none' stroke='#22c55e' stroke-width='2'/>":"")+
       circles+"</svg>";
-    const legendHtml = "<span style='display:inline-flex;align-items:center;gap:6px;margin-right:18px'><span style='width:11px;height:11px;border-radius:50%;background:#3b82f6;display:inline-block'></span>Créées</span><span style='display:inline-flex;align-items:center;gap:6px'><span style='width:11px;height:11px;border-radius:50%;background:#22c55e;display:inline-block'></span>Résolues</span>";
-    const rows = moisKeys.map(k=>"<tr><td>"+k+"</td><td style='font-weight:700;color:#3b82f6'>"+byMois[k].créées+"</td><td style='font-weight:700;color:#22c55e'>"+byMois[k].résolues+"</td></tr>").join("");
+    const legendHtml = "<span style='display:inline-flex;align-items:center;gap:6px;margin-right:18px'><span style='width:11px;height:11px;border-radius:50%;background:#ec4899;display:inline-block'></span>Créées</span><span style='display:inline-flex;align-items:center;gap:6px'><span style='width:11px;height:11px;border-radius:50%;background:#22c55e;display:inline-block'></span>Résolues</span>";
+    const rows = moisKeys.map(k=>"<tr><td>"+k+"</td><td style='font-weight:700;color:#ec4899'>"+byMois[k].créées+"</td><td style='font-weight:700;color:#22c55e'>"+byMois[k].résolues+"</td></tr>").join("");
     exportChartCard("Évolution des actions (créées vs résolues)",
       svgChart+
       "<div style='padding:10px 0;font-size:12px;color:#374151'>"+legendHtml+"</div>"+
@@ -6113,15 +6113,15 @@ function EvolutionActionsChart({ actions }) {
     <div style={{textAlign:"center",color:"#5a7090",padding:30,fontSize:12}}>Aucune donnee disponible.</div>
   ) : (
     <>
-    <div style={{display:"flex",gap:14,marginBottom:8}}>{[["#3b82f6","Créées"],["#22c55e","Résolues"]].map(([c,l])=>(<div key={l} style={{display:"flex",alignItems:"center",gap:4}}><span style={{width:12,height:12,background:c,borderRadius:2,display:"inline-block"}}/><span style={{fontSize:10,color:"#7a90aa"}}>{l}</span></div>))}</div>
+    <div style={{display:"flex",gap:14,marginBottom:8}}>{[["#ec4899","Créées"],["#22c55e","Résolues"]].map(([c,l])=>(<div key={l} style={{display:"flex",alignItems:"center",gap:4}}><span style={{width:12,height:12,background:c,borderRadius:2,display:"inline-block"}}/><span style={{fontSize:10,color:"#7a90aa"}}>{l}</span></div>))}</div>
     <div style={{overflowX:"auto"}}>
       <svg viewBox={"0 0 "+W+" "+H} style={{width:"100%",maxWidth:W,display:"block"}}>
         {[0,25,50,75,100].map(pct=>{ const v=Math.round(maxVal*pct/100); const y=yVal(v); return(<g key={pct}><line x1={PAD} x2={W-PAD} y1={y} y2={y} stroke="#2d3f62" strokeWidth="1"/><text x={PAD-4} y={y+4} fontSize="9" fill="#5a7090" textAnchor="end">{v}</text></g>); })}
-        {moisKeys.length>1&&<polyline points={moisKeys.map((k,i)=>xPos(i)+","+yVal(byMois[k].créées)).join(" ")} fill="none" stroke="#3b82f6" strokeWidth="2.5" strokeLinejoin="round"/>}
+        {moisKeys.length>1&&<polyline points={moisKeys.map((k,i)=>xPos(i)+","+yVal(byMois[k].créées)).join(" ")} fill="none" stroke="#ec4899" strokeWidth="2.5" strokeLinejoin="round"/>}
         {moisKeys.length>1&&<polyline points={moisKeys.map((k,i)=>xPos(i)+","+yVal(byMois[k].résolues)).join(" ")} fill="none" stroke="#22c55e" strokeWidth="2.5" strokeLinejoin="round"/>}
         {moisKeys.map((k,i)=>(
           <g key={k}>
-            <circle cx={xPos(i)} cy={yVal(byMois[k].créées)} r="4" fill="#3b82f6" stroke="#1a2540" strokeWidth="1.5"/>
+            <circle cx={xPos(i)} cy={yVal(byMois[k].créées)} r="4" fill="#ec4899" stroke="#1a2540" strokeWidth="1.5"/>
             <circle cx={xPos(i)} cy={yVal(byMois[k].résolues)} r="4" fill="#22c55e" stroke="#1a2540" strokeWidth="1.5"/>
             <text x={xPos(i)} y={H-8} fontSize="8" fill="#5a7090" textAnchor="middle" transform={"rotate(-30 "+xPos(i)+" "+(H-8)+")"}>{k}</text>
           </g>
@@ -6184,7 +6184,7 @@ function EvolutionActionsChart({ actions }) {
     {collapsed && (
       <div onClick={()=>setCollapsed(false)} style={{background:"#243352",border:"1px solid #3d5270",borderRadius:10,padding:"10px 16px",marginBottom:16,cursor:"pointer",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
         <span style={{fontSize:12,color:"#94a3b8"}}>Evolution des actions - masqué</span>
-        <span style={{fontSize:11,color:"#3b82f6",fontWeight:700}}>+ Afficher</span>
+        <span style={{fontSize:11,color:"#ec4899",fontWeight:700}}>+ Afficher</span>
       </div>
     )}
     </>
@@ -6205,7 +6205,7 @@ function ComparaisonAnneesActionsChart({ actions }) {
   const annees = [...new Set(actionsFiltrees.map(a=>{ const d=pd(a.dateDetection); return d&&!isNaN(d)?d.getFullYear():null; }).filter(Boolean))].sort((a,b)=>a-b);
   const anneesAffichees = selectedAnnees.length > 0 ? selectedAnnees : annees;
 
-  const ANNEE_COLORS = ["#3b82f6","#22c55e","#f59e0b","#ef4444","#8b5cf6","#06b6d4"];
+  const ANNEE_COLORS = ["#ec4899","#22c55e","#f59e0b","#ef4444","#8b5cf6","#06b6d4"];
   const statsParAnnee = anneesAffichees.sort().map((annee, idx) => {
     const byMois = Array(12).fill(0);
     actionsFiltrees.forEach(a=>{
@@ -6272,7 +6272,7 @@ function ComparaisonAnneesActionsChart({ actions }) {
         <div style={{display:"flex",gap:4}}>
           {[["créées","Créées"],["résolues","Résolues"]].map(([id,label])=>(
             <button key={id} onClick={()=>setMode(id)}
-              style={{background:mode===id?"#1d4ed8":"#243352",color:mode===id?"#fff":"#94a3b8",border:"1px solid "+(mode===id?"#3b82f6":"#3d5270"),borderRadius:6,padding:"6px 12px",fontSize:11,fontWeight:mode===id?700:500,cursor:"pointer",fontFamily:"inherit"}}>
+              style={{background:mode===id?"#db2777":"#243352",color:mode===id?"#fff":"#94a3b8",border:"1px solid "+(mode===id?"#ec4899":"#3d5270"),borderRadius:6,padding:"6px 12px",fontSize:11,fontWeight:mode===id?700:500,cursor:"pointer",fontFamily:"inherit"}}>
               {label}
             </button>
           ))}
@@ -6284,7 +6284,7 @@ function ComparaisonAnneesActionsChart({ actions }) {
           {annees.map(a=>{
             const isSel = selectedAnnees.includes(a);
             return (<button key={a} onClick={()=>setSelectedAnnees(prev=>prev.includes(a)?prev.filter(x=>x!==a):[...prev,a])}
-              style={{background:isSel?"#1d4ed8":"#243352",color:isSel?"#fff":"#7a90aa",border:"1px solid "+(isSel?"#3b82f6":"#3d5270"),borderRadius:6,padding:"6px 10px",fontSize:11,fontWeight:isSel?700:400,cursor:"pointer",fontFamily:"inherit"}}>{a}</button>);
+              style={{background:isSel?"#db2777":"#243352",color:isSel?"#fff":"#7a90aa",border:"1px solid "+(isSel?"#ec4899":"#3d5270"),borderRadius:6,padding:"6px 10px",fontSize:11,fontWeight:isSel?700:400,cursor:"pointer",fontFamily:"inherit"}}>{a}</button>);
           })}
           {selectedAnnees.length>0&&<button onClick={()=>setSelectedAnnees([])} style={{background:"transparent",color:"#ef4444",border:"1px solid #ef444433",borderRadius:6,padding:"6px 8px",fontSize:10,cursor:"pointer",fontFamily:"inherit"}}>x</button>}
         </div>
@@ -6335,7 +6335,7 @@ function ComparaisonAnneesActionsChart({ actions }) {
     {collapsed && (
       <div onClick={()=>setCollapsed(false)} style={{background:"#243352",border:"1px solid #3d5270",borderRadius:10,padding:"10px 16px",marginBottom:16,cursor:"pointer",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
         <span style={{fontSize:12,color:"#94a3b8"}}>Comparaison annees - masqué</span>
-        <span style={{fontSize:11,color:"#3b82f6",fontWeight:700}}>+ Afficher</span>
+        <span style={{fontSize:11,color:"#ec4899",fontWeight:700}}>+ Afficher</span>
       </div>
     )}
     </>
@@ -6354,7 +6354,7 @@ function PrioriteActionsChart({ actions }) {
   const actionsFiltrees = filterAnnee==="Toutes" ? actions : actions.filter(a=>{ const d=pd(a.dateDetection); return d && d.getFullYear()===parseInt(filterAnnee); });
 
   const PRIORITES = ["haute","moyenne","basse"];
-  const PCOLOR = { haute:"#ef4444", moyenne:"#f59e0b", basse:"#3b82f6" };
+  const PCOLOR = { haute:"#ef4444", moyenne:"#f59e0b", basse:"#ec4899" };
   const sorted = PRIORITES.map(p=>({label:p.charAt(0).toUpperCase()+p.slice(1), value: actionsFiltrees.filter(a=>a.priorite===p).length, color: PCOLOR[p]})).filter(d=>d.value>0).sort((a,b)=>b.value-a.value);
   const total = sorted.reduce((s,d)=>s+d.value,0);
   const isEmpty = sorted.length === 0;
@@ -6434,7 +6434,7 @@ function PrioriteActionsChart({ actions }) {
     {collapsed && (
       <div onClick={()=>setCollapsed(false)} style={{background:"#243352",border:"1px solid #3d5270",borderRadius:10,padding:"10px 16px",marginBottom:16,cursor:"pointer",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
         <span style={{fontSize:12,color:"#94a3b8"}}>Répartition par priorité - masqué</span>
-        <span style={{fontSize:11,color:"#3b82f6",fontWeight:700}}>+ Afficher</span>
+        <span style={{fontSize:11,color:"#ec4899",fontWeight:700}}>+ Afficher</span>
       </div>
     )}
     </>
@@ -6471,8 +6471,8 @@ function PlanActions() {
       .catch(()=>{});
   }
 
-  const SCOLOR = { "En cours": "#f59e0b", "Planifiée": "#3b82f6", "Résolue": "#22c55e", Vigilance: "#f59e0b" };
-  const PCOLOR = { haute: "#ef4444", moyenne: "#f59e0b", basse: "#3b82f6" };
+  const SCOLOR = { "En cours": "#f59e0b", "Planifiée": "#ec4899", "Résolue": "#22c55e", Vigilance: "#f59e0b" };
+  const PCOLOR = { haute: "#ef4444", moyenne: "#f59e0b", basse: "#ec4899" };
   const CINQ_M = ["Méthode", "Milieu", "Matière", "Main d'oeuvre", "Matériel"];
   const ZONES = zonesList;
 
@@ -6614,9 +6614,9 @@ function PlanActions() {
             </button>
           )}
           <ExportBtn label="Actions" onClick={() => {
-            const PCOLOR = { haute:"#ef4444", moyenne:"#f59e0b", basse:"#3b82f6" };
-            const SCOLOR = { "En cours":"#f59e0b", "Planifiée":"#3b82f6", "Résolue":"#22c55e", Vigilance:"#f59e0b" };
-            const MCOLOR = { "Méthode":"#3b82f6","Milieu":"#22c55e","Matière":"#f59e0b","Main d'oeuvre":"#8b5cf6","Matériel":"#ef4444" };
+            const PCOLOR = { haute:"#ef4444", moyenne:"#f59e0b", basse:"#ec4899" };
+            const SCOLOR = { "En cours":"#f59e0b", "Planifiée":"#ec4899", "Résolue":"#22c55e", Vigilance:"#f59e0b" };
+            const MCOLOR = { "Méthode":"#ec4899","Milieu":"#22c55e","Matière":"#f59e0b","Main d'oeuvre":"#8b5cf6","Matériel":"#ef4444" };
             const badge = (val, color) => `<span style='background:${color}22;color:${color};border:1px solid ${color}44;border-radius:4px;padding:2px 7px;font-size:10px;font-weight:700'>${val}</span>`;
             const rows = filtered.map(a => {
               const pc = PCOLOR[a.priorite]||"#7a90aa";
@@ -6643,7 +6643,7 @@ function PlanActions() {
             Export Excel
           </button>
           <button onClick={()=>window.__isAdmin&&openNew()}
-            style={{ background: "#1d4ed8", opacity:window.__isAdmin?1:0.4, cursor:window.__isAdmin?"pointer":"not-allowed", color: "#fff", border: "none", borderRadius: 9, padding: "10px 18px", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>
+            style={{ background: "#db2777", opacity:window.__isAdmin?1:0.4, cursor:window.__isAdmin?"pointer":"not-allowed", color: "#fff", border: "none", borderRadius: 9, padding: "10px 18px", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>
             + Nouvelle action
           </button>
         </div>
@@ -6751,7 +6751,7 @@ function PlanActions() {
           </div>
 
           <div style={{ display: "flex", gap: 8 }}>
-            <button onClick={saveAction} style={{ background: "#1d4ed8", color: "#fff", border: "none", borderRadius: 8, padding: "8px 16px", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>
+            <button onClick={saveAction} style={{ background: "#db2777", color: "#fff", border: "none", borderRadius: 8, padding: "8px 16px", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>
               {editId ? "Enregistrer" : "Créer"}
             </button>
             <button onClick={() => { resetDraft(); setShowForm(false); }}
@@ -6768,7 +6768,7 @@ function PlanActions() {
           const count = f === "Toutes" ? actions.length : actions.filter(a => a.statut === f).length;
           return (
             <button key={f} onClick={() => setFilter(f)}
-              style={{ background: filter === f ? "#1d4ed8" : "#243352", color: filter === f ? "#fff" : "#7a90aa", border: "1px solid " + (filter === f ? "#1d4ed8" : "#3d5270"), borderRadius: 20, padding: "5px 12px", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
+              style={{ background: filter === f ? "#db2777" : "#243352", color: filter === f ? "#fff" : "#7a90aa", border: "1px solid " + (filter === f ? "#db2777" : "#3d5270"), borderRadius: 20, padding: "5px 12px", fontSize: 12, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
               {f} ({count})
             </button>
           );
@@ -6811,7 +6811,7 @@ function PlanActions() {
               <div key={a.id}>
                 <div onClick={()=>setSel(isSel?null:a.id)} style={{ padding: "10px 16px", display: "grid", gridTemplateColumns: "60px 90px 100px 110px 80px 90px 80px", gap: 8, alignItems: "center", borderTop: "1px solid #243352", background: isSel?"#243352":i%2===0?"transparent":"#ffffff04", cursor:"pointer" }}>
                   <div>
-                    <span style={{ fontSize: 9, fontWeight: 700, background: a.type === "corrective" ? "#ef444422" : "#3b82f622", color: a.type === "corrective" ? "#ef4444" : "#3b82f6", border: "1px solid " + (a.type === "corrective" ? "#ef444444" : "#3b82f644"), borderRadius: 4, padding: "1px 5px" }}>
+                    <span style={{ fontSize: 9, fontWeight: 700, background: a.type === "corrective" ? "#ef444422" : "#ec489922", color: a.type === "corrective" ? "#ef4444" : "#ec4899", border: "1px solid " + (a.type === "corrective" ? "#ef444444" : "#ec489944"), borderRadius: 4, padding: "1px 5px" }}>
                       {a.type === "corrective" ? "COR" : "PRÉ"}
                     </span>
                   </div>
@@ -6835,7 +6835,7 @@ function PlanActions() {
                   </div>
                   <div style={{ display: "flex", gap: 4 }} onClick={e=>e.stopPropagation()}>
                     <button onClick={() => openEdit(a)}
-                      style={{ background: "#1d4ed822", color: "#3b82f6", border: "1px solid #3b82f644", borderRadius: 5, padding: "3px 8px", fontSize: 10, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>✏</button>
+                      style={{ background: "#db277722", color: "#ec4899", border: "1px solid #ec489944", borderRadius: 5, padding: "3px 8px", fontSize: 10, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>✏</button>
                     <button onClick={() => deleteAction(a.id)}
                       style={{ background: "#ef444422", color: "#ef4444", border: "1px solid #ef444444", borderRadius: 5, padding: "3px 8px", fontSize: 10, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>✕</button>
                     <button onClick={()=>{
@@ -6935,12 +6935,12 @@ function PlanActions() {
       <PieChart
         title="Répartition par 5M"
         chartKey="PlanActions_5M"
-        data={CINQ_M.map((m,i)=>({label:m, value: actions.filter(a=>a.titre5m===m).length, color:["#8b5cf6","#3b82f6","#22c55e","#f59e0b","#ef4444"][i]}))}
+        data={CINQ_M.map((m,i)=>({label:m, value: actions.filter(a=>a.titre5m===m).length, color:["#8b5cf6","#ec4899","#22c55e","#f59e0b","#ef4444"][i]}))}
       />
       <BarChartHorizontal
         title="Répartition par zone"
         chartKey="PlanActions_Zone"
-        color="#3b82f6"
+        color="#ec4899"
         data={Object.entries(actions.reduce((acc,a)=>{const z=a.zone||"Non renseigne";acc[z]=(acc[z]||0)+1;return acc;},{})).map(([label,value])=>({label,value}))}
       />
       <EvolutionActionsChart actions={actions} />
@@ -7209,7 +7209,7 @@ function SaisiePassage({ seuilsGlobaux, setSeuilsGlobaux, setReinterventions, se
             Liste
           </button>
           <button onClick={()=>setActiveTab("saisie_tab")}
-            style={{background:activeTab==="saisie_tab"?"#1a2540":"transparent",color:activeTab==="saisie_tab"?"#3b82f6":"#7a90aa",border:"1px solid "+(activeTab==="saisie_tab"?"#3b82f6":"#3d5270"),borderRadius:8,padding:"7px 14px",fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>
+            style={{background:activeTab==="saisie_tab"?"#1a2540":"transparent",color:activeTab==="saisie_tab"?"#ec4899":"#7a90aa",border:"1px solid "+(activeTab==="saisie_tab"?"#ec4899":"#3d5270"),borderRadius:8,padding:"7px 14px",fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>
             Saisie
           </button>
           <button onClick={()=>setActiveTab("seuils_tab")}
@@ -7236,7 +7236,7 @@ function SaisiePassage({ seuilsGlobaux, setSeuilsGlobaux, setReinterventions, se
                 </div>
                 <div style={{display:"flex",gap:6}}>
                   <button onClick={()=>{setEditingPassage(p.id);const saisiesData=typeof p.saisies==="string"?JSON.parse(p.saisies||"{}"):p.saisies||{};setSaisies(saisiesData);const d=p.date&&p.date.includes("/")?p.date.split("/").reverse().join("-"):p.date;setForm({date:d,technicien:p.technicien,type:p.type,notes:p.notes||""});setActiveTab("saisie_tab");setView("saisie");}}
-                    style={{background:"#1d4ed822",color:"#3b82f6",border:"1px solid #3b82f644",borderRadius:6,padding:"4px 10px",fontSize:11,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>
+                    style={{background:"#db277722",color:"#ec4899",border:"1px solid #ec489944",borderRadius:6,padding:"4px 10px",fontSize:11,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>
                     Modifier
                   </button>
                   {prevPassagesData && <button onClick={()=>{setPassagesData(prevPassagesData);setPrevPassagesData(null);}}
@@ -7398,7 +7398,7 @@ function SaisiePassage({ seuilsGlobaux, setSeuilsGlobaux, setReinterventions, se
             </div>
           </Card>
           <Card style={{marginBottom:14}}>
-            <div style={{fontSize:14,fontWeight:700,color:"#1e40af",marginBottom:6}}>Seuils Rongeurs Extérieurs</div>
+            <div style={{fontSize:14,fontWeight:700,color:"#be185d",marginBottom:6}}>Seuils Rongeurs Extérieurs</div>
             <div style={{fontSize:11,color:"#7a90aa",marginBottom:12}}>Postes RE — captures par passage</div>
             <div style={{display:"flex",gap:10,flexWrap:"wrap"}}>
               <div>
@@ -7416,7 +7416,7 @@ function SaisiePassage({ seuilsGlobaux, setSeuilsGlobaux, setReinterventions, se
             </div>
           </Card>
           <Card style={{marginBottom:14}}>
-            <div style={{fontSize:14,fontWeight:700,color:"#60a5fa",marginBottom:6}}>Seuils Rongeurs Intérieurs</div>
+            <div style={{fontSize:14,fontWeight:700,color:"#f472b6",marginBottom:6}}>Seuils Rongeurs Intérieurs</div>
             <div style={{fontSize:11,color:"#7a90aa",marginBottom:12}}>Postes RI, R+chiffre, S+chiffre — captures par passage</div>
             <div style={{display:"flex",gap:10,flexWrap:"wrap"}}>
               <div>
@@ -7613,7 +7613,7 @@ function SaisiePassage({ seuilsGlobaux, setSeuilsGlobaux, setReinterventions, se
                               var lbl = pair[0], val = pair[1];
                               var actif = val==="" ? (!s.etat) : ((s.etat||"") === val || (val==="Totale" && estConsoTotale(s.etat)));
                               return <button key={lbl} onClick={function(){ setSaisieField(poste.id, "etat", val); }}
-                                style={{ flex:"1 1 60px", minHeight:44, background: actif ? "#1d4ed8" : "#1a2540", color: actif ? "#fff" : "#cbd5e1", border:"1px solid " + (actif ? "#3b82f6" : "#3d5270"), borderRadius:8, fontSize:14, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>{lbl}</button>;
+                                style={{ flex:"1 1 60px", minHeight:44, background: actif ? "#db2777" : "#1a2540", color: actif ? "#fff" : "#cbd5e1", border:"1px solid " + (actif ? "#ec4899" : "#3d5270"), borderRadius:8, fontSize:14, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>{lbl}</button>;
                             })}
                           </div>
                         </div>
@@ -7678,7 +7678,7 @@ function SaisiePassage({ seuilsGlobaux, setSeuilsGlobaux, setReinterventions, se
 
                 {/* Enregistrer tout le passage (meme savePassage que la saisie classique) */}
                 <button onClick={savePassage}
-                  style={{ width:"100%", marginTop:16, background:"#1d4ed8", color:"#fff", border:"none", borderRadius:10, padding:"15px", fontSize:16, fontWeight:800, cursor:"pointer", fontFamily:"inherit", minHeight:52 }}>
+                  style={{ width:"100%", marginTop:16, background:"#db2777", color:"#fff", border:"none", borderRadius:10, padding:"15px", fontSize:16, fontWeight:800, cursor:"pointer", fontFamily:"inherit", minHeight:52 }}>
                   Enregistrer le passage
                 </button>
               </div>
@@ -7687,7 +7687,7 @@ function SaisiePassage({ seuilsGlobaux, setSeuilsGlobaux, setReinterventions, se
 
           {view==="liste" && (
             <div style={{display:"flex",gap:8,marginBottom:16,flexWrap:"wrap"}}>
-              <button onClick={startNew} style={{background:"#1d4ed8",color:"#fff",border:"none",borderRadius:9,padding:"10px 18px",fontSize:13,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>
+              <button onClick={startNew} style={{background:"#db2777",color:"#fff",border:"none",borderRadius:9,padding:"10px 18px",fontSize:13,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>
                 + Passage periodique
               </button>
               <button onClick={startMobile} style={{background:"#059669",color:"#fff",border:"none",borderRadius:9,padding:"10px 18px",fontSize:13,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>
@@ -7739,7 +7739,7 @@ function SaisiePassage({ seuilsGlobaux, setSeuilsGlobaux, setReinterventions, se
                 <label style={{fontSize:10,color:"#7a90aa",fontWeight:600,textTransform:"uppercase",display:"block",marginBottom:8}}>Actions</label>
                 <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
                   {ACTIONS_LIST.map(a=>{const checked=reinvForm.actions.includes(a);return(
-                    <button key={a} onClick={()=>toggleReinvAction(a)} style={{background:checked?"#1d4ed822":"#1a2540",color:checked?"#3b82f6":"#7a90aa",border:"1px solid "+(checked?"#3b82f6":"#3d5270"),borderRadius:8,padding:"4px 10px",fontSize:11,fontWeight:checked?700:400,cursor:"pointer",fontFamily:"inherit"}}>{a}</button>
+                    <button key={a} onClick={()=>toggleReinvAction(a)} style={{background:checked?"#db277722":"#1a2540",color:checked?"#ec4899":"#7a90aa",border:"1px solid "+(checked?"#ec4899":"#3d5270"),borderRadius:8,padding:"4px 10px",fontSize:11,fontWeight:checked?700:400,cursor:"pointer",fontFamily:"inherit"}}>{a}</button>
                   );})}
                 </div>
               </div>
@@ -7807,7 +7807,7 @@ function SaisiePassage({ seuilsGlobaux, setSeuilsGlobaux, setReinterventions, se
                         postesRI.forEach(p=>{ next[p.id] = {...(next[p.id]||{}), molecule:"Placebo"}; });
                         return next;
                       });
-                    }} style={{background:"#3b82f622",color:"#3b82f6",border:"1px solid #3b82f644",borderRadius:7,padding:"5px 12px",fontSize:11,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>
+                    }} style={{background:"#ec489922",color:"#ec4899",border:"1px solid #ec489944",borderRadius:7,padding:"5px 12px",fontSize:11,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>
                       🔵 Tout Placebo (RI)
                     </button>
                     <button onClick={()=>{
@@ -7817,7 +7817,7 @@ function SaisiePassage({ seuilsGlobaux, setSeuilsGlobaux, setReinterventions, se
                         postesRE.forEach(p=>{ next[p.id] = {...(next[p.id]||{}), molecule:"Placebo"}; });
                         return next;
                       });
-                    }} style={{background:"#1e40af22",color:"#1e40af",border:"1px solid #1e40af44",borderRadius:7,padding:"5px 12px",fontSize:11,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>
+                    }} style={{background:"#be185d22",color:"#be185d",border:"1px solid #be185d44",borderRadius:7,padding:"5px 12px",fontSize:11,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>
                       🔵 Tout Placebo (RE)
                     </button>
                     <span style={{fontSize:12,color:"#7a90aa"}}>{Object.keys(saisies).filter(k=>saisies[k]&&(saisies[k].etat||Object.keys(saisies[k]).some(f=>f.startsWith("cap_")||f.startsWith("iv_")))).length} saisis / {getPostesForType(form.type).length}</span>
@@ -7958,7 +7958,7 @@ function SaisiePassage({ seuilsGlobaux, setSeuilsGlobaux, setReinterventions, se
               </Card>
 
               <div style={{display:"flex",gap:10}}>
-                <button onClick={()=>window.__isAdmin&&savePassage()} style={{background:"#1d4ed8",color:"#fff",border:"none",borderRadius:9,padding:"10px 20px",fontSize:13,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>
+                <button onClick={()=>window.__isAdmin&&savePassage()} style={{background:"#db2777",color:"#fff",border:"none",borderRadius:9,padding:"10px 20px",fontSize:13,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>
                   {editingPassage ? "Mettre a jour" : "Enregistrer le passage"}
                 </button>
                 <button onClick={()=>setView("liste")} style={{background:"transparent",color:"#7a90aa",border:"1px solid #3d5270",borderRadius:9,padding:"10px 18px",fontSize:13,cursor:"pointer",fontFamily:"inherit"}}>
@@ -7971,7 +7971,7 @@ function SaisiePassage({ seuilsGlobaux, setSeuilsGlobaux, setReinterventions, se
           {view==="liste" && (
             <Card>
               <div style={{textAlign:"center",color:"#5a7090",padding:20,fontSize:13}}>
-                Les passages enregistres sont visibles dans l'onglet <strong style={{color:"#3b82f6"}}>Passages</strong>.
+                Les passages enregistres sont visibles dans l'onglet <strong style={{color:"#ec4899"}}>Passages</strong>.
               </div>
             </Card>
           )}
@@ -7986,7 +7986,7 @@ function SaisiePassage({ seuilsGlobaux, setSeuilsGlobaux, setReinterventions, se
           ...postes.filter(p=>(p.nuisible||"Rongeurs")==="Rongeurs").map(p=>p.molecule_actuelle).filter(Boolean),
           ...passagesData.flatMap(pa=>{ const s=typeof pa.saisies==="string"?JSON.parse(pa.saisies||"{}"):pa.saisies||{}; return Object.values(s).map(x=>x?.molecule).filter(Boolean); })
         ])];
-        const getMolColor = mol => { if(!mol)return "#3d5270"; if(mol==="Placebo")return "#3b82f6"; const others=allMols.filter(m=>m!=="Placebo"); const idx=others.indexOf(mol); return idx>=0?MOL_COLORS[idx%MOL_COLORS.length]:"#7a90aa"; };
+        const getMolColor = mol => { if(!mol)return "#3d5270"; if(mol==="Placebo")return "#ec4899"; const others=allMols.filter(m=>m!=="Placebo"); const idx=others.indexOf(mol); return idx>=0?MOL_COLORS[idx%MOL_COLORS.length]:"#7a90aa"; };
 
         // Tri naturel des postes : RE1,RE2,...RE10,RE11 puis RI1,...
         function sortNaturel(arr) {
@@ -8056,11 +8056,11 @@ function SaisiePassage({ seuilsGlobaux, setSeuilsGlobaux, setReinterventions, se
               {/* Filtre RE/RI */}
               {["tous","RE","RI"].map(t=>(
                 <button key={t} onClick={()=>setFilterType(t)}
-                  style={{background:filterType===t?"#1d4ed8":"#243352",color:filterType===t?"#fff":"#7a90aa",border:"1px solid "+(filterType===t?"#3b82f6":"#3d5270"),borderRadius:7,padding:"5px 12px",fontSize:11,fontWeight:filterType===t?700:400,cursor:"pointer",fontFamily:"inherit"}}>
+                  style={{background:filterType===t?"#db2777":"#243352",color:filterType===t?"#fff":"#7a90aa",border:"1px solid "+(filterType===t?"#ec4899":"#3d5270"),borderRadius:7,padding:"5px 12px",fontSize:11,fontWeight:filterType===t?700:400,cursor:"pointer",fontFamily:"inherit"}}>
                   {t==="tous"?"Tous":t==="RE"?"Ext. (RE)":"Int. (RI)"}
                 </button>
               ))}
-              <button onClick={exportPdf} style={{background:"#1d4ed822",color:"#3b82f6",border:"1px solid #3b82f644",borderRadius:7,padding:"5px 12px",fontSize:11,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>📄 PDF</button>
+              <button onClick={exportPdf} style={{background:"#db277722",color:"#ec4899",border:"1px solid #ec489944",borderRadius:7,padding:"5px 12px",fontSize:11,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>📄 PDF</button>
               <button onClick={exportExcel} style={{background:"#16a34a22",color:"#22c55e",border:"1px solid #22c55e44",borderRadius:7,padding:"5px 12px",fontSize:11,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>📊 Excel</button>
             </div>
           </div>
@@ -8094,7 +8094,7 @@ function SaisiePassage({ seuilsGlobaux, setSeuilsGlobaux, setReinterventions, se
                     <tr key={p.id} style={{borderBottom:"1px solid #24335233",background:i%2===0?"#1a2540":"transparent"}}>
                       <td style={{padding:"6px 10px",fontWeight:700,color:"#f1f5f9",fontFamily:"monospace",fontSize:11}}>{p.id}</td>
                       <td style={{padding:"6px 10px",fontSize:10}}>
-                        <span style={{background:p.type==="RE"?"#1e40af22":"#3b82f622",color:p.type==="RE"?"#1e40af":"#60a5fa",borderRadius:4,padding:"1px 6px",fontSize:9,fontWeight:700}}>{p.type||"—"}</span>
+                        <span style={{background:p.type==="RE"?"#be185d22":"#ec489922",color:p.type==="RE"?"#be185d":"#f472b6",borderRadius:4,padding:"1px 6px",fontSize:9,fontWeight:700}}>{p.type||"—"}</span>
                       </td>
                       <td style={{padding:"6px 10px",color:"#7a90aa",fontSize:10}}>{p.zone||"—"}</td>
                       {passages6.map(pa=>{
@@ -8174,7 +8174,7 @@ function Reinterventions({ reinterventions, setReinterventions }) {
     setForm({ date: "", technicien: "", poste: "", anomalie: "", actions: [], observations: "", statut: "En cours" });
   }
 
-  const SCOLOR = { Traité: "#22c55e", "En cours": "#f59e0b", Planifié: "#3b82f6" };
+  const SCOLOR = { Traité: "#22c55e", "En cours": "#f59e0b", Planifié: "#ec4899" };
 
   return (
     <div style={{ paddingBottom: 40 }}>
@@ -8184,7 +8184,7 @@ function Reinterventions({ reinterventions, setReinterventions }) {
           <div style={{ fontSize: 13, color: "#7a90aa" }}>{reinterventions.length} interventions</div>
         </div>
         <button onClick={() => setShowForm(v => !v)}
-          style={{ background: "#1d4ed8", color: "#fff", border: "none", borderRadius: 9, padding: "10px 18px", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>
+          style={{ background: "#db2777", color: "#fff", border: "none", borderRadius: 9, padding: "10px 18px", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>
           + Nouvelle réintervention
         </button>
       </div>
@@ -8228,7 +8228,7 @@ function Reinterventions({ reinterventions, setReinterventions }) {
                 const checked = form.actions.includes(a);
                 return (
                   <button key={a} onClick={() => toggleAction(a)}
-                    style={{ background: checked ? "#1d4ed822" : "#1a2540", color: checked ? "#3b82f6" : "#7a90aa", border: "1px solid " + (checked ? "#3b82f6" : "#3d5270"), borderRadius: 8, padding: "5px 12px", fontSize: 11, fontWeight: checked ? 700 : 400, cursor: "pointer", fontFamily: "inherit" }}>
+                    style={{ background: checked ? "#db277722" : "#1a2540", color: checked ? "#ec4899" : "#7a90aa", border: "1px solid " + (checked ? "#ec4899" : "#3d5270"), borderRadius: 8, padding: "5px 12px", fontSize: 11, fontWeight: checked ? 700 : 400, cursor: "pointer", fontFamily: "inherit" }}>
                     {a}
                   </button>
                 );
@@ -8241,7 +8241,7 @@ function Reinterventions({ reinterventions, setReinterventions }) {
               style={{ ...inp(), resize: "vertical" }} />
           </div>
           <div style={{ display: "flex", gap: 8 }}>
-            <button onClick={submit} style={{ background: "#1d4ed8", color: "#fff", border: "none", borderRadius: 8, padding: "8px 16px", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>Enregistrer</button>
+            <button onClick={submit} style={{ background: "#db2777", color: "#fff", border: "none", borderRadius: 8, padding: "8px 16px", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>Enregistrer</button>
             <button onClick={() => setShowForm(false)} style={{ background: "transparent", color: "#7a90aa", border: "1px solid #3d5270", borderRadius: 8, padding: "8px 16px", fontSize: 13, cursor: "pointer", fontFamily: "inherit" }}>Annuler</button>
           </div>
         </Card>
@@ -8259,7 +8259,7 @@ function Reinterventions({ reinterventions, setReinterventions }) {
                   <div style={{ fontSize: 11, color: "#7a90aa" }}>Postes : {item.poste}</div>
                 </div>
                 {(item.actions || []).slice(0, 2).map(a => (
-                  <span key={a} style={{ fontSize: 10, fontWeight: 600, background: "#1d4ed822", color: "#3b82f6", border: "1px solid #3b82f644", borderRadius: 4, padding: "2px 7px" }}>{a}</span>
+                  <span key={a} style={{ fontSize: 10, fontWeight: 600, background: "#db277722", color: "#ec4899", border: "1px solid #ec489944", borderRadius: 4, padding: "2px 7px" }}>{a}</span>
                 ))}
                 <Badge label={item.statut} color={SCOLOR[item.statut] || "#7a90aa"} />
                 <button onClick={e => { e.stopPropagation(); setReinterventions(prev => prev.filter(i => i.id !== item.id)); sbDelete("reinterventions", item.id); setSel(null); }}
@@ -8268,8 +8268,8 @@ function Reinterventions({ reinterventions, setReinterventions }) {
                 </button>
               </div>
               {isOpen && item.observations && (
-                <div style={{ marginTop: 12, background: "#1a3360", border: "1px solid #1d4ed844", borderRadius: 10, padding: "10px 13px" }}>
-                  <div style={{ fontSize: 13, color: "#93c5fd" }}>{item.observations}</div>
+                <div style={{ marginTop: 12, background: "#1a3360", border: "1px solid #db277744", borderRadius: 10, padding: "10px 13px" }}>
+                  <div style={{ fontSize: 13, color: "#f9a8d4" }}>{item.observations}</div>
                 </div>
               )}
             </Card>
@@ -8352,6 +8352,7 @@ function Produits() {
         headers:{ apikey:SUPABASE_KEY, Authorization:"Bearer "+SUPABASE_KEY, "Content-Type":file.type },
         body: file
       });
+      if (!res.ok) { const _t = await res.text().catch(()=>""); alert("Échec de l'envoi du document vers le stockage (code "+res.status+"). Vérifiez que le bucket \"documents\" est configuré (voir le SQL fourni), puis réessayez. "+_t.slice(0,150)); }
       if (res.ok) {
         const url = SUPABASE_URL + "/storage/v1/object/public/documents/" + path;
         const id = String(Date.now());
@@ -8359,7 +8360,7 @@ function Produits() {
         sbUpsert("produits_docs", newDoc);
         setDocs(prev => ({ ...prev, [produitId]: [...(prev[produitId]||[]), newDoc] }));
       }
-    } catch(e) { console.error(e); }
+    } catch(e) { console.error(e); alert("Erreur réseau lors de l'envoi du document : "+(e&&e.message||e)); }
     setUploading(null);
   }
 
@@ -8382,10 +8383,10 @@ function Produits() {
               "<h1>Produits biocides</h1><p style='color:#6b7280;margin-bottom:12px'>"+CLIENT_CONFIG.nom+" - "+new Date().toLocaleDateString("fr-FR")+"</p>"+
               "<table><thead><tr><th>Nom</th><th>Fournisseur</th><th>Matière active</th><th>N° AMM</th><th>Zone</th><th>Statut</th></tr></thead><tbody>"+rows+"</tbody></table>"
             );
-          }} style={{background:"#1d4ed822",color:"#3b82f6",border:"1px solid #3b82f644",borderRadius:9,padding:"10px 16px",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>
+          }} style={{background:"#db277722",color:"#ec4899",border:"1px solid #ec489944",borderRadius:9,padding:"10px 16px",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>
             Export PDF
           </button>
-          <button onClick={startAdd} style={{ background:"#1d4ed8", color:"#fff", border:"none", borderRadius:9, padding:"10px 18px", fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>
+          <button onClick={startAdd} style={{ background:"#db2777", color:"#fff", border:"none", borderRadius:9, padding:"10px 18px", fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>
             + Ajouter un produit
           </button>
         </div>
@@ -8393,7 +8394,7 @@ function Produits() {
 
       {/* KPIs */}
       <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(130px,1fr))", gap:10, marginBottom:16 }}>
-        <Kpi label="Total produits" value={produits.length} color="#3b82f6"/>
+        <Kpi label="Total produits" value={produits.length} color="#ec4899"/>
         <Kpi label="Actifs" value={produits.filter(p=>p.statut==="Actif").length} color="#22c55e"/>
         <Kpi label="Expires" value={produits.filter(p=>p.statut==="Expire").length} color="#ef4444"/>
         <Kpi label="Matieres actives" value={new Set(produits.map(p=>p.sa).filter(Boolean)).size} color="#a78bfa"/>
@@ -8426,7 +8427,7 @@ function Produits() {
               </select></div>
           </div>
           <div style={{ display:"flex", gap:8 }}>
-            <button onClick={save} style={{ background:"#1d4ed8", color:"#fff", border:"none", borderRadius:8, padding:"8px 16px", fontSize:12, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>
+            <button onClick={save} style={{ background:"#db2777", color:"#fff", border:"none", borderRadius:8, padding:"8px 16px", fontSize:12, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>
               {editing ? "Mettre a jour" : "Enregistrer"}
             </button>
             <button onClick={()=>{setShowForm(false);setEditing(null);}} style={{ background:"transparent", color:"#7a90aa", border:"1px solid #3d5270", borderRadius:8, padding:"8px 14px", fontSize:12, cursor:"pointer", fontFamily:"inherit" }}>
@@ -8442,7 +8443,7 @@ function Produits() {
           style={{ background:"#243352", border:"1px solid #3d5270", borderRadius:8, padding:"7px 14px", color:"#f1f5f9", fontSize:12, fontFamily:"inherit", width:200 }}/>
         {["Tous","Actif","En alerte","Inactif","Expire"].map(s=>(
           <button key={s} onClick={()=>setFilterStatut(s)}
-            style={{ background:filterStatut===s?"#1d4ed8":"transparent", color:filterStatut===s?"#fff":"#7a90aa", border:"1px solid "+(filterStatut===s?"#1d4ed8":"#3d5270"), borderRadius:20, padding:"5px 12px", fontSize:12, fontWeight:600, cursor:"pointer", fontFamily:"inherit" }}>
+            style={{ background:filterStatut===s?"#db2777":"transparent", color:filterStatut===s?"#fff":"#7a90aa", border:"1px solid "+(filterStatut===s?"#db2777":"#3d5270"), borderRadius:20, padding:"5px 12px", fontSize:12, fontWeight:600, cursor:"pointer", fontFamily:"inherit" }}>
             {s}
           </button>
         ))}
@@ -8461,7 +8462,7 @@ function Produits() {
                 <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:3 }}>
                   <span style={{ fontSize:12, fontWeight:700, color:"#f1f5f9" }}>{p.nom}</span>
                   <span style={{ fontSize:9, fontWeight:700, color:col, background:col+"22", border:"1px solid "+col+"44", borderRadius:4, padding:"1px 6px" }}>{p.statut}</span>
-                  {pDocs.length>0 && <span style={{ fontSize:10, color:"#3b82f6", fontWeight:700 }}>{pDocs.length} doc(s)</span>}
+                  {pDocs.length>0 && <span style={{ fontSize:10, color:"#ec4899", fontWeight:700 }}>{pDocs.length} doc(s)</span>}
                 </div>
                 <div style={{ fontSize:11, color:"#7a90aa" }}>
                   {p.fournisseur&&<span style={{ marginRight:10 }}>{p.fournisseur}</span>}
@@ -8470,7 +8471,7 @@ function Produits() {
                 </div>
               </div>
               <div style={{ display:"flex", gap:5, alignItems:"center" }}>
-                <button onClick={()=>startEdit(p)} style={{ background:"#1d4ed822", color:"#3b82f6", border:"1px solid #3b82f644", borderRadius:5, padding:"3px 8px", fontSize:10, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>Edit</button>
+                <button onClick={()=>startEdit(p)} style={{ background:"#db277722", color:"#ec4899", border:"1px solid #ec489944", borderRadius:5, padding:"3px 8px", fontSize:10, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>Edit</button>
                 <button onClick={()=>deleteProduit(p.id)} style={{ background:"#ef444422", color:"#ef4444", border:"1px solid #ef444433", borderRadius:5, padding:"3px 6px", fontSize:10, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>X</button>
               </div>
             </div>
@@ -8483,7 +8484,7 @@ function Produits() {
                     style={{ background:"#1a2540", border:"1px solid #3d5270", borderRadius:6, padding:"4px 8px", color:"#f1f5f9", fontSize:11, fontFamily:"inherit" }}>
                     {DOC_TYPES.map(t=><option key={t}>{t}</option>)}
                   </select>
-                  <label style={{ fontSize:11, color:"#3b82f6", fontWeight:700, cursor:"pointer", background:"#1d4ed822", border:"1px solid #3b82f644", borderRadius:6, padding:"4px 10px" }}>
+                  <label style={{ fontSize:11, color:"#ec4899", fontWeight:700, cursor:"pointer", background:"#db277722", border:"1px solid #ec489944", borderRadius:6, padding:"4px 10px" }}>
                     {uploading===p.id+"_"+newDocType?"Envoi...":"+ Ajouter document"}
                     <input type="file" accept=".pdf,.jpg,.jpeg,.png" style={{ display:"none" }}
                       onChange={e=>uploadDoc(p.id, e.target.files[0], newDocType)}/>
@@ -8493,7 +8494,7 @@ function Produits() {
                   <div style={{ fontSize:11, color:"#5a7090" }}>Aucun document</div>
                 ) : pDocs.map(d=>(
                   <div key={d.id} style={{ display:"flex", alignItems:"center", gap:8, marginBottom:5, background:"#1a2540", borderRadius:6, padding:"5px 10px" }}>
-                    <span style={{ fontSize:9, fontWeight:700, background:"#1d4ed822", color:"#3b82f6", border:"1px solid #3b82f644", borderRadius:4, padding:"1px 6px", whiteSpace:"nowrap" }}>{d.type}</span>
+                    <span style={{ fontSize:9, fontWeight:700, background:"#db277722", color:"#ec4899", border:"1px solid #ec489944", borderRadius:4, padding:"1px 6px", whiteSpace:"nowrap" }}>{d.type}</span>
                     <span style={{ fontSize:11, color:"#cbd5e1", flex:1 }}>{d.nom}</span>
                     <a href={d.url} target="_blank" rel="noreferrer"
                       style={{ fontSize:11, color:"#22c55e", fontWeight:700, textDecoration:"none" }}>Voir</a>
@@ -8602,6 +8603,7 @@ function Habilitations() {
         headers: { apikey:SUPABASE_KEY, Authorization:"Bearer "+SUPABASE_KEY, "Content-Type":file.type },
         body: file
       });
+      if (!res.ok) { const _t = await res.text().catch(()=>""); alert("Échec de l'envoi du document vers le stockage (code "+res.status+"). Vérifiez que le bucket \"documents\" est configuré (voir le SQL fourni), puis réessayez. "+_t.slice(0,150)); }
       if (res.ok) {
         const url = SUPABASE_URL + "/storage/v1/object/public/documents/" + path;
         const id = String(Date.now());
@@ -8609,7 +8611,7 @@ function Habilitations() {
         sbUpsert("habilitations_docs", newDoc);
         setDocs(prev => ({ ...prev, [techId]: [...(prev[techId]||[]), newDoc] }));
       }
-    } catch(e) { console.error(e); }
+    } catch(e) { console.error(e); alert("Erreur réseau lors de l'envoi du document : "+(e&&e.message||e)); }
     setUploading(null);
   }
 
@@ -8639,10 +8641,10 @@ function Habilitations() {
               "<h1>Habilitations techniciens — "+titre+"</h1><p style='color:#6b7280;margin-bottom:12px'>"+CLIENT_CONFIG.nom+" - "+new Date().toLocaleDateString("fr-FR")+"</p>"+
               "<table><thead><tr><th>Nom</th><th>Role</th><th>Telephone</th>"+CERTIFS.map(c=>"<th>"+c.label+"</th>").join("")+"<th>Statut</th></tr></thead><tbody>"+rows+"</tbody></table>"
             );
-          }} style={{background:"#1d4ed822",color:"#3b82f6",border:"1px solid #3b82f644",borderRadius:9,padding:"10px 16px",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>
+          }} style={{background:"#db277722",color:"#ec4899",border:"1px solid #ec489944",borderRadius:9,padding:"10px 16px",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>
             Export PDF
           </button>
-          <button onClick={startAdd} style={{ background:"#1d4ed8", color:"#fff", border:"none", borderRadius:9, padding:"10px 18px", fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>
+          <button onClick={startAdd} style={{ background:"#db2777", color:"#fff", border:"none", borderRadius:9, padding:"10px 18px", fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>
             + Nouveau technicien
           </button>
         </div>
@@ -8650,7 +8652,7 @@ function Habilitations() {
 
       {/* Onglets équipes */}
       <div style={{display:"flex",gap:0,marginBottom:20,borderBottom:"2px solid #243352"}}>
-        {[{id:"3d",label:"Equipe 3D",color:"#3b82f6"},{id:"assainissement",label:"Equipe Assainissement",color:"#0ea5e9"}].map(eq=>{
+        {[{id:"3d",label:"Equipe 3D",color:"#ec4899"},{id:"assainissement",label:"Equipe Assainissement",color:"#0ea5e9"}].map(eq=>{
           const active = activeEquipe===eq.id;
           const nb = techniciens.filter(t=>t.equipe===eq.id).length;
           return (
@@ -8671,7 +8673,7 @@ function Habilitations() {
               <input value={form.nom} onChange={e=>setForm(p=>({...p,nom:e.target.value}))} style={inpStyle}/></div>
             <div><label style={{ fontSize:10, color:"#7a90aa", fontWeight:600, textTransform:"uppercase", display:"block", marginBottom:3 }}>Equipe</label>
               <div style={{display:"flex",gap:6}}>
-                {[{id:"3d",label:"Equipe 3D",color:"#3b82f6"},{id:"assainissement",label:"Assainissement",color:"#0ea5e9"}].map(eq=>{
+                {[{id:"3d",label:"Equipe 3D",color:"#ec4899"},{id:"assainissement",label:"Assainissement",color:"#0ea5e9"}].map(eq=>{
                   const active=form.equipe===eq.id;
                   return <button key={eq.id} type="button" onClick={()=>setForm(p=>({...p,equipe:eq.id}))}
                     style={{background:active?eq.color+"22":"#243352",color:active?eq.color:"#7a90aa",border:"1px solid "+(active?eq.color:"#3d5270"),borderRadius:6,padding:"4px 9px",fontSize:10,fontWeight:active?700:400,cursor:"pointer",fontFamily:"inherit",flex:1}}>{eq.label}</button>;
@@ -8694,13 +8696,13 @@ function Habilitations() {
           <div style={{ display:"flex", flexWrap:"wrap", gap:12, marginBottom:12 }}>
             {CERTIFS.map(c=>(
               <label key={c.key} style={{ display:"flex", alignItems:"center", gap:6, cursor:"pointer" }}>
-                <input type="checkbox" checked={!!form[c.key]} onChange={e=>setForm(p=>({...p,[c.key]:e.target.checked}))} style={{ accentColor:"#3b82f6" }}/>
+                <input type="checkbox" checked={!!form[c.key]} onChange={e=>setForm(p=>({...p,[c.key]:e.target.checked}))} style={{ accentColor:"#ec4899" }}/>
                 <span style={{ fontSize:12, color:"#f1f5f9" }}>{c.label}</span>
               </label>
             ))}
           </div>
           <div style={{ display:"flex", gap:8 }}>
-            <button onClick={save} style={{ background:"#1d4ed8", color:"#fff", border:"none", borderRadius:8, padding:"8px 16px", fontSize:12, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>
+            <button onClick={save} style={{ background:"#db2777", color:"#fff", border:"none", borderRadius:8, padding:"8px 16px", fontSize:12, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>
               {editing?"Mettre a jour":"Enregistrer"}
             </button>
             <button onClick={()=>{setShowForm(false);setEditing(null);}} style={{ background:"transparent", color:"#7a90aa", border:"1px solid #3d5270", borderRadius:8, padding:"8px 14px", fontSize:12, cursor:"pointer", fontFamily:"inherit" }}>
@@ -8730,7 +8732,7 @@ function Habilitations() {
             return (
               <Card key={t.id}
                 onClick={()=>setSel(isS?null:t)}
-                style={{ marginBottom:10, border:"1px solid "+(isS?"#3b82f6":"#3d5270"), background:isS?"#2d4a7a":isHidden?"#1a2540":"#243352", opacity:isHidden?0.5:1 }}>
+                style={{ marginBottom:10, border:"1px solid "+(isS?"#ec4899":"#3d5270"), background:isS?"#2d4a7a":isHidden?"#1a2540":"#243352", opacity:isHidden?0.5:1 }}>
                 <div style={{ display:"flex", justifyContent:"space-between", alignItems:"flex-start" }}>
                   <div style={{flex:1}}>
                     <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:4 }}>
@@ -8755,7 +8757,7 @@ function Habilitations() {
                     </div>
                   </div>
                   <div style={{ display:"flex", flexDirection:"column", alignItems:"flex-end", gap:6 }}>
-                    {tDocs.length > 0 && <span style={{ fontSize:10, color:"#3b82f6", fontWeight:700 }}>{tDocs.length} doc(s)</span>}
+                    {tDocs.length > 0 && <span style={{ fontSize:10, color:"#ec4899", fontWeight:700 }}>{tDocs.length} doc(s)</span>}
                     <div style={{ display:"flex", gap:4 }} onClick={e=>e.stopPropagation()}>
                       <label style={{ background:"#22c55e22", color:"#22c55e", border:"1px solid #22c55e44", borderRadius:5, padding:"2px 8px", fontSize:10, fontWeight:700, cursor:"pointer" }}
                         title="Ajouter un document">
@@ -8764,7 +8766,7 @@ function Habilitations() {
                           onChange={e=>{ if(e.target.files[0]) uploadDoc(t.id, e.target.files[0], newDocType); }}/>
                       </label>
                       <button onClick={e=>{e.stopPropagation();setHiddenIds(prev=>prev.includes(t.id)?prev.filter(x=>x!==t.id):[...prev,t.id]);}} style={{ background:isHidden?"#f59e0b22":"#243352", color:isHidden?"#f59e0b":"#7a90aa", border:"1px solid "+(isHidden?"#f59e0b44":"#3d5270"), borderRadius:5, padding:"2px 8px", fontSize:10, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>{isHidden?"Afficher":"Masquer"}</button>
-                      <button onClick={e=>{e.stopPropagation();startEdit(t);}} style={{ background:"#1d4ed822", color:"#3b82f6", border:"1px solid #3b82f644", borderRadius:5, padding:"2px 8px", fontSize:10, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>Edit</button>
+                      <button onClick={e=>{e.stopPropagation();startEdit(t);}} style={{ background:"#db277722", color:"#ec4899", border:"1px solid #ec489944", borderRadius:5, padding:"2px 8px", fontSize:10, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>Edit</button>
                       <button onClick={e=>{e.stopPropagation();deleteTech(t.id);}} style={{ background:"#ef444422", color:"#ef4444", border:"1px solid #ef444433", borderRadius:5, padding:"2px 6px", fontSize:10, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>X</button>
                     </div>
                   </div>
@@ -8798,7 +8800,7 @@ function Habilitations() {
                   <select value={newDocType} onChange={e=>setNewDocType(e.target.value)} style={{...inpStyle, fontSize:11, padding:"4px 8px"}}>
                     {DOC_TYPES.map(t=><option key={t}>{t}</option>)}
                   </select>
-                  <label style={{ background:"#1d4ed822", color:"#3b82f6", border:"1px solid #3b82f644", borderRadius:7, padding:"5px 12px", fontSize:11, fontWeight:700, cursor:"pointer" }}>
+                  <label style={{ background:"#db277722", color:"#ec4899", border:"1px solid #ec489944", borderRadius:7, padding:"5px 12px", fontSize:11, fontWeight:700, cursor:"pointer" }}>
                     {uploading?"Envoi...":"+ Importer PDF"}
                     <input type="file" accept=".pdf,.jpg,.jpeg,.png" style={{ display:"none" }}
                       onChange={e=>uploadDoc(sel.id, e.target.files[0], newDocType)}/>
@@ -8815,7 +8817,7 @@ function Habilitations() {
                 </div>
                 {selDocs.map(d=>(
                   <div key={d.id} style={{ padding:"8px 14px", display:"flex", alignItems:"center", gap:10, borderTop:"1px solid #243352" }}>
-                    <span style={{ fontSize:9, fontWeight:700, background:"#3b82f622", color:"#3b82f6", border:"1px solid #3b82f644", borderRadius:4, padding:"1px 6px", whiteSpace:"nowrap" }}>{d.type}</span>
+                    <span style={{ fontSize:9, fontWeight:700, background:"#ec489922", color:"#ec4899", border:"1px solid #ec489944", borderRadius:4, padding:"1px 6px", whiteSpace:"nowrap" }}>{d.type}</span>
                     <span style={{ fontSize:11, color:"#cbd5e1", flex:1 }}>{d.nom}</span>
                     <a href={d.url} target="_blank" rel="noreferrer"
                       style={{ fontSize:11, color:"#22c55e", fontWeight:700, textDecoration:"none" }}>Voir</a>
@@ -8909,6 +8911,7 @@ function Agrements() {
         headers:{ apikey:SUPABASE_KEY, Authorization:"Bearer "+SUPABASE_KEY, "Content-Type":file.type },
         body: file
       });
+      if (!res.ok) { const _t = await res.text().catch(()=>""); alert("Échec de l'envoi du document vers le stockage (code "+res.status+"). Vérifiez que le bucket \"documents\" est configuré (voir le SQL fourni), puis réessayez. "+_t.slice(0,150)); }
       if (res.ok) {
         const url = SUPABASE_URL + "/storage/v1/object/public/documents/" + path;
         const id = String(Date.now());
@@ -8916,7 +8919,7 @@ function Agrements() {
         sbUpsert("agrements_docs", newDoc);
         setDocs(prev => ({ ...prev, [agId]: [...(prev[agId]||[]), newDoc] }));
       }
-    } catch(e) { console.error(e); }
+    } catch(e) { console.error(e); alert("Erreur réseau lors de l'envoi du document : "+(e&&e.message||e)); }
     setUploading(null);
   }
 
@@ -8925,7 +8928,7 @@ function Agrements() {
     sbDelete("agrements_docs", docId);
   }
 
-  const SCOL = { Valide:"#22c55e", "En cours":"#3b82f6", Expire:"#ef4444", "En alerte":"#f59e0b" };
+  const SCOL = { Valide:"#22c55e", "En cours":"#ec4899", Expire:"#ef4444", "En alerte":"#f59e0b" };
 
   return (
     <div style={{ paddingBottom:40 }}>
@@ -8945,10 +8948,10 @@ function Agrements() {
               "<h1>Agrements et certifications</h1><p style='color:#6b7280;margin-bottom:12px'>"+CLIENT_CONFIG.nom+" - "+new Date().toLocaleDateString("fr-FR")+"</p>"+
               "<table><thead><tr><th>Nom</th><th>Type</th><th>Statut</th><th>Documents</th></tr></thead><tbody>"+rows+"</tbody></table>"
             );
-          }} style={{background:"#1d4ed822",color:"#3b82f6",border:"1px solid #3b82f644",borderRadius:9,padding:"10px 16px",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>
+          }} style={{background:"#db277722",color:"#ec4899",border:"1px solid #ec489944",borderRadius:9,padding:"10px 16px",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>
             Export PDF
           </button>
-          <button onClick={startAdd} style={{ background:"#1d4ed8", color:"#fff", border:"none", borderRadius:9, padding:"10px 18px", fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>
+          <button onClick={startAdd} style={{ background:"#db2777", color:"#fff", border:"none", borderRadius:9, padding:"10px 18px", fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>
             + Ajouter
           </button>
         </div>
@@ -8978,7 +8981,7 @@ function Agrements() {
               </select></div>
           </div>
           <div style={{ display:"flex", gap:8 }}>
-            <button onClick={save} style={{ background:"#1d4ed8", color:"#fff", border:"none", borderRadius:8, padding:"8px 16px", fontSize:12, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>
+            <button onClick={save} style={{ background:"#db2777", color:"#fff", border:"none", borderRadius:8, padding:"8px 16px", fontSize:12, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>
               {editing?"Mettre a jour":"Enregistrer"}
             </button>
             <button onClick={()=>{setShowForm(false);setEditing(null);}} style={{ background:"transparent", color:"#7a90aa", border:"1px solid #3d5270", borderRadius:8, padding:"8px 14px", fontSize:12, cursor:"pointer", fontFamily:"inherit" }}>
@@ -9018,13 +9021,13 @@ function Agrements() {
                   <div style={{ display:"flex", alignItems:"center", gap:8, marginBottom:3 }}>
                     <span style={{ fontSize:9, fontWeight:700, background:col+"22", color:col, border:"1px solid "+col+"44", borderRadius:4, padding:"1px 6px" }}>{a.type}</span>
                     <span style={{ fontSize:13, fontWeight:700, color:"#f1f5f9" }}>{a.nom}</span>
-                    {agDocs.length>0 && <span style={{ fontSize:10, color:"#3b82f6", fontWeight:700 }}>{agDocs.length} doc(s)</span>}
+                    {agDocs.length>0 && <span style={{ fontSize:10, color:"#ec4899", fontWeight:700 }}>{agDocs.length} doc(s)</span>}
                   </div>
                   <div style={{ fontSize:11, fontWeight:700, color:col }}>{a.statut}</div>
                 </div>
               </div>
               <div style={{ display:"flex", gap:6, alignItems:"center" }}>
-                <label style={{ fontSize:11, color:"#3b82f6", fontWeight:700, cursor:"pointer", background:"#1d4ed822", border:"1px solid #3b82f644", borderRadius:6, padding:"4px 10px" }}>
+                <label style={{ fontSize:11, color:"#ec4899", fontWeight:700, cursor:"pointer", background:"#db277722", border:"1px solid #ec489944", borderRadius:6, padding:"4px 10px" }}>
                   {uploading===a.id?"Envoi...":"+ PDF"}
                   <input type="file" accept=".pdf,.jpg,.jpeg,.png" style={{ display:"none" }}
                     onChange={e=>uploadDoc(a.id, e.target.files[0])}/>
@@ -9033,7 +9036,7 @@ function Agrements() {
                   style={{background:isHidden?"#f59e0b22":"transparent",color:isHidden?"#f59e0b":"#7a90aa",border:"1px solid "+(isHidden?"#f59e0b44":"#3d5270"),borderRadius:6,padding:"4px 8px",fontSize:11,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>
                   {isHidden?"Afficher":"Masquer"}
                 </button>
-                <button onClick={()=>startEdit(a)} style={{ background:"#1d4ed822", color:"#3b82f6", border:"1px solid #3b82f644", borderRadius:6, padding:"4px 10px", fontSize:11, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>Edit</button>
+                <button onClick={()=>startEdit(a)} style={{ background:"#db277722", color:"#ec4899", border:"1px solid #ec489944", borderRadius:6, padding:"4px 10px", fontSize:11, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>Edit</button>
                 <button onClick={()=>deleteAgrement(a.id)} style={{ background:"#ef444422", color:"#ef4444", border:"1px solid #ef444433", borderRadius:6, padding:"4px 8px", fontSize:11, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>X</button>
               </div>
             </div>
@@ -9068,7 +9071,7 @@ function Agrements() {
 function ContratDevis() {
   const STATUTS = ["En cours", "Signé", "En attente de signature", "Accepté", "Refusé", "Expiré", "Archivé"];
   const SCOLOR_C = {
-    "En cours": "#22c55e", "Signé": "#3b82f6", "En attente de signature": "#f59e0b",
+    "En cours": "#22c55e", "Signé": "#ec4899", "En attente de signature": "#f59e0b",
     "Accepté": "#22c55e", "Refusé": "#ef4444", "Expiré": "#7a90aa", "Archivé": "#5a7090",
   };
 
@@ -9106,11 +9109,12 @@ function ContratDevis() {
         headers:{ apikey:SUPABASE_KEY, Authorization:"Bearer "+SUPABASE_KEY, "Content-Type":file.type },
         body: file
       });
+      if (!res.ok) { const _t = await res.text().catch(()=>""); alert("Échec de l'envoi du document vers le stockage (code "+res.status+"). Vérifiez que le bucket \"documents\" est configuré (voir le SQL fourni), puis réessayez. "+_t.slice(0,150)); }
       if (res.ok) {
         const url = SUPABASE_URL + "/storage/v1/object/public/documents/" + path;
         setDocs(prev => prev.map(d => d.id===docId ? {...d, url_doc:url} : d));
       }
-    } catch(e) { console.error(e); }
+    } catch(e) { console.error(e); alert("Erreur réseau lors de l'envoi du document : "+(e&&e.message||e)); }
     setUploading(null);
   }
 
@@ -9178,7 +9182,7 @@ function ContratDevis() {
           <div style={{ fontSize: 13, color: "#7a90aa" }}>{docs.length} document(s) — contrats, avenants, devis</div>
         </div>
         <button onClick={() => { resetDraft(); setShowForm(v => !v); }}
-          style={{ background: "#1d4ed8", color: "#fff", border: "none", borderRadius: 9, padding: "10px 18px", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>
+          style={{ background: "#db2777", color: "#fff", border: "none", borderRadius: 9, padding: "10px 18px", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>
           + Nouveau document
         </button>
       </div>
@@ -9193,7 +9197,7 @@ function ContratDevis() {
 
       {/* KPIs */}
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(130px,1fr))", gap: 10, marginBottom: 20 }}>
-        <Kpi label="Total docs" value={docs.length} color="#3b82f6" />
+        <Kpi label="Total docs" value={docs.length} color="#ec4899" />
         <Kpi label="Contrats actifs" value={docs.filter(d => d.type === "Contrat" && d.statut === "En cours").length} color="#22c55e" />
         <Kpi label="Devis en cours" value={docs.filter(d => d.type === "Devis").length} color="#f59e0b" />
         <Kpi label="CA HT actif" value={totalEnCours.toLocaleString("fr-FR") + " €"} color="#a78bfa" />
@@ -9214,7 +9218,7 @@ function ContratDevis() {
                     const cur=(draft.type||"").split(",").map(x=>x.trim()).filter(Boolean);
                     const next=selected?cur.filter(x=>x!==t):[...cur,t];
                     setDraft(p=>({...p,type:next.join(", ")}));
-                  }} style={{background:selected?"#3b82f622":"#243352",color:selected?"#3b82f6":"#7a90aa",border:"1px solid "+(selected?"#3b82f6":"#3d5270"),borderRadius:6,padding:"3px 9px",fontSize:11,fontWeight:selected?700:400,cursor:"pointer",fontFamily:"inherit"}}>{t}</button>;
+                  }} style={{background:selected?"#ec489922":"#243352",color:selected?"#ec4899":"#7a90aa",border:"1px solid "+(selected?"#ec4899":"#3d5270"),borderRadius:6,padding:"3px 9px",fontSize:11,fontWeight:selected?700:400,cursor:"pointer",fontFamily:"inherit"}}>{t}</button>;
                 })}
               </div>
               <div style={{display:"flex",gap:4}}>
@@ -9224,7 +9228,7 @@ function ContratDevis() {
                 <button onClick={()=>{if(newTypeDoc.trim()&&!typesDoc.includes(newTypeDoc.trim())){const v=newTypeDoc.trim();setTypesDoc(prev=>[...prev,v]);setDraft(p=>({...p,type:(p.type?p.type+", ":"")+v}));setNewTypeDoc("");}}}
                   style={{background:"#22c55e",color:"#fff",border:"none",borderRadius:6,padding:"3px 10px",fontSize:11,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>+</button>
               </div>
-              {draft.type&&<div style={{fontSize:10,color:"#3b82f6",marginTop:3}}>{draft.type}</div>}
+              {draft.type&&<div style={{fontSize:10,color:"#ec4899",marginTop:3}}>{draft.type}</div>}
             </div>
             <div>
               <label style={{ fontSize: 10, color: "#7a90aa", fontWeight: 600, textTransform: "uppercase", display: "block", marginBottom: 3 }}>Référence *</label>
@@ -9284,7 +9288,7 @@ function ContratDevis() {
               <div style={{display:"flex",gap:6}}>
                 {["determinee","tacite"].map(v=>{
                   const active=draft.reconduction===v;
-                  const col=v==="tacite"?"#f59e0b":"#3b82f6";
+                  const col=v==="tacite"?"#f59e0b":"#ec4899";
                   const label=v==="tacite"?"Tacite (sans date de fin)":"Determinee (avec date de fin)";
                   return <button key={v} type="button" onClick={()=>setDraft(p=>({...p,reconduction:v,fin:v==="tacite"?"":p.fin}))}
                     style={{background:active?col+"22":"#243352",color:active?col:"#7a90aa",border:"1px solid "+(active?col:"#3d5270"),borderRadius:6,padding:"4px 10px",fontSize:10,fontWeight:active?700:400,cursor:"pointer",fontFamily:"inherit",flex:1}}>
@@ -9336,7 +9340,7 @@ function ContratDevis() {
             </label>
           </div>
           <div style={{ display: "flex", gap: 8 }}>
-            <button onClick={save} style={{ background: "#1d4ed8", color: "#fff", border: "none", borderRadius: 8, padding: "8px 16px", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>
+            <button onClick={save} style={{ background: "#db2777", color: "#fff", border: "none", borderRadius: 8, padding: "8px 16px", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>
               {editId ? "Enregistrer" : "Créer"}
             </button>
             <button onClick={() => { resetDraft(); setShowForm(false); }} style={{ background: "transparent", color: "#7a90aa", border: "1px solid #3d5270", borderRadius: 8, padding: "8px 16px", fontSize: 13, cursor: "pointer", fontFamily: "inherit" }}>Annuler</button>
@@ -9349,7 +9353,7 @@ function ContratDevis() {
         <div style={{ display: "flex", gap: 4, background: "#1a2540", borderRadius: 10, padding: 3 }}>
           {["Tous", ...typesDoc].map(t => (
             <button key={t} onClick={() => setFilterType(t)}
-              style={{ background: filterType === t ? "#1d4ed8" : "transparent", color: filterType === t ? "#fff" : "#7a90aa", border: "none", borderRadius: 7, padding: "5px 12px", fontSize: 11, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
+              style={{ background: filterType === t ? "#db2777" : "transparent", color: filterType === t ? "#fff" : "#7a90aa", border: "none", borderRadius: 7, padding: "5px 12px", fontSize: 11, fontWeight: 600, cursor: "pointer", fontFamily: "inherit" }}>
               {t}
             </button>
           ))}
@@ -9378,7 +9382,7 @@ function ContratDevis() {
                 <div>
                   <span style={{ fontSize: 9, fontWeight: 700, background: "#243352", color: "#94a3b8", border: "1px solid #3d5270", borderRadius: 4, padding: "2px 6px" }}>{doc.type}</span>
                 </div>
-                <div style={{ fontSize: 11, fontFamily: "monospace", color: "#3b82f6", fontWeight: 700 }}>{doc.ref}</div>
+                <div style={{ fontSize: 11, fontFamily: "monospace", color: "#ec4899", fontWeight: 700 }}>{doc.ref}</div>
                 <div>
                   <div style={{ fontSize: 12, fontWeight: 600, color: "#f1f5f9" }}>{doc.intitule}</div>
                   {doc.notes && <div style={{ fontSize: 10, color: "#7a90aa" }}>{doc.notes.slice(0, 40)}{doc.notes.length > 40 ? "…" : ""}</div>}
@@ -9391,7 +9395,7 @@ function ContratDevis() {
                   <span style={{ fontSize: 10, fontWeight: 700, background: sc2 + "22", color: sc2, border: "1px solid " + sc2 + "44", borderRadius: 10, padding: "2px 8px", whiteSpace: "nowrap" }}>{doc.statut}</span>
                 </div>
                 <div style={{ display: "flex", gap: 4 }} onClick={e => e.stopPropagation()}>
-                  <button onClick={() => openEdit(doc)} style={{ background: "#1d4ed822", color: "#3b82f6", border: "1px solid #3b82f644", borderRadius: 5, padding: "3px 8px", fontSize: 10, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>✏</button>
+                  <button onClick={() => openEdit(doc)} style={{ background: "#db277722", color: "#ec4899", border: "1px solid #ec489944", borderRadius: 5, padding: "3px 8px", fontSize: 10, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>✏</button>
                   <button onClick={() => { setDocs(prev => prev.filter(x => x.id !== doc.id)); setSel(null); sbDelete("contrats_devis", doc.id); }}
                     style={{ background: "#ef444422", color: "#ef4444", border: "1px solid #ef444444", borderRadius: 5, padding: "3px 8px", fontSize: 10, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>✕</button>
                 </div>
@@ -9429,7 +9433,7 @@ function ContratDevis() {
                 ["Statut", doc.statut],
                 ["Fichier", doc.url_doc
                   ? <a href={doc.url_doc} target="_blank" rel="noreferrer" style={{ color:"#22c55e", fontWeight:700, textDecoration:"none" }}>Voir PDF</a>
-                  : <label style={{ color:"#3b82f6", fontWeight:700, cursor:"pointer" }}>
+                  : <label style={{ color:"#ec4899", fontWeight:700, cursor:"pointer" }}>
                       {uploading===doc.id?"Envoi...":"+ Importer PDF"}
                       <input type="file" accept=".pdf,.doc,.docx" style={{ display:"none" }}
                         onChange={e=>uploadDoc(doc.id, e.target.files[0])}/>
@@ -9443,7 +9447,7 @@ function ContratDevis() {
               ))}
             </div>
             {doc.notes && (
-              <div style={{ background: "#1a3360", border: "1px solid #1d4ed844", borderRadius: 8, padding: "10px 14px", marginBottom: 12, fontSize: 13, color: "#93c5fd", lineHeight: 1.6 }}>
+              <div style={{ background: "#1a3360", border: "1px solid #db277744", borderRadius: 8, padding: "10px 14px", marginBottom: 12, fontSize: 13, color: "#f9a8d4", lineHeight: 1.6 }}>
                 {doc.notes}
               </div>
             )}
@@ -9476,7 +9480,7 @@ function ContratDevis() {
 function Reglementations() {
   const FAMILLES_INIT = ["Biocides", "Certiphyto", "IFS", "Desinsectisation", "General"];
   const STATUTS  = ["En vigueur", "Applicable", "Abroge"];
-  const FCOL_BASE = { Biocides:"#3b82f6", Certiphyto:"#8b5cf6", IFS:"#22c55e", Desinsectisation:"#f59e0b", General:"#7a90aa" };
+  const FCOL_BASE = { Biocides:"#ec4899", Certiphyto:"#8b5cf6", IFS:"#22c55e", Desinsectisation:"#f59e0b", General:"#7a90aa" };
   const EXTRA_COLORS = ["#ef4444","#06b6d4","#f97316","#ec4899","#14b8a6","#a855f7","#84cc16","#fb923c"];
   const inpStyle = inp();
 
@@ -9573,10 +9577,10 @@ function Reglementations() {
             </table>`
           );
         }}
-          style={{ background:"#1d4ed822", color:"#3b82f6", border:"1px solid #3b82f644", borderRadius:8, padding:"9px 16px", fontSize:12, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>
+          style={{ background:"#db277722", color:"#ec4899", border:"1px solid #ec489944", borderRadius:8, padding:"9px 16px", fontSize:12, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>
           Export PDF
         </button>
-        <button onClick={startAdd} style={{ background:"#1d4ed8", color:"#fff", border:"none", borderRadius:9, padding:"9px 16px", fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>
+        <button onClick={startAdd} style={{ background:"#db2777", color:"#fff", border:"none", borderRadius:9, padding:"9px 16px", fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>
           + Ajouter
         </button>
       </div>
@@ -9622,7 +9626,7 @@ function Reglementations() {
           <div style={{ marginBottom:10 }}><label style={{ fontSize:10, color:"#7a90aa", fontWeight:600, textTransform:"uppercase", display:"block", marginBottom:3 }}>Impact / Description</label>
             <textarea rows={3} value={form.impact} onChange={e=>setForm(p=>({...p,impact:e.target.value}))} style={{ ...inpStyle, resize:"vertical" }}/></div>
           <div style={{ display:"flex", gap:8 }}>
-            <button onClick={save} style={{ background:"#1d4ed8", color:"#fff", border:"none", borderRadius:8, padding:"8px 16px", fontSize:12, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>
+            <button onClick={save} style={{ background:"#db2777", color:"#fff", border:"none", borderRadius:8, padding:"8px 16px", fontSize:12, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>
               {editing?"Mettre a jour":"Enregistrer"}
             </button>
             <button onClick={()=>{setShowForm(false);setEditing(null);}} style={{ background:"transparent", color:"#7a90aa", border:"1px solid #3d5270", borderRadius:8, padding:"8px 14px", fontSize:12, cursor:"pointer", fontFamily:"inherit" }}>
@@ -9636,7 +9640,7 @@ function Reglementations() {
       <div style={{ display:"flex", gap:6, flexWrap:"wrap", marginBottom:16 }}>
         {familles.map(f=>(
           <button key={f} onClick={()=>setFilter(f)}
-            style={{ background:filter===f?"#1d4ed8":"#243352", color:filter===f?"#fff":"#7a90aa", border:"1px solid "+(filter===f?"#1d4ed8":"#3d5270"), borderRadius:20, padding:"5px 12px", fontSize:12, fontWeight:600, cursor:"pointer", fontFamily:"inherit" }}>
+            style={{ background:filter===f?"#db2777":"#243352", color:filter===f?"#fff":"#7a90aa", border:"1px solid "+(filter===f?"#db2777":"#3d5270"), borderRadius:20, padding:"5px 12px", fontSize:12, fontWeight:600, cursor:"pointer", fontFamily:"inherit" }}>
             {f}
           </button>
         ))}
@@ -9658,14 +9662,14 @@ function Reglementations() {
               </div>
               <Badge label={r.statut} color={r.statut==="En vigueur"?"#22c55e":"#f59e0b"}/>
               <div style={{ display:"flex", gap:4 }} onClick={e=>e.stopPropagation()}>
-                <button onClick={()=>startEdit(r)} style={{ background:"#1d4ed822", color:"#3b82f6", border:"1px solid #3b82f644", borderRadius:5, padding:"2px 8px", fontSize:10, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>Edit</button>
+                <button onClick={()=>startEdit(r)} style={{ background:"#db277722", color:"#ec4899", border:"1px solid #ec489944", borderRadius:5, padding:"2px 8px", fontSize:10, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>Edit</button>
                 <button onClick={()=>deleteRegl(r.id)} style={{ background:"#ef444422", color:"#ef4444", border:"1px solid #ef444433", borderRadius:5, padding:"2px 6px", fontSize:10, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>X</button>
               </div>
             </div>
             {isOpen && (
-              <div style={{ marginTop:12, paddingTop:12, borderTop:"1px solid #3d5270", background:"#1a3360", border:"1px solid #1d4ed844", borderRadius:10, padding:"10px 14px" }}>
-                <div style={{ fontSize:10, color:"#3b82f6", fontWeight:700, textTransform:"uppercase", marginBottom:4 }}>Impact pour AADS / le client</div>
-                <div style={{ fontSize:13, color:"#93c5fd", lineHeight:1.6 }}>{r.impact}</div>
+              <div style={{ marginTop:12, paddingTop:12, borderTop:"1px solid #3d5270", background:"#1a3360", border:"1px solid #db277744", borderRadius:10, padding:"10px 14px" }}>
+                <div style={{ fontSize:10, color:"#ec4899", fontWeight:700, textTransform:"uppercase", marginBottom:4 }}>Impact pour AADS / le client</div>
+                <div style={{ fontSize:13, color:"#f9a8d4", lineHeight:1.6 }}>{r.impact}</div>
               </div>
             )}
           </Card>
@@ -9733,7 +9737,7 @@ function TraitementThermique() {
     });
   }
 
-  const SCOLOR = { Terminé: "#22c55e", "En cours": "#f59e0b", Planifié: "#3b82f6", Annulé: "#ef4444" };
+  const SCOLOR = { Terminé: "#22c55e", "En cours": "#f59e0b", Planifié: "#ec4899", Annulé: "#ef4444" };
 
   const effic = item => {
     if (!item.tempAtteinte || item.statut !== "Terminé") return null;
@@ -9767,7 +9771,7 @@ function TraitementThermique() {
       <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(140px,1fr))", gap: 10, marginBottom: 20 }}>
         <Kpi noborder label="Total" value={interventions.length} color="#ef4444" />
         <Kpi noborder label="Terminées" value={interventions.filter(i => i.statut === "Terminé").length} color="#22c55e" />
-        <Kpi noborder label="Planifiées" value={interventions.filter(i => i.statut === "Planifié").length} color="#3b82f6" />
+        <Kpi noborder label="Planifiées" value={interventions.filter(i => i.statut === "Planifié").length} color="#ec4899" />
         <Kpi noborder label="Succès thermique" value={interventions.filter(i => effic(i) === true).length + "/" + interventions.filter(i => i.statut === "Terminé").length} color="#f59e0b" />
       </div>
 
@@ -9790,7 +9794,7 @@ function TraitementThermique() {
                       const next = selected ? current.filter(x=>x!==t) : [...current, t];
                       setDraft(p=>({...p, technicien: next.join(", ")}));
                     }}
-                      style={{ background:selected?"#1d4ed822":"#1a2540", color:selected?"#3b82f6":"#7a90aa", border:"1px solid "+(selected?"#3b82f6":"#3d5270"), borderRadius:6, padding:"3px 8px", fontSize:10, fontWeight:selected?700:400, cursor:"pointer", fontFamily:"inherit" }}>
+                      style={{ background:selected?"#db277722":"#1a2540", color:selected?"#ec4899":"#7a90aa", border:"1px solid "+(selected?"#ec4899":"#3d5270"), borderRadius:6, padding:"3px 8px", fontSize:10, fontWeight:selected?700:400, cursor:"pointer", fontFamily:"inherit" }}>
                       {t.split(" ")[0]}
                     </button>
                   );
@@ -9843,8 +9847,8 @@ function TraitementThermique() {
             </div>
             {draft.statut === "Planifié" && (
               <div>
-                <label style={{ fontSize: 10, color: "#3b82f6", fontWeight: 600, textTransform: "uppercase", display: "block", marginBottom: 3 }}>Date d'intervention planifiée</label>
-                <input type="date" value={draft.datePlanif||""} onChange={e => setDraft(p => ({ ...p, datePlanif: e.target.value }))} style={{...inp(), borderColor:"#3b82f6"}} />
+                <label style={{ fontSize: 10, color: "#ec4899", fontWeight: 600, textTransform: "uppercase", display: "block", marginBottom: 3 }}>Date d'intervention planifiée</label>
+                <input type="date" value={draft.datePlanif||""} onChange={e => setDraft(p => ({ ...p, datePlanif: e.target.value }))} style={{...inp(), borderColor:"#ec4899"}} />
               </div>
             )}
           </div>
@@ -9912,7 +9916,7 @@ function TraitementThermique() {
                 </div>
                 <div style={{ display: "flex", gap: 4 }} onClick={e => e.stopPropagation()}>
                   {(item.statut&&(item.statut.toLowerCase().startsWith("termin"))) && <button onClick={e=>{e.stopPropagation();exportRapport("Traitement thermique",item);}} style={{background:"#22c55e22",color:"#22c55e",border:"1px solid #22c55e44",borderRadius:5,padding:"3px 8px",fontSize:10,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>PDF</button>}
-                  <button onClick={() => openEdit(item)} style={{ background: "#1d4ed822", color: "#3b82f6", border: "1px solid #3b82f644", borderRadius: 5, padding: "3px 8px", fontSize: 10, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>✏</button>
+                  <button onClick={() => openEdit(item)} style={{ background: "#db277722", color: "#ec4899", border: "1px solid #ec489944", borderRadius: 5, padding: "3px 8px", fontSize: 10, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>✏</button>
                   <button onClick={() => { setInterventions(prev => prev.filter(x => x.id !== item.id)); setSel(null); sbDelete("traitement_thermique", item.id); }}
                     style={{ background: "#ef444422", color: "#ef4444", border: "1px solid #ef444444", borderRadius: 5, padding: "3px 8px", fontSize: 10, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>✕</button>
                 </div>
@@ -10020,7 +10024,7 @@ function DeepCleaning() {
     setDraft(p=>({...p, types_nettoyage:next.join(", ")}));
   }
 
-  const SCOLOR = { Terminé:"#22c55e", "En cours":"#f59e0b", Planifié:"#3b82f6", Annulé:"#ef4444" };
+  const SCOLOR = { Terminé:"#22c55e", "En cours":"#f59e0b", Planifié:"#ec4899", Annulé:"#ef4444" };
 
   return (
     <div style={{paddingBottom:40}}>
@@ -10030,23 +10034,23 @@ function DeepCleaning() {
           <div style={{fontSize:13,color:"#7a90aa"}}>{interventions.length} intervention(s) — Nettoyage approfondi et désinfection</div>
         </div>
         <button onClick={()=>{resetDraft();setShowForm(v=>!v);}}
-          style={{background:"#1d4ed8",color:"#fff",border:"none",borderRadius:9,padding:"10px 18px",fontSize:13,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>
+          style={{background:"#db2777",color:"#fff",border:"none",borderRadius:9,padding:"10px 18px",fontSize:13,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>
           + Nouvelle intervention
         </button>
       </div>
 
-      <div style={{background:"#2d4a7a22",border:"1px solid #3b82f633",borderRadius:12,padding:"12px 18px",marginBottom:16,display:"flex",gap:12,alignItems:"flex-start"}}>
+      <div style={{background:"#2d4a7a22",border:"1px solid #ec489933",borderRadius:12,padding:"12px 18px",marginBottom:16,display:"flex",gap:12,alignItems:"flex-start"}}>
         <span style={{fontSize:20}}>🧹</span>
         <div>
-          <div style={{fontSize:13,fontWeight:700,color:"#3b82f6",marginBottom:4}}>Deep Cleaning — Nettoyage en profondeur</div>
+          <div style={{fontSize:13,fontWeight:700,color:"#ec4899",marginBottom:4}}>Deep Cleaning — Nettoyage en profondeur</div>
           <div style={{fontSize:12,color:"#94a3b8",lineHeight:1.6}}>Opération de nettoyage intensif ciblant les zones difficiles d'accès, les biofilms, dépôts organiques et résidus accumulés. Complémentaire aux nettoyages opérationnels quotidiens. Conforme IFS Food v8 section 4.9.</div>
         </div>
       </div>
 
       <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(140px,1fr))",gap:10,marginBottom:20}}>
-        <Kpi plain label="Total" value={interventions.length} color="#3b82f6"/>
+        <Kpi plain label="Total" value={interventions.length} color="#ec4899"/>
         <Kpi plain label="Terminees" value={interventions.filter(i=>i.statut==="Terminé").length} color="#22c55e"/>
-        <Kpi plain label="Planifiees" value={interventions.filter(i=>i.statut==="Planifié").length} color="#3b82f6"/>
+        <Kpi plain label="Planifiees" value={interventions.filter(i=>i.statut==="Planifié").length} color="#ec4899"/>
         <Kpi plain label="En cours" value={interventions.filter(i=>i.statut==="En cours").length} color="#f59e0b"/>
       </div>
 
@@ -10064,7 +10068,7 @@ function DeepCleaning() {
                 {TECHNICIENS.map(t=>{
                   const sel2 = (draft.technicien||"").split(",").map(x=>x.trim()).includes(t);
                   return <button key={t} type="button" onClick={()=>toggleTech(t)}
-                    style={{background:sel2?"#1d4ed822":"#1a2540",color:sel2?"#3b82f6":"#7a90aa",border:"1px solid "+(sel2?"#3b82f6":"#3d5270"),borderRadius:6,padding:"3px 8px",fontSize:10,fontWeight:sel2?700:400,cursor:"pointer",fontFamily:"inherit"}}>
+                    style={{background:sel2?"#db277722":"#1a2540",color:sel2?"#ec4899":"#7a90aa",border:"1px solid "+(sel2?"#ec4899":"#3d5270"),borderRadius:6,padding:"3px 8px",fontSize:10,fontWeight:sel2?700:400,cursor:"pointer",fontFamily:"inherit"}}>
                     {t.split(" ")[0]}
                   </button>;
                 })}
@@ -10086,8 +10090,8 @@ function DeepCleaning() {
             </div>
             {draft.statut==="Planifié" && (
               <div>
-                <label style={{fontSize:10,color:"#3b82f6",fontWeight:600,textTransform:"uppercase",display:"block",marginBottom:3}}>Date d'intervention planifiée</label>
-                <input type="date" value={draft.date_planif||""} onChange={e=>setDraft(p=>({...p,date_planif:e.target.value}))} style={{...inp(),borderColor:"#3b82f6"}}/>
+                <label style={{fontSize:10,color:"#ec4899",fontWeight:600,textTransform:"uppercase",display:"block",marginBottom:3}}>Date d'intervention planifiée</label>
+                <input type="date" value={draft.date_planif||""} onChange={e=>setDraft(p=>({...p,date_planif:e.target.value}))} style={{...inp(),borderColor:"#ec4899"}}/>
               </div>
             )}
           </div>
@@ -10098,7 +10102,7 @@ function DeepCleaning() {
               {TYPES_NETTOYAGE.map(t=>{
                 const sel2 = (draft.types_nettoyage||"").split(",").map(x=>x.trim()).includes(t);
                 return <button key={t} type="button" onClick={()=>toggleType(t)}
-                  style={{background:sel2?"#1d4ed822":"#1a2540",color:sel2?"#3b82f6":"#7a90aa",border:"1px solid "+(sel2?"#3b82f6":"#3d5270"),borderRadius:6,padding:"4px 10px",fontSize:11,fontWeight:sel2?700:400,cursor:"pointer",fontFamily:"inherit"}}>
+                  style={{background:sel2?"#db277722":"#1a2540",color:sel2?"#ec4899":"#7a90aa",border:"1px solid "+(sel2?"#ec4899":"#3d5270"),borderRadius:6,padding:"4px 10px",fontSize:11,fontWeight:sel2?700:400,cursor:"pointer",fontFamily:"inherit"}}>
                   {t}
                 </button>;
               })}
@@ -10135,7 +10139,7 @@ function DeepCleaning() {
             )}
           </div>
           <div style={{display:"flex",gap:8}}>
-            <button onClick={save} style={{background:"#1d4ed8",color:"#fff",border:"none",borderRadius:8,padding:"8px 16px",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>
+            <button onClick={save} style={{background:"#db2777",color:"#fff",border:"none",borderRadius:8,padding:"8px 16px",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>
               {editId?"Mettre a jour":"Enregistrer"}
             </button>
             <button onClick={()=>{resetDraft();setShowForm(false);}} style={{background:"transparent",color:"#7a90aa",border:"1px solid #3d5270",borderRadius:8,padding:"8px 14px",fontSize:12,cursor:"pointer",fontFamily:"inherit"}}>
@@ -10162,11 +10166,11 @@ function DeepCleaning() {
                 <div style={{fontSize:11,color:"#7a90aa"}}>
                   {item.date||item.date_planif} — {item.technicien}
                 </div>
-                {item.types_nettoyage && <div style={{fontSize:11,color:"#3b82f6",marginTop:3}}>{item.types_nettoyage}</div>}
+                {item.types_nettoyage && <div style={{fontSize:11,color:"#ec4899",marginTop:3}}>{item.types_nettoyage}</div>}
               </div>
               <div style={{display:"flex",gap:4}} onClick={e=>e.stopPropagation()}>
                 {(item.statut&&(item.statut.toLowerCase().startsWith("termin"))) && <button onClick={e=>{e.stopPropagation();exportRapport("Deep Cleaning",item);}} style={{background:"#22c55e22",color:"#22c55e",border:"1px solid #22c55e44",borderRadius:5,padding:"3px 8px",fontSize:10,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>PDF</button>}
-                <button onClick={()=>openEdit(item)} style={{background:"#1d4ed822",color:"#3b82f6",border:"1px solid #3b82f644",borderRadius:5,padding:"3px 8px",fontSize:10,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>Edit</button>
+                <button onClick={()=>openEdit(item)} style={{background:"#db277722",color:"#ec4899",border:"1px solid #ec489944",borderRadius:5,padding:"3px 8px",fontSize:10,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>Edit</button>
                 <button onClick={()=>{setInterventions(prev=>prev.filter(x=>x.id!==item.id));setSel(null);sbDelete("deep_cleaning",item.id);}}
                   style={{background:"#ef444422",color:"#ef4444",border:"1px solid #ef444433",borderRadius:5,padding:"3px 6px",fontSize:10,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>X</button>
               </div>
@@ -10254,7 +10258,7 @@ function MaintenanceCleaning() {
     });
   }
 
-  const SCOLOR = { Terminé:"#22c55e", "En cours":"#f59e0b", Planifié:"#3b82f6", Annulé:"#ef4444" };
+  const SCOLOR = { Terminé:"#22c55e", "En cours":"#f59e0b", Planifié:"#ec4899", Annulé:"#ef4444" };
 
   return (
     <div style={{paddingBottom:40}}>
@@ -10264,7 +10268,7 @@ function MaintenanceCleaning() {
           <div style={{fontSize:13,color:"#7a90aa"}}>{interventions.length} intervention(s) — Nettoyage de maintenance régulier</div>
         </div>
         <button onClick={()=>{resetDraft();setShowForm(v=>!v);}}
-          style={{background:"#1d4ed8",color:"#fff",border:"none",borderRadius:9,padding:"10px 18px",fontSize:13,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>
+          style={{background:"#db2777",color:"#fff",border:"none",borderRadius:9,padding:"10px 18px",fontSize:13,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>
           + Nouvelle intervention
         </button>
       </div>
@@ -10278,9 +10282,9 @@ function MaintenanceCleaning() {
       </div>
 
       <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(140px,1fr))",gap:10,marginBottom:20}}>
-        <Kpi plain label="Total" value={interventions.length} color="#3b82f6"/>
+        <Kpi plain label="Total" value={interventions.length} color="#ec4899"/>
         <Kpi plain label="Terminees" value={interventions.filter(i=>i.statut==="Terminé").length} color="#22c55e"/>
-        <Kpi plain label="Planifiees" value={interventions.filter(i=>i.statut==="Planifié").length} color="#3b82f6"/>
+        <Kpi plain label="Planifiees" value={interventions.filter(i=>i.statut==="Planifié").length} color="#ec4899"/>
         <Kpi plain label="En cours" value={interventions.filter(i=>i.statut==="En cours").length} color="#f59e0b"/>
       </div>
 
@@ -10298,7 +10302,7 @@ function MaintenanceCleaning() {
                 {TECHNICIENS.map(t=>{
                   const active = (draft.technicien||"").split(",").map(x=>x.trim()).includes(t);
                   return <button key={t} type="button" onClick={()=>toggleTech(t)}
-                    style={{background:active?"#1d4ed822":"#1a2540",color:active?"#3b82f6":"#7a90aa",border:"1px solid "+(active?"#3b82f6":"#3d5270"),borderRadius:6,padding:"3px 8px",fontSize:10,fontWeight:active?700:400,cursor:"pointer",fontFamily:"inherit"}}>
+                    style={{background:active?"#db277722":"#1a2540",color:active?"#ec4899":"#7a90aa",border:"1px solid "+(active?"#ec4899":"#3d5270"),borderRadius:6,padding:"3px 8px",fontSize:10,fontWeight:active?700:400,cursor:"pointer",fontFamily:"inherit"}}>
                     {t.split(" ")[0]}
                   </button>;
                 })}
@@ -10316,8 +10320,8 @@ function MaintenanceCleaning() {
             </div>
             {draft.statut==="Planifié" && (
               <div>
-                <label style={{fontSize:10,color:"#3b82f6",fontWeight:600,textTransform:"uppercase",display:"block",marginBottom:3}}>Date planifiée</label>
-                <input type="date" value={draft.date_planif||""} onChange={e=>setDraft(p=>({...p,date_planif:e.target.value}))} style={{...inp(),borderColor:"#3b82f6"}}/>
+                <label style={{fontSize:10,color:"#ec4899",fontWeight:600,textTransform:"uppercase",display:"block",marginBottom:3}}>Date planifiée</label>
+                <input type="date" value={draft.date_planif||""} onChange={e=>setDraft(p=>({...p,date_planif:e.target.value}))} style={{...inp(),borderColor:"#ec4899"}}/>
               </div>
             )}
           </div>
@@ -10356,7 +10360,7 @@ function MaintenanceCleaning() {
             )}
           </div>
           <div style={{display:"flex",gap:8}}>
-            <button onClick={save} style={{background:"#1d4ed8",color:"#fff",border:"none",borderRadius:8,padding:"8px 16px",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>
+            <button onClick={save} style={{background:"#db2777",color:"#fff",border:"none",borderRadius:8,padding:"8px 16px",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>
               {editId?"Mettre a jour":"Enregistrer"}
             </button>
             <button onClick={()=>{resetDraft();setShowForm(false);}} style={{background:"transparent",color:"#7a90aa",border:"1px solid #3d5270",borderRadius:8,padding:"8px 14px",fontSize:12,cursor:"pointer",fontFamily:"inherit"}}>
@@ -10387,7 +10391,7 @@ function MaintenanceCleaning() {
               </div>
               <div style={{display:"flex",gap:4}} onClick={e=>e.stopPropagation()}>
                 {(item.statut&&(item.statut.toLowerCase().startsWith("termin"))) && <button onClick={e=>{e.stopPropagation();exportRapport("Maintenance Cleaning",item);}} style={{background:"#22c55e22",color:"#22c55e",border:"1px solid #22c55e44",borderRadius:5,padding:"3px 8px",fontSize:10,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>PDF</button>}
-                <button onClick={()=>openEdit(item)} style={{background:"#1d4ed822",color:"#3b82f6",border:"1px solid #3b82f644",borderRadius:5,padding:"3px 8px",fontSize:10,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>Edit</button>
+                <button onClick={()=>openEdit(item)} style={{background:"#db277722",color:"#ec4899",border:"1px solid #ec489944",borderRadius:5,padding:"3px 8px",fontSize:10,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>Edit</button>
                 <button onClick={()=>{setInterventions(prev=>prev.filter(x=>x.id!==item.id));setSel(null);sbDelete("maintenance_cleaning",item.id);}}
                   style={{background:"#ef444422",color:"#ef4444",border:"1px solid #ef444433",borderRadius:5,padding:"3px 6px",fontSize:10,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>X</button>
               </div>
@@ -10426,7 +10430,7 @@ function Assainissement() {
   const [newTypeAssain, setNewTypeAssain] = useState("");
   const URGENCES = ["Normale", "Urgente", "Critique"];
   const URGENCE_COLOR = { Normale:"#22c55e", Urgente:"#f59e0b", Critique:"#ef4444" };
-  const SCOLOR = { Termine:"#22c55e", "En cours":"#f59e0b", Planifie:"#3b82f6", Annule:"#7a90aa" };
+  const SCOLOR = { Termine:"#22c55e", "En cours":"#f59e0b", Planifie:"#ec4899", Annule:"#7a90aa" };
 
   const [interventions, setInterventions] = useState([]);
   const [showForm, setShowForm] = useState(false);
@@ -10487,7 +10491,7 @@ function Assainissement() {
           <div style={{fontSize:13,color:"#7a90aa"}}>{interventions.length} intervention(s) — Réseaux EU, séparateurs à graisses, siphons</div>
         </div>
         <button onClick={()=>{resetDraft();setShowForm(v=>!v);}}
-          style={{background:"#1d4ed8",color:"#fff",border:"none",borderRadius:9,padding:"10px 18px",fontSize:13,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>
+          style={{background:"#db2777",color:"#fff",border:"none",borderRadius:9,padding:"10px 18px",fontSize:13,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>
           + Nouvelle intervention
         </button>
       </div>
@@ -10501,9 +10505,9 @@ function Assainissement() {
       </div>
 
       <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(130px,1fr))",gap:10,marginBottom:20}}>
-        <Kpi plain label="Total" value={interventions.length} color="#3b82f6"/>
+        <Kpi plain label="Total" value={interventions.length} color="#ec4899"/>
         <Kpi plain label="Terminees" value={interventions.filter(i=>i.statut==="Termine").length} color="#22c55e"/>
-        <Kpi plain label="Planifiees" value={interventions.filter(i=>i.statut==="Planifie").length} color="#3b82f6"/>
+        <Kpi plain label="Planifiees" value={interventions.filter(i=>i.statut==="Planifie").length} color="#ec4899"/>
         <Kpi plain label="Urgentes" value={interventions.filter(i=>i.urgence==="Urgente"||i.urgence==="Critique").length} color="#ef4444"/>
       </div>
 
@@ -10521,7 +10525,7 @@ function Assainissement() {
                 {TECHNICIENS.map(t=>{
                   const active=(draft.technicien||"").split(",").map(x=>x.trim()).includes(t);
                   return <button key={t} type="button" onClick={()=>toggleTech(t)}
-                    style={{background:active?"#1d4ed822":"#1a2540",color:active?"#3b82f6":"#7a90aa",border:"1px solid "+(active?"#3b82f6":"#3d5270"),borderRadius:6,padding:"3px 8px",fontSize:10,fontWeight:active?700:400,cursor:"pointer",fontFamily:"inherit"}}>
+                    style={{background:active?"#db277722":"#1a2540",color:active?"#ec4899":"#7a90aa",border:"1px solid "+(active?"#ec4899":"#3d5270"),borderRadius:6,padding:"3px 8px",fontSize:10,fontWeight:active?700:400,cursor:"pointer",fontFamily:"inherit"}}>
                     {t.split(" ")[0]}
                   </button>;
                 })}
@@ -10567,8 +10571,8 @@ function Assainissement() {
             </div>
             {draft.statut==="Planifie" && (
               <div>
-                <label style={{fontSize:10,color:"#3b82f6",fontWeight:600,textTransform:"uppercase",display:"block",marginBottom:3}}>Date planifiee</label>
-                <input type="date" value={draft.date_planif||""} onChange={e=>setDraft(p=>({...p,date_planif:e.target.value}))} style={{...inp(),borderColor:"#3b82f6"}}/>
+                <label style={{fontSize:10,color:"#ec4899",fontWeight:600,textTransform:"uppercase",display:"block",marginBottom:3}}>Date planifiee</label>
+                <input type="date" value={draft.date_planif||""} onChange={e=>setDraft(p=>({...p,date_planif:e.target.value}))} style={{...inp(),borderColor:"#ec4899"}}/>
               </div>
             )}
             <div>
@@ -10613,7 +10617,7 @@ function Assainissement() {
             )}
           </div>
           <div style={{display:"flex",gap:8}}>
-            <button onClick={save} style={{background:"#1d4ed8",color:"#fff",border:"none",borderRadius:8,padding:"8px 16px",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>
+            <button onClick={save} style={{background:"#db2777",color:"#fff",border:"none",borderRadius:8,padding:"8px 16px",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>
               {editId?"Mettre a jour":"Enregistrer"}
             </button>
             <button onClick={()=>{resetDraft();setShowForm(false);}} style={{background:"transparent",color:"#7a90aa",border:"1px solid #3d5270",borderRadius:8,padding:"8px 14px",fontSize:12,cursor:"pointer",fontFamily:"inherit"}}>
@@ -10642,7 +10646,7 @@ function Assainissement() {
                   <span style={{fontSize:13,fontWeight:700,color:"#f1f5f9"}}>{item.zone}</span>
                 </div>
                 <div style={{fontSize:11,color:"#7a90aa"}}>{item.date||item.date_planif} — {item.technicien}</div>
-                {item.type_prestation&&<div style={{fontSize:11,color:"#3b82f6",marginTop:2}}>{item.type_prestation}</div>}
+                {item.type_prestation&&<div style={{fontSize:11,color:"#ec4899",marginTop:2}}>{item.type_prestation}</div>}
                 <div style={{display:"flex",gap:10,marginTop:4}}>
                   {item.conforme&&<span style={{fontSize:10,color:"#22c55e",fontWeight:700}}>Conforme</span>}
                   {item.odeurs&&<span style={{fontSize:10,color:"#f59e0b",fontWeight:700}}>Odeurs</span>}
@@ -10651,7 +10655,7 @@ function Assainissement() {
               </div>
               <div style={{display:"flex",gap:4}} onClick={e=>e.stopPropagation()}>
                 {(item.statut&&(item.statut.toLowerCase().startsWith("termin"))) && <button onClick={e=>{e.stopPropagation();exportRapport("Assainissement",item);}} style={{background:"#22c55e22",color:"#22c55e",border:"1px solid #22c55e44",borderRadius:5,padding:"3px 8px",fontSize:10,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>PDF</button>}
-                <button onClick={()=>openEdit(item)} style={{background:"#1d4ed822",color:"#3b82f6",border:"1px solid #3b82f644",borderRadius:5,padding:"3px 8px",fontSize:10,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>Edit</button>
+                <button onClick={()=>openEdit(item)} style={{background:"#db277722",color:"#ec4899",border:"1px solid #ec489944",borderRadius:5,padding:"3px 8px",fontSize:10,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>Edit</button>
                 <button onClick={()=>{setInterventions(prev=>prev.filter(x=>x.id!==item.id));setSel(null);sbDelete("assainissement",item.id);}}
                   style={{background:"#ef444422",color:"#ef4444",border:"1px solid #ef444433",borderRadius:5,padding:"3px 6px",fontSize:10,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>X</button>
               </div>
@@ -10686,7 +10690,7 @@ function Desinsectisation() {
   const [newTypeDesin, setNewTypeDesin] = useState("");
   const URGENCES = ["Normale", "Urgente", "Critique"];
   const URGENCE_COLOR = { Normale:"#22c55e", Urgente:"#f59e0b", Critique:"#ef4444" };
-  const SCOLOR = { Termine:"#22c55e", "En cours":"#f59e0b", Planifie:"#3b82f6", Annule:"#7a90aa" };
+  const SCOLOR = { Termine:"#22c55e", "En cours":"#f59e0b", Planifie:"#ec4899", Annule:"#7a90aa" };
 
   const [interventions, setInterventions] = useState([]);
   const [showForm, setShowForm] = useState(false);
@@ -10747,7 +10751,7 @@ function Desinsectisation() {
           <div style={{fontSize:13,color:"#7a90aa"}}>{interventions.length} intervention(s)</div>
         </div>
         <button onClick={()=>{resetDraft();setShowForm(v=>!v);}}
-          style={{background:"#1d4ed8",color:"#fff",border:"none",borderRadius:9,padding:"10px 18px",fontSize:13,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>
+          style={{background:"#db2777",color:"#fff",border:"none",borderRadius:9,padding:"10px 18px",fontSize:13,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>
           + Nouvelle intervention
         </button>
       </div>
@@ -10761,9 +10765,9 @@ function Desinsectisation() {
       </div>
 
       <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(130px,1fr))",gap:10,marginBottom:20}}>
-        <Kpi plain label="Total" value={interventions.length} color="#3b82f6"/>
+        <Kpi plain label="Total" value={interventions.length} color="#ec4899"/>
         <Kpi plain label="Terminees" value={interventions.filter(i=>i.statut==="Termine").length} color="#22c55e"/>
-        <Kpi plain label="Planifiees" value={interventions.filter(i=>i.statut==="Planifie").length} color="#3b82f6"/>
+        <Kpi plain label="Planifiees" value={interventions.filter(i=>i.statut==="Planifie").length} color="#ec4899"/>
         <Kpi plain label="Urgentes" value={interventions.filter(i=>i.urgence==="Urgente"||i.urgence==="Critique").length} color="#ef4444"/>
       </div>
 
@@ -10781,7 +10785,7 @@ function Desinsectisation() {
                 {TECHNICIENS.map(t=>{
                   const active=(draft.technicien||"").split(",").map(x=>x.trim()).includes(t);
                   return <button key={t} type="button" onClick={()=>toggleTech(t)}
-                    style={{background:active?"#1d4ed822":"#1a2540",color:active?"#3b82f6":"#7a90aa",border:"1px solid "+(active?"#3b82f6":"#3d5270"),borderRadius:6,padding:"3px 8px",fontSize:10,fontWeight:active?700:400,cursor:"pointer",fontFamily:"inherit"}}>
+                    style={{background:active?"#db277722":"#1a2540",color:active?"#ec4899":"#7a90aa",border:"1px solid "+(active?"#ec4899":"#3d5270"),borderRadius:6,padding:"3px 8px",fontSize:10,fontWeight:active?700:400,cursor:"pointer",fontFamily:"inherit"}}>
                     {t.split(" ")[0]}
                   </button>;
                 })}
@@ -10827,8 +10831,8 @@ function Desinsectisation() {
             </div>
             {draft.statut==="Planifie" && (
               <div>
-                <label style={{fontSize:10,color:"#3b82f6",fontWeight:600,textTransform:"uppercase",display:"block",marginBottom:3}}>Date planifiee</label>
-                <input type="date" value={draft.date_planif||""} onChange={e=>setDraft(p=>({...p,date_planif:e.target.value}))} style={{...inp(),borderColor:"#3b82f6"}}/>
+                <label style={{fontSize:10,color:"#ec4899",fontWeight:600,textTransform:"uppercase",display:"block",marginBottom:3}}>Date planifiee</label>
+                <input type="date" value={draft.date_planif||""} onChange={e=>setDraft(p=>({...p,date_planif:e.target.value}))} style={{...inp(),borderColor:"#ec4899"}}/>
               </div>
             )}
           </div>
@@ -10859,7 +10863,7 @@ function Desinsectisation() {
             )}
           </div>
           <div style={{display:"flex",gap:8}}>
-            <button onClick={save} style={{background:"#1d4ed8",color:"#fff",border:"none",borderRadius:8,padding:"8px 16px",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>
+            <button onClick={save} style={{background:"#db2777",color:"#fff",border:"none",borderRadius:8,padding:"8px 16px",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>
               {editId?"Mettre a jour":"Enregistrer"}
             </button>
             <button onClick={()=>{resetDraft();setShowForm(false);}} style={{background:"transparent",color:"#7a90aa",border:"1px solid #3d5270",borderRadius:8,padding:"8px 14px",fontSize:12,cursor:"pointer",fontFamily:"inherit"}}>
@@ -10888,11 +10892,11 @@ function Desinsectisation() {
                   <span style={{fontSize:13,fontWeight:700,color:"#f1f5f9"}}>{item.type_intervention||item.zone}</span>
                 </div>
                 <div style={{fontSize:11,color:"#7a90aa"}}>{item.date||item.date_planif} — {item.technicien}</div>
-                {item.zone&&item.type_intervention&&<div style={{fontSize:11,color:"#3b82f6",marginTop:2}}>{item.zone}</div>}
+                {item.zone&&item.type_intervention&&<div style={{fontSize:11,color:"#ec4899",marginTop:2}}>{item.zone}</div>}
               </div>
               <div style={{display:"flex",gap:4}} onClick={e=>e.stopPropagation()}>
                 {(item.statut&&(item.statut.toLowerCase().startsWith("termin"))) && <button onClick={e=>{e.stopPropagation();exportRapport("Desinsectisation",item);}} style={{background:"#22c55e22",color:"#22c55e",border:"1px solid #22c55e44",borderRadius:5,padding:"3px 8px",fontSize:10,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>PDF</button>}
-                <button onClick={()=>openEdit(item)} style={{background:"#1d4ed822",color:"#3b82f6",border:"1px solid #3b82f644",borderRadius:5,padding:"3px 8px",fontSize:10,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>Edit</button>
+                <button onClick={()=>openEdit(item)} style={{background:"#db277722",color:"#ec4899",border:"1px solid #ec489944",borderRadius:5,padding:"3px 8px",fontSize:10,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>Edit</button>
                 <button onClick={()=>{setInterventions(prev=>prev.filter(x=>x.id!==item.id));setSel(null);sbDelete("desinsectisation",item.id);}}
                   style={{background:"#ef444422",color:"#ef4444",border:"1px solid #ef444433",borderRadius:5,padding:"3px 6px",fontSize:10,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>X</button>
               </div>
@@ -11027,14 +11031,14 @@ function GestionPostes({ postes, setPostes }) {
             style={{background:"#22c55e22",color:"#22c55e",border:"1px solid #22c55e44",borderRadius:8,padding:"7px 14px",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>
             Export Excel
           </button>
-          <button onClick={()=>setShowAdd(v=>!v)} style={{background:"#1d4ed8",color:"#fff",border:"none",borderRadius:8,padding:"7px 14px",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>+ Ajouter poste</button>
+          <button onClick={()=>setShowAdd(v=>!v)} style={{background:"#db2777",color:"#fff",border:"none",borderRadius:8,padding:"7px 14px",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>+ Ajouter poste</button>
         </div>
       </div>
       {showManageLists && (
         <Card style={{marginBottom:12}}>
           <div style={{display:"grid",gridTemplateColumns:"repeat(auto-fit,minmax(220px,1fr))",gap:16}}>
             <div>
-              <div style={{fontSize:10,color:"#3b82f6",fontWeight:700,marginBottom:6,textTransform:"uppercase"}}>Macro-zones</div>
+              <div style={{fontSize:10,color:"#ec4899",fontWeight:700,marginBottom:6,textTransform:"uppercase"}}>Macro-zones</div>
               <div style={{display:"flex",flexWrap:"wrap",gap:5,marginBottom:8}}>
                 {macrosList.map(m=>(
                   <span key={m} style={{display:"flex",alignItems:"center",gap:4,background:"#243352",border:"1px solid #3d5270",borderRadius:6,padding:"3px 8px",fontSize:11,color:"#f1f5f9"}}>
@@ -11143,7 +11147,7 @@ function GestionPostes({ postes, setPostes }) {
                   <div style={{fontSize:10,color:p.appat?"#f1f5f9":"#5a7090"}}>{p.appat||"—"}</div>
                   <div style={{fontSize:10,color:p.statut==="Actif"||!p.statut?"#22c55e":p.statut==="Disparu"?"#ef4444":"#f59e0b",fontWeight:600}}>{p.statut||"Actif"}</div>
                   <div style={{display:"flex",gap:4}}>
-                    <button onClick={()=>startEdit(p)} style={{background:"#1d4ed822",color:"#3b82f6",border:"1px solid #3b82f644",borderRadius:5,padding:"2px 7px",fontSize:10,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>Edit</button>
+                    <button onClick={()=>startEdit(p)} style={{background:"#db277722",color:"#ec4899",border:"1px solid #ec489944",borderRadius:5,padding:"2px 7px",fontSize:10,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>Edit</button>
                     <button onClick={()=>deletePoste(p.id)} style={{background:"#ef444422",color:"#ef4444",border:"1px solid #ef444433",borderRadius:5,padding:"2px 6px",fontSize:10,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>X</button>
                   </div>
                 </>
@@ -11166,7 +11170,7 @@ function PlanEditor({ onClose, onSaved, existingPlan, backgroundImg, sourcePlanI
   const [tool, setTool] = useState("trait"); // trait, rect, texte, select
   const [drawing, setDrawing] = useState(null);
   const [selectedEl, setSelectedEl] = useState(null);
-  const [color, setColor] = useState("#3b82f6");
+  const [color, setColor] = useState("#ec4899");
   const [strokeWidth, setStrokeWidth] = useState(2);
   const [fillShape, setFillShape] = useState(false); // formes pleines
   const [textInput, setTextInput] = useState("");
@@ -11403,7 +11407,7 @@ function PlanEditor({ onClose, onSaved, existingPlan, backgroundImg, sourcePlanI
     if (onClose) onClose();
   }
 
-  const COLORS = ["#3b82f6", "#1e40af", "#06b6d4", "#22c55e", "#84cc16", "#eab308", "#f59e0b", "#f97316", "#ef4444", "#ec4899", "#8b5cf6", "#7a90aa", "#000000", "#ffffff"];
+  const COLORS = ["#ec4899", "#be185d", "#06b6d4", "#22c55e", "#84cc16", "#eab308", "#f59e0b", "#f97316", "#ef4444", "#ec4899", "#8b5cf6", "#7a90aa", "#000000", "#ffffff"];
 
   return (
     <div style={{ position:"fixed", inset:0, background:"rgba(0,0,0,0.85)", zIndex:2000, display:"flex", alignItems:"center", justifyContent:"center", padding:20 }}>
@@ -11418,7 +11422,7 @@ function PlanEditor({ onClose, onSaved, existingPlan, backgroundImg, sourcePlanI
         <div style={{ display:"flex", gap:8, marginBottom:12, flexWrap:"wrap", alignItems:"center" }}>
           {[["trait","Trait"],["rect","Rectangle"],["cercle","Cercle"],["fleche","Fleche"],["triangle","Triangle"],["polygone","Polygone"],["porte","Porte"],["porte_biais","Porte biais"],["escalier","Escalier"],["fenetre","Fenetre"],["texte","Texte"],["select","Selection"],["gomme","🧹 Gomme"]].map(([t,l])=>(
             <button key={t} onClick={()=>{setTool(t);setPolyPoints(null);}}
-              style={{ background:tool===t?"#1d4ed8":"#243352", color:tool===t?"#fff":"#94a3b8", border:"1px solid "+(tool===t?"#3b82f6":"#3d5270"), borderRadius:7, padding:"6px 12px", fontSize:11, fontWeight:600, cursor:"pointer", fontFamily:"inherit" }}>
+              style={{ background:tool===t?"#db2777":"#243352", color:tool===t?"#fff":"#94a3b8", border:"1px solid "+(tool===t?"#ec4899":"#3d5270"), borderRadius:7, padding:"6px 12px", fontSize:11, fontWeight:600, cursor:"pointer", fontFamily:"inherit" }}>
               {l}
             </button>
           ))}
@@ -11430,24 +11434,24 @@ function PlanEditor({ onClose, onSaved, existingPlan, backgroundImg, sourcePlanI
           <div style={{ display:"flex", gap:4, marginLeft:8 }}>
             {COLORS.map(c=>(
               <button key={c} onClick={()=>setColor(c)}
-                style={{ width:24, height:24, borderRadius:"50%", background:c, border:color===c?(c==="#ffffff"?"3px solid #3b82f6":"3px solid #fff"):"1px solid #3d5270", cursor:"pointer", padding:0 }}/>
+                style={{ width:24, height:24, borderRadius:"50%", background:c, border:color===c?(c==="#ffffff"?"3px solid #ec4899":"3px solid #fff"):"1px solid #3d5270", cursor:"pointer", padding:0 }}/>
             ))}
           </div>
           <div style={{ display:"flex", alignItems:"center", gap:6, marginLeft:8 }}>
             <span style={{ fontSize:11, color:"#7a90aa" }}>Epaisseur</span>
             <input type="range" min="1" max="8" value={strokeWidth} onChange={e=>setStrokeWidth(parseInt(e.target.value))} style={{ width:60 }}/>
             <button onClick={()=>setFillShape(v=>!v)} title="Remplir les formes de couleur"
-              style={{ marginLeft:8, background:fillShape?"#1d4ed8":"#243352", color:fillShape?"#fff":"#94a3b8", border:"1px solid "+(fillShape?"#3b82f6":"#3d5270"), borderRadius:7, padding:"6px 12px", fontSize:11, fontWeight:600, cursor:"pointer", fontFamily:"inherit" }}>
+              style={{ marginLeft:8, background:fillShape?"#db2777":"#243352", color:fillShape?"#fff":"#94a3b8", border:"1px solid "+(fillShape?"#ec4899":"#3d5270"), borderRadius:7, padding:"6px 12px", fontSize:11, fontWeight:600, cursor:"pointer", fontFamily:"inherit" }}>
               Rempli
             </button>
           </div>
           <div style={{ display:"flex", alignItems:"center", gap:8, marginLeft:8, paddingLeft:12, borderLeft:"1px solid #3d5270" }}>
             <button onClick={()=>setGridOn(v=>!v)} title="Afficher la grille et les reperes de case"
-              style={{ background:gridOn?"#1d4ed8":"#243352", color:gridOn?"#fff":"#94a3b8", border:"1px solid "+(gridOn?"#3b82f6":"#3d5270"), borderRadius:7, padding:"6px 12px", fontSize:11, fontWeight:600, cursor:"pointer", fontFamily:"inherit" }}>
+              style={{ background:gridOn?"#db2777":"#243352", color:gridOn?"#fff":"#94a3b8", border:"1px solid "+(gridOn?"#ec4899":"#3d5270"), borderRadius:7, padding:"6px 12px", fontSize:11, fontWeight:600, cursor:"pointer", fontFamily:"inherit" }}>
               Grille
             </button>
             <button onClick={()=>setSnapOn(v=>!v)} disabled={!gridOn} title="Aimanter les elements au centre des cases"
-              style={{ background:snapOn&&gridOn?"#1d4ed8":"#243352", color:snapOn&&gridOn?"#fff":"#94a3b8", border:"1px solid "+(snapOn&&gridOn?"#3b82f6":"#3d5270"), borderRadius:7, padding:"6px 12px", fontSize:11, fontWeight:600, cursor:gridOn?"pointer":"default", opacity:gridOn?1:0.5, fontFamily:"inherit" }}>
+              style={{ background:snapOn&&gridOn?"#db2777":"#243352", color:snapOn&&gridOn?"#fff":"#94a3b8", border:"1px solid "+(snapOn&&gridOn?"#ec4899":"#3d5270"), borderRadius:7, padding:"6px 12px", fontSize:11, fontWeight:600, cursor:gridOn?"pointer":"default", opacity:gridOn?1:0.5, fontFamily:"inherit" }}>
               Aimant
             </button>
             <span style={{ fontSize:11, color:"#7a90aa" }}>Cols</span>
@@ -11462,8 +11466,8 @@ function PlanEditor({ onClose, onSaved, existingPlan, backgroundImg, sourcePlanI
                   var actif = anchorH===h && anchorV===v;
                   return <button key={h+v} onClick={()=>{ setAnchorH(h); setAnchorV(v); }} title={h+" "+v}
                     style={{ width:14, height:14, padding:0, borderRadius:2, cursor:"pointer",
-                             background: actif ? "#1d4ed8" : "#1a2540",
-                             border:"1px solid "+(actif?"#3b82f6":"#3d5270") }}/>;
+                             background: actif ? "#db2777" : "#1a2540",
+                             border:"1px solid "+(actif?"#ec4899":"#3d5270") }}/>;
                 }))}
               </div>
             )}
@@ -11489,16 +11493,16 @@ function PlanEditor({ onClose, onSaved, existingPlan, backgroundImg, sourcePlanI
             {gridOn && (
               <g pointerEvents="none">
                 {Array.from({length: gridCols - 1}).map((_, i) => (
-                  <line key={"vc"+i} x1={(i+1)*cellW} y1={0} x2={(i+1)*cellW} y2={H} stroke="#93c5fd" strokeWidth="0.8" strokeDasharray="4 4"/>
+                  <line key={"vc"+i} x1={(i+1)*cellW} y1={0} x2={(i+1)*cellW} y2={H} stroke="#f9a8d4" strokeWidth="0.8" strokeDasharray="4 4"/>
                 ))}
                 {Array.from({length: gridRows - 1}).map((_, i) => (
-                  <line key={"hr"+i} x1={0} y1={(i+1)*cellH} x2={W} y2={(i+1)*cellH} stroke="#93c5fd" strokeWidth="0.8" strokeDasharray="4 4"/>
+                  <line key={"hr"+i} x1={0} y1={(i+1)*cellH} x2={W} y2={(i+1)*cellH} stroke="#f9a8d4" strokeWidth="0.8" strokeDasharray="4 4"/>
                 ))}
                 {Array.from({length: gridCols}).map((_, c) => (
-                  <text key={"cl"+c} x={(c+0.5)*cellW} y={13} textAnchor="middle" fontSize="11" fontWeight="700" fill="#2563eb">{colonneLabel(c)}</text>
+                  <text key={"cl"+c} x={(c+0.5)*cellW} y={13} textAnchor="middle" fontSize="11" fontWeight="700" fill="#db2777">{colonneLabel(c)}</text>
                 ))}
                 {Array.from({length: gridRows}).map((_, r) => (
-                  <text key={"rl"+r} x={9} y={(r+0.5)*cellH+4} textAnchor="middle" fontSize="11" fontWeight="700" fill="#2563eb">{r+1}</text>
+                  <text key={"rl"+r} x={9} y={(r+0.5)*cellH+4} textAnchor="middle" fontSize="11" fontWeight="700" fill="#db2777">{r+1}</text>
                 ))}
               </g>
             )}
@@ -11627,12 +11631,12 @@ function PlanEditor({ onClose, onSaved, existingPlan, backgroundImg, sourcePlanI
 
           {/* Popup ajout texte */}
           {editingText && (
-            <div style={{ position:"absolute", left:"50%", top:12, transform:"translateX(-50%)", background:"#243352", border:"1px solid #3b82f6", borderRadius:8, padding:8, display:"flex", gap:6, zIndex:11, alignItems:"center" }}>
+            <div style={{ position:"absolute", left:"50%", top:12, transform:"translateX(-50%)", background:"#243352", border:"1px solid #ec4899", borderRadius:8, padding:8, display:"flex", gap:6, zIndex:11, alignItems:"center" }}>
               <span style={{ fontSize:11, color:"#7a90aa", fontWeight:700 }}>Modifier</span>
               <input autoFocus value={textInput} onChange={e=>setTextInput(e.target.value)} onKeyDown={e=>{if(e.key==="Enter")addText();if(e.key==="Escape"){setEditingText(null);setTextInput("");}}}
                 style={{ background:"#1a2540", border:"1px solid #3d5270", borderRadius:5, padding:"4px 8px", color:"#f1f5f9", fontSize:12, fontFamily:"inherit", fontWeight:txtBold?800:400, fontStyle:txtItalic?"italic":"normal" }}/>
-              <button onClick={()=>setTxtBold(v=>!v)} style={{ background:txtBold?"#1d4ed8":"#1a2540", color:txtBold?"#fff":"#94a3b8", border:"1px solid "+(txtBold?"#3b82f6":"#3d5270"), borderRadius:5, padding:"4px 9px", fontSize:12, fontWeight:800, cursor:"pointer", fontFamily:"inherit" }}>B</button>
-              <button onClick={()=>setTxtItalic(v=>!v)} style={{ background:txtItalic?"#1d4ed8":"#1a2540", color:txtItalic?"#fff":"#94a3b8", border:"1px solid "+(txtItalic?"#3b82f6":"#3d5270"), borderRadius:5, padding:"4px 9px", fontSize:12, fontStyle:"italic", fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>I</button>
+              <button onClick={()=>setTxtBold(v=>!v)} style={{ background:txtBold?"#db2777":"#1a2540", color:txtBold?"#fff":"#94a3b8", border:"1px solid "+(txtBold?"#ec4899":"#3d5270"), borderRadius:5, padding:"4px 9px", fontSize:12, fontWeight:800, cursor:"pointer", fontFamily:"inherit" }}>B</button>
+              <button onClick={()=>setTxtItalic(v=>!v)} style={{ background:txtItalic?"#db2777":"#1a2540", color:txtItalic?"#fff":"#94a3b8", border:"1px solid "+(txtItalic?"#ec4899":"#3d5270"), borderRadius:5, padding:"4px 9px", fontSize:12, fontStyle:"italic", fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>I</button>
               <button onClick={()=>setTxtHighlight(v=>!v)} style={{ background:txtHighlight?"#facc15":"#1a2540", color:txtHighlight?"#1a2540":"#94a3b8", border:"1px solid "+(txtHighlight?"#facc15":"#3d5270"), borderRadius:5, padding:"4px 9px", fontSize:12, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>S</button>
               <div style={{ display:"flex", gap:3, paddingLeft:6, marginLeft:2, borderLeft:"1px solid #3d5270" }}>
                 {COLORS.map(c=>{
@@ -11648,13 +11652,13 @@ function PlanEditor({ onClose, onSaved, existingPlan, backgroundImg, sourcePlanI
             </div>
           )}
           {pendingTextPos && !editingText && (
-            <div style={{ position:"absolute", left:(pendingTextPos.x/W*100)+"%", top:(pendingTextPos.y/H*100)+"%", background:"#243352", border:"1px solid #3b82f6", borderRadius:8, padding:8, display:"flex", gap:6, zIndex:10 }}>
+            <div style={{ position:"absolute", left:(pendingTextPos.x/W*100)+"%", top:(pendingTextPos.y/H*100)+"%", background:"#243352", border:"1px solid #ec4899", borderRadius:8, padding:8, display:"flex", gap:6, zIndex:10 }}>
               <input autoFocus value={textInput} onChange={e=>setTextInput(e.target.value)} onKeyDown={e=>{if(e.key==="Enter")addText();if(e.key==="Escape")setPendingTextPos(null);}}
                 placeholder="Texte..." style={{ background:"#1a2540", border:"1px solid #3d5270", borderRadius:5, padding:"4px 8px", color:"#f1f5f9", fontSize:12, fontFamily:"inherit", fontWeight:txtBold?800:400, fontStyle:txtItalic?"italic":"normal" }}/>
               <button onClick={()=>setTxtBold(v=>!v)} title="Gras"
-                style={{ background:txtBold?"#1d4ed8":"#1a2540", color:txtBold?"#fff":"#94a3b8", border:"1px solid "+(txtBold?"#3b82f6":"#3d5270"), borderRadius:5, padding:"4px 9px", fontSize:12, fontWeight:800, cursor:"pointer", fontFamily:"inherit" }}>B</button>
+                style={{ background:txtBold?"#db2777":"#1a2540", color:txtBold?"#fff":"#94a3b8", border:"1px solid "+(txtBold?"#ec4899":"#3d5270"), borderRadius:5, padding:"4px 9px", fontSize:12, fontWeight:800, cursor:"pointer", fontFamily:"inherit" }}>B</button>
               <button onClick={()=>setTxtItalic(v=>!v)} title="Italique"
-                style={{ background:txtItalic?"#1d4ed8":"#1a2540", color:txtItalic?"#fff":"#94a3b8", border:"1px solid "+(txtItalic?"#3b82f6":"#3d5270"), borderRadius:5, padding:"4px 9px", fontSize:12, fontStyle:"italic", fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>I</button>
+                style={{ background:txtItalic?"#db2777":"#1a2540", color:txtItalic?"#fff":"#94a3b8", border:"1px solid "+(txtItalic?"#ec4899":"#3d5270"), borderRadius:5, padding:"4px 9px", fontSize:12, fontStyle:"italic", fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>I</button>
               <button onClick={()=>setTxtHighlight(v=>!v)} title="Surligner"
                 style={{ background:txtHighlight?"#facc15":"#1a2540", color:txtHighlight?"#1a2540":"#94a3b8", border:"1px solid "+(txtHighlight?"#facc15":"#3d5270"), borderRadius:5, padding:"4px 9px", fontSize:12, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>S</button>
               <button onClick={addText} style={{ background:"#22c55e", color:"#fff", border:"none", borderRadius:5, padding:"4px 10px", fontSize:11, fontWeight:700, cursor:"pointer" }}>OK</button>
@@ -11689,7 +11693,7 @@ function PlanEditor({ onClose, onSaved, existingPlan, backgroundImg, sourcePlanI
 
         <div style={{ display:"flex", gap:8, marginTop:14, justifyContent:"flex-end" }}>
           <button onClick={onClose} style={{ background:"transparent", color:"#7a90aa", border:"1px solid #3d5270", borderRadius:8, padding:"9px 18px", fontSize:13, cursor:"pointer", fontFamily:"inherit" }}>Annuler</button>
-          <button onClick={savePlan} style={{ background:"#1d4ed8", color:"#fff", border:"none", borderRadius:8, padding:"9px 22px", fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>Enregistrer le plan</button>
+          <button onClick={savePlan} style={{ background:"#db2777", color:"#fff", border:"none", borderRadius:8, padding:"9px 22px", fontSize:13, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>Enregistrer le plan</button>
         </div>
       </div>
     </div>
@@ -11923,14 +11927,14 @@ function PlanImplantation({ seuilsGlobaux }) {
     if (modeColor==="type") {
       const nuisible = poste.nuisible||"Rongeurs";
       if (nuisible==="Rongeurs") {
-        if (poste.type==="RE") return nuisibleColors["__RE"]||"#1e40af";
-        if (poste.type==="RI") return nuisibleColors["__RI"]||"#60a5fa";
-        return nuisibleColors["Rongeurs"]||"#3b82f6";
+        if (poste.type==="RE") return nuisibleColors["__RE"]||"#be185d";
+        if (poste.type==="RI") return nuisibleColors["__RI"]||"#f472b6";
+        return nuisibleColors["Rongeurs"]||"#ec4899";
       }
       return nuisibleColors[nuisible]||"#7a90aa";
     }
     if (modeColor==="zone") {
-      const zoneColors = {"Extérieur":"#3b82f6","Locaux techniques":"#f59e0b","Combles / Faux-plafonds":"#8b5cf6","Emballages":"#22c55e","Conditionnement":"#ef4444","Bureaux / R&D":"#06b6d4","Maintenance":"#84cc16","Stockage":"#f97316","Autres":"#7a90aa"};
+      const zoneColors = {"Extérieur":"#ec4899","Locaux techniques":"#f59e0b","Combles / Faux-plafonds":"#8b5cf6","Emballages":"#22c55e","Conditionnement":"#ef4444","Bureaux / R&D":"#06b6d4","Maintenance":"#84cc16","Stockage":"#f97316","Autres":"#7a90aa"};
       return zoneColors[poste.macro]||"#7a90aa";
     }
     // Mode état (par défaut)
@@ -12219,9 +12223,9 @@ function PlanImplantation({ seuilsGlobaux }) {
       if (modeColor==="etat") {
         legends = [["#22c55e","Sans activité"],["#f59e0b","Partielle"],["#ef4444","Totale / Capture"]];
       } else if (modeColor==="type") {
-        legends = [[nuisibleColors["__RE"]||"#1e40af","Rongeurs ext. (RE)",posteFormes["RE"]||"rond","__RE"],[nuisibleColors["__RI"]||"#60a5fa","Rongeurs int. (RI)",posteFormes["RI"]||"rond","__RI"], ...NUISIBLES_LIST.filter(n=>n!=="Rongeurs").map(n=>[nuisibleColors[n]||"#7a90aa",n,posteFormes[n]||"rond",n])].filter(e=>nuisiblesMasques.indexOf(e[3])<0);
+        legends = [[nuisibleColors["__RE"]||"#be185d","Rongeurs ext. (RE)",posteFormes["RE"]||"rond","__RE"],[nuisibleColors["__RI"]||"#f472b6","Rongeurs int. (RI)",posteFormes["RI"]||"rond","__RI"], ...NUISIBLES_LIST.filter(n=>n!=="Rongeurs").map(n=>[nuisibleColors[n]||"#7a90aa",n,posteFormes[n]||"rond",n])].filter(e=>nuisiblesMasques.indexOf(e[3])<0);
       } else if (modeColor==="zone") {
-        const zoneColors = {"Exterieur":"#3b82f6","Locaux techniques":"#f59e0b","Combles":"#8b5cf6","Emballages":"#22c55e","Conditionnement":"#ef4444","Bureaux":"#06b6d4","Maintenance":"#84cc16","Stockage":"#f97316","Autres":"#7a90aa"};
+        const zoneColors = {"Exterieur":"#ec4899","Locaux techniques":"#f59e0b","Combles":"#8b5cf6","Emballages":"#22c55e","Conditionnement":"#ef4444","Bureaux":"#06b6d4","Maintenance":"#84cc16","Stockage":"#f97316","Autres":"#7a90aa"};
         legends = Object.entries(zoneColors);
       }
 
@@ -12308,9 +12312,9 @@ function PlanImplantation({ seuilsGlobaux }) {
       if (modeColor==="etat") {
         legendsC = [["#22c55e","Sans activité"],["#f59e0b","Partielle"],["#ef4444","Totale / Capture"]];
       } else if (modeColor==="type") {
-        legendsC = [[nuisibleColors["__RE"]||"#1e40af","Rongeurs ext.",posteFormes["RE"]||"rond","__RE"],[nuisibleColors["__RI"]||"#60a5fa","Rongeurs int.",posteFormes["RI"]||"rond","__RI"], ...NUISIBLES_LIST.filter(n=>n!=="Rongeurs").map(n=>[nuisibleColors[n]||"#7a90aa",n,posteFormes[n]||"rond",n])].filter(e=>nuisiblesMasques.indexOf(e[3])<0);
+        legendsC = [[nuisibleColors["__RE"]||"#be185d","Rongeurs ext.",posteFormes["RE"]||"rond","__RE"],[nuisibleColors["__RI"]||"#f472b6","Rongeurs int.",posteFormes["RI"]||"rond","__RI"], ...NUISIBLES_LIST.filter(n=>n!=="Rongeurs").map(n=>[nuisibleColors[n]||"#7a90aa",n,posteFormes[n]||"rond",n])].filter(e=>nuisiblesMasques.indexOf(e[3])<0);
       } else if (modeColor==="zone") {
-        const zoneColors = {"Exterieur":"#3b82f6","Locaux techniques":"#f59e0b","Combles":"#8b5cf6","Emballages":"#22c55e","Conditionnement":"#ef4444","Bureaux":"#06b6d4","Maintenance":"#84cc16","Stockage":"#f97316","Autres":"#7a90aa"};
+        const zoneColors = {"Exterieur":"#ec4899","Locaux techniques":"#f59e0b","Combles":"#8b5cf6","Emballages":"#22c55e","Conditionnement":"#ef4444","Bureaux":"#06b6d4","Maintenance":"#84cc16","Stockage":"#f97316","Autres":"#7a90aa"};
         legendsC = Object.entries(zoneColors);
       }
       let lx = 10;
@@ -12359,7 +12363,7 @@ function PlanImplantation({ seuilsGlobaux }) {
         </div>
         <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
           <button onClick={exportAllPlans}
-            style={{background:"#1d4ed8",color:"#fff",border:"none",borderRadius:9,padding:"9px 16px",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>
+            style={{background:"#db2777",color:"#fff",border:"none",borderRadius:9,padding:"9px 16px",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>
             Export PDF complet
           </button>
           {prevPosByPlan && (
@@ -12382,11 +12386,11 @@ function PlanImplantation({ seuilsGlobaux }) {
       {passages.length>0 && (
         <Card style={{marginBottom:14}}>
           <div style={{display:"flex",justifyContent:"space-between",alignItems:"center",marginBottom:10}}>
-            <div style={{fontSize:10,fontWeight:700,color:"#3b82f6",textTransform:"uppercase",letterSpacing:1}}>Passage affiché</div>
+            <div style={{fontSize:10,fontWeight:700,color:"#ec4899",textTransform:"uppercase",letterSpacing:1}}>Passage affiché</div>
             <div style={{display:"flex",gap:6}}>
               {["Tous",...years].map(y=>(
                 <button key={y} onClick={()=>setFilterYear(y)}
-                  style={{background:filterYear===y?"#1d4ed8":"transparent",color:filterYear===y?"#fff":"#7a90aa",border:"1px solid "+(filterYear===y?"#1d4ed8":"#3d5270"),borderRadius:6,padding:"3px 10px",fontSize:11,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>
+                  style={{background:filterYear===y?"#db2777":"transparent",color:filterYear===y?"#fff":"#7a90aa",border:"1px solid "+(filterYear===y?"#db2777":"#3d5270"),borderRadius:6,padding:"3px 10px",fontSize:11,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>
                   {y}
                 </button>
               ))}
@@ -12411,10 +12415,10 @@ function PlanImplantation({ seuilsGlobaux }) {
               const hasDeiv = passagesDate.some(p=>(p.type||"")==="Insectes volants");
               const hasRongeurs = passagesDate.some(p=>(p.type||"")!=="Insectes volants");
               const badgeLabel = hasDeiv && hasRongeurs ? "Mix" : hasDeiv ? "DEIV" : "Rongeurs";
-              const badgeColor = hasDeiv && hasRongeurs ? "#8b5cf6" : hasDeiv ? "#f59e0b" : "#3b82f6";
+              const badgeColor = hasDeiv && hasRongeurs ? "#8b5cf6" : hasDeiv ? "#f59e0b" : "#ec4899";
               return (
                 <button key={date} onClick={()=>setSelDate(isS?null:date)}
-                  style={{background:isS?"#1d4ed8":"#1a2540",border:"1px solid "+(isS?"#3b82f6":"#3d5270"),borderRadius:10,padding:"10px 14px",cursor:"pointer",fontFamily:"inherit",textAlign:"left",minWidth:120}}>
+                  style={{background:isS?"#db2777":"#1a2540",border:"1px solid "+(isS?"#ec4899":"#3d5270"),borderRadius:10,padding:"10px 14px",cursor:"pointer",fontFamily:"inherit",textAlign:"left",minWidth:120}}>
                   <div style={{display:"flex",alignItems:"center",gap:6,marginBottom:4}}>
                     <span style={{fontSize:9,fontWeight:700,background:badgeColor+"22",color:badgeColor,border:"1px solid "+badgeColor+"44",borderRadius:4,padding:"1px 5px"}}>{badgeLabel}</span>
                     <div style={{fontSize:13,fontWeight:700,color:"#f1f5f9"}}>{date}</div>
@@ -12435,7 +12439,7 @@ function PlanImplantation({ seuilsGlobaux }) {
       {/* KPIs */}
       <div style={{display:"grid",gridTemplateColumns:"repeat(4,1fr)",gap:10,marginBottom:14}}>
         <div style={{background:"#243352",borderRadius:10,padding:"14px 18px",textAlign:"center"}}>
-          <div style={{fontSize:26,fontWeight:900,color:"#3b82f6"}}>{selDate ? kpi.total : postes.length}</div>
+          <div style={{fontSize:26,fontWeight:900,color:"#ec4899"}}>{selDate ? kpi.total : postes.length}</div>
           <div style={{fontSize:11,color:"#7a90aa",marginTop:2}}>{selDate ? "Postes contrôlés" : "Postes"}</div>
         </div>
         <div style={{background:"#243352",borderRadius:10,padding:"14px 18px",textAlign:"center"}}>
@@ -12475,7 +12479,7 @@ function PlanImplantation({ seuilsGlobaux }) {
             const count = postes.filter(p=>p.id&&/^RE/i.test(p.id)).length;
             if(count===0 || nuisiblesMasques.indexOf("__RE")>=0) return null;
             const active = filterNuisibleArr.includes("__RE");
-            const colRE = nuisibleColors["__RE"]||"#1e40af";
+            const colRE = nuisibleColors["__RE"]||"#be185d";
             return (
               <button key="__RE" onClick={()=>setFilterNuisibleArr(prev=>active?prev.filter(x=>x!=="__RE"):[...prev,"__RE"])}
                 style={{display:"flex",alignItems:"center",gap:6,background:active?colRE+"22":"transparent",color:active?colRE:"#7a90aa",border:"1px solid "+(active?colRE:"#3d5270"),borderRadius:20,padding:"5px 14px",fontSize:12,fontWeight:active?700:500,cursor:"pointer",fontFamily:"inherit"}}>
@@ -12489,7 +12493,7 @@ function PlanImplantation({ seuilsGlobaux }) {
             const count = postes.filter(p=>p.id&&/^(RI|R\d|S\d)/i.test(p.id)&&!/^RE/i.test(p.id)).length;
             if(count===0 || nuisiblesMasques.indexOf("__RI")>=0) return null;
             const active = filterNuisibleArr.includes("__RI");
-            const colRI = nuisibleColors["__RI"]||"#60a5fa";
+            const colRI = nuisibleColors["__RI"]||"#f472b6";
             return (
               <button key="__RI" onClick={()=>setFilterNuisibleArr(prev=>active?prev.filter(x=>x!=="__RI"):[...prev,"__RI"])}
                 style={{display:"flex",alignItems:"center",gap:6,background:active?colRI+"22":"transparent",color:active?colRI:"#7a90aa",border:"1px solid "+(active?colRI:"#3d5270"),borderRadius:20,padding:"5px 14px",fontSize:12,fontWeight:active?700:500,cursor:"pointer",fontFamily:"inherit"}}>
@@ -12524,15 +12528,15 @@ function PlanImplantation({ seuilsGlobaux }) {
               return (
                 <div key={pl.id} style={{position:"relative"}}>
                   {editingPlanId===pl.id ? (
-                    <div style={{display:"flex",gap:4,padding:"6px 8px",background:"#243352",borderRadius:"8px 8px 0 0",border:"1px solid #3b82f6",borderBottom:"none"}}>
+                    <div style={{display:"flex",gap:4,padding:"6px 8px",background:"#243352",borderRadius:"8px 8px 0 0",border:"1px solid #ec4899",borderBottom:"none"}}>
                       <input value={editingPlanLabel} onChange={e=>setEditingPlanLabel(e.target.value)}
-                        style={{background:"#1a2540",border:"1px solid #3b82f6",borderRadius:5,padding:"3px 8px",color:"#f1f5f9",fontSize:12,fontFamily:"inherit",width:140}}/>
+                        style={{background:"#1a2540",border:"1px solid #ec4899",borderRadius:5,padding:"3px 8px",color:"#f1f5f9",fontSize:12,fontFamily:"inherit",width:140}}/>
                       <button onClick={saveLabel} style={{background:"#22c55e",color:"#fff",border:"none",borderRadius:5,padding:"3px 8px",fontSize:11,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>OK</button>
                       <button onClick={()=>setEditingPlanId(null)} style={{background:"transparent",color:"#7a90aa",border:"1px solid #3d5270",borderRadius:5,padding:"3px 6px",fontSize:11,cursor:"pointer",fontFamily:"inherit"}}>✕</button>
                     </div>
                   ) : (
                     <div onClick={()=>{ if(isActive){ setShowPlanActions(v=>!v); } else { setActivePlanPersisted(pl.id); setShowPlanActions(true); } }}
-                      style={{display:"flex",alignItems:"center",gap:6,padding:"8px 16px",cursor:"pointer",background:isActive?"#243352":"transparent",borderRadius:"8px 8px 0 0",borderTop:isActive?"2px solid #3b82f6":"2px solid transparent",borderLeft:"1px solid "+(isActive?"#3d5270":"transparent"),borderRight:"1px solid "+(isActive?"#3d5270":"transparent"),borderBottom:"none",marginBottom:isActive?-1:0,transition:"all 0.15s"}}>
+                      style={{display:"flex",alignItems:"center",gap:6,padding:"8px 16px",cursor:"pointer",background:isActive?"#243352":"transparent",borderRadius:"8px 8px 0 0",borderTop:isActive?"2px solid #ec4899":"2px solid transparent",borderLeft:"1px solid "+(isActive?"#3d5270":"transparent"),borderRight:"1px solid "+(isActive?"#3d5270":"transparent"),borderBottom:"none",marginBottom:isActive?-1:0,transition:"all 0.15s"}}>
                       <span style={{fontSize:14,fontWeight:isActive?700:500,color:isActive?"#f1f5f9":"#7a90aa",whiteSpace:"nowrap"}}>{pl.label}</span>
                       {isActive && <span style={{fontSize:10,color:"#5a7090"}}>{showPlanActions?"▲":"▼"}</span>}
                     </div>
@@ -12571,7 +12575,7 @@ function PlanImplantation({ seuilsGlobaux }) {
             {/* + Ajouter des postes */}
             <div style={{position:"relative"}}>
               <button onClick={()=>setShowAddPosteMenu(v=>!v)}
-                style={{background:"#1d4ed8",color:"#fff",border:"none",borderRadius:7,padding:"5px 10px",fontSize:11,fontFamily:"inherit",cursor:"pointer",fontWeight:700}}>
+                style={{background:"#db2777",color:"#fff",border:"none",borderRadius:7,padding:"5px 10px",fontSize:11,fontFamily:"inherit",cursor:"pointer",fontWeight:700}}>
                 + Ajouter postes {selectedPostesToAdd.length>0?"("+selectedPostesToAdd.length+")":""}
               </button>
               {showAddPosteMenu && (
@@ -12580,8 +12584,8 @@ function PlanImplantation({ seuilsGlobaux }) {
                   {filteredPostes.filter(p=>!getPts(activePlan).find(pt=>pt.id===p.id)).length===0
                     ? <div style={{fontSize:11,color:"#5a7090",textAlign:"center",padding:10}}>Tous les postes sont déjà sur ce plan.</div>
                     : filteredPostes.filter(p=>!getPts(activePlan).find(pt=>pt.id===p.id)).map(p=>(
-                      <label key={p.id} style={{display:"flex",alignItems:"center",gap:8,padding:"4px 0",cursor:"pointer",fontSize:11,color:selectedPostesToAdd.includes(p.id)?"#3b82f6":"#cbd5e1"}}>
-                        <input type="checkbox" checked={selectedPostesToAdd.includes(p.id)} onChange={e=>{setSelectedPostesToAdd(prev=>e.target.checked?[...prev,p.id]:prev.filter(x=>x!==p.id));}} style={{accentColor:"#3b82f6"}}/>
+                      <label key={p.id} style={{display:"flex",alignItems:"center",gap:8,padding:"4px 0",cursor:"pointer",fontSize:11,color:selectedPostesToAdd.includes(p.id)?"#ec4899":"#cbd5e1"}}>
+                        <input type="checkbox" checked={selectedPostesToAdd.includes(p.id)} onChange={e=>{setSelectedPostesToAdd(prev=>e.target.checked?[...prev,p.id]:prev.filter(x=>x!==p.id));}} style={{accentColor:"#ec4899"}}/>
                         <span style={{fontFamily:"monospace",fontWeight:700,color:"#f59e0b"}}>{p.id}</span>
                         <span style={{color:"#7a90aa",fontSize:10}}>{(p.zone||"").slice(0,25)}</span>
                       </label>
@@ -12655,7 +12659,7 @@ function PlanImplantation({ seuilsGlobaux }) {
 
             {/* Export PDF */}
             <button onClick={exportPlanPdf}
-              style={{background:"#1d4ed822",color:"#3b82f6",border:"1px solid #3b82f644",borderRadius:7,padding:"5px 12px",fontSize:11,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>
+              style={{background:"#db277722",color:"#ec4899",border:"1px solid #ec489944",borderRadius:7,padding:"5px 12px",fontSize:11,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>
               Export PDF
             </button>
 
@@ -12782,8 +12786,8 @@ function PlanImplantation({ seuilsGlobaux }) {
         )}
 
         {placingPoste && (
-          <div style={{padding:"8px 14px",background:"#1d4ed822",borderBottom:"1px solid #3b82f644"}}>
-            <span style={{fontSize:12,color:"#3b82f6",fontWeight:700}}>→ Cliquez sur le plan pour placer le poste {placingPoste}</span>
+          <div style={{padding:"8px 14px",background:"#db277722",borderBottom:"1px solid #ec489944"}}>
+            <span style={{fontSize:12,color:"#ec4899",fontWeight:700}}>→ Cliquez sur le plan pour placer le poste {placingPoste}</span>
             <button onClick={()=>setPlacingPoste("")} style={{background:"transparent",color:"#7a90aa",border:"none",fontSize:11,cursor:"pointer",marginLeft:12}}>Annuler</button>
           </div>
         )}
@@ -12804,7 +12808,7 @@ function PlanImplantation({ seuilsGlobaux }) {
                   <div style={{fontSize:14,fontWeight:700,color:"#f1f5f9",marginBottom:8,display:"flex",alignItems:"center",gap:8}}>
                     {plan.label}
                     <span style={{fontSize:10,color:"#7a90aa",fontWeight:400}}>({pts.length} postes)</span>
-                    <button onClick={()=>{setActivePlanPersisted(plan.id);setShowAllPlans(false);}} style={{marginLeft:"auto",background:"#1d4ed822",color:"#3b82f6",border:"1px solid #3b82f644",borderRadius:6,padding:"3px 10px",fontSize:11,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>Ouvrir / Editer</button>
+                    <button onClick={()=>{setActivePlanPersisted(plan.id);setShowAllPlans(false);}} style={{marginLeft:"auto",background:"#db277722",color:"#ec4899",border:"1px solid #ec489944",borderRadius:6,padding:"3px 10px",fontSize:11,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>Ouvrir / Editer</button>
                     <button onClick={()=>deletePlan(plan.id)} style={{background:"#ef444422",color:"#ef4444",border:"1px solid #ef444444",borderRadius:6,padding:"3px 8px",fontSize:11,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>Supprimer</button>
                   </div>
                   <div style={{position:"relative",background:"#fff",borderRadius:8,overflow:"hidden"}}>
@@ -12973,8 +12977,8 @@ function PlanImplantation({ seuilsGlobaux }) {
         )}
         {modeColor==="type"&&(
           <div style={{display:"flex",flexWrap:"wrap",gap:10}}>
-            {nuisiblesMasques.indexOf("__RE")<0 && <div style={{display:"flex",alignItems:"center",gap:5}}><PuceForme forme={posteFormes["RE"]||"rond"} col={nuisibleColors["__RE"]||"#1e40af"}/><span style={{fontSize:11,color:"#7a90aa"}}>Rongeurs ext. (RE)</span></div>}
-            {nuisiblesMasques.indexOf("__RI")<0 && <div style={{display:"flex",alignItems:"center",gap:5}}><PuceForme forme={posteFormes["RI"]||"rond"} col={nuisibleColors["__RI"]||"#60a5fa"}/><span style={{fontSize:11,color:"#7a90aa"}}>Rongeurs int. (RI)</span></div>}
+            {nuisiblesMasques.indexOf("__RE")<0 && <div style={{display:"flex",alignItems:"center",gap:5}}><PuceForme forme={posteFormes["RE"]||"rond"} col={nuisibleColors["__RE"]||"#be185d"}/><span style={{fontSize:11,color:"#7a90aa"}}>Rongeurs ext. (RE)</span></div>}
+            {nuisiblesMasques.indexOf("__RI")<0 && <div style={{display:"flex",alignItems:"center",gap:5}}><PuceForme forme={posteFormes["RI"]||"rond"} col={nuisibleColors["__RI"]||"#f472b6"}/><span style={{fontSize:11,color:"#7a90aa"}}>Rongeurs int. (RI)</span></div>}
             {NUISIBLES_LIST.filter(n=>n!=="Rongeurs" && nuisiblesMasques.indexOf(n)<0).map(n=>{
               const col=nuisibleColors[n]||"#7a90aa";
               const count=postes.filter(p=>(p.nuisible||"Rongeurs")===n).length;
@@ -12984,7 +12988,7 @@ function PlanImplantation({ seuilsGlobaux }) {
           </div>
         )}
         <button onClick={()=>setShowFormesEditor(v=>!v)} title="Choisir la forme des pastilles par type de poste"
-          style={{ marginLeft:"auto", background:showFormesEditor?"#1d4ed8":"#243352", color:showFormesEditor?"#fff":"#94a3b8", border:"1px solid "+(showFormesEditor?"#3b82f6":"#3d5270"), borderRadius:7, padding:"5px 12px", fontSize:11, fontWeight:600, cursor:"pointer", fontFamily:"inherit" }}>
+          style={{ marginLeft:"auto", background:showFormesEditor?"#db2777":"#243352", color:showFormesEditor?"#fff":"#94a3b8", border:"1px solid "+(showFormesEditor?"#ec4899":"#3d5270"), borderRadius:7, padding:"5px 12px", fontSize:11, fontWeight:600, cursor:"pointer", fontFamily:"inherit" }}>
           Gestion des pastilles
         </button>
       </div>
@@ -12997,11 +13001,11 @@ function PlanImplantation({ seuilsGlobaux }) {
               <div key={cat} style={{ display:"flex", alignItems:"center", gap:10 }}>
                 {(()=>{ var cleM = cat==="RE"?"__RE":cat==="RI"?"__RI":cat; var masque = nuisiblesMasques.indexOf(cleM)>=0;
                   return <button onClick={()=>toggleNuisibleMasque(cleM)} title={masque?"Masque dans les legendes et le filtre":"Affiche"}
-                    style={{ width:26, height:20, borderRadius:5, border:"1px solid "+(masque?"#3d5270":"#3b82f6"), background:masque?"#1a2540":"#1d4ed8", color:masque?"#5a7090":"#fff", fontSize:11, cursor:"pointer", fontFamily:"inherit", padding:0 }}>{masque?"○":"●"}</button>;
+                    style={{ width:26, height:20, borderRadius:5, border:"1px solid "+(masque?"#3d5270":"#ec4899"), background:masque?"#1a2540":"#db2777", color:masque?"#5a7090":"#fff", fontSize:11, cursor:"pointer", fontFamily:"inherit", padding:0 }}>{masque?"○":"●"}</button>;
                 })()}
                 <span style={{ fontSize:11, color: (nuisiblesMasques.indexOf(cat==="RE"?"__RE":cat==="RI"?"__RI":cat)>=0?"#5a7090":"#cbd5e1"), width:164, textDecoration:(nuisiblesMasques.indexOf(cat==="RE"?"__RE":cat==="RI"?"__RI":cat)>=0?"line-through":"none") }}>{lib}</span>
                 <div style={{ display:"flex", gap:3, marginRight:4 }}>
-                  {["#1e40af","#3b82f6","#60a5fa","#06b6d4","#22c55e","#84cc16","#eab308","#f59e0b","#f97316","#ef4444","#dc2626","#ec4899","#8b5cf6","#7c3aed","#7a90aa","#475569","#000000"].map(c=>{
+                  {["#be185d","#ec4899","#f472b6","#06b6d4","#22c55e","#84cc16","#eab308","#f59e0b","#f97316","#ef4444","#dc2626","#ec4899","#8b5cf6","#7c3aed","#7a90aa","#475569","#000000"].map(c=>{
                     var cle = cat==="RE"?"__RE":cat==="RI"?"__RI":cat;
                     var actifC = (nuisibleColors[cle]||"")===c;
                     return <button key={c} title="Couleur de ce type" onClick={()=>setNuisibleColor(cle,c)}
@@ -13012,7 +13016,7 @@ function PlanImplantation({ seuilsGlobaux }) {
                   {FORMES_DISPO.map(f=>{
                     var actif = (posteFormes[cat]||"rond")===f;
                     return <button key={f} onClick={()=>setPosteForme(cat,f)}
-                      style={{ display:"flex", alignItems:"center", gap:5, background:actif?"#1d4ed8":"#1a2540", color:actif?"#fff":"#94a3b8", border:"1px solid "+(actif?"#3b82f6":"#3d5270"), borderRadius:6, padding:"4px 10px", fontSize:10, fontWeight:600, cursor:"pointer", fontFamily:"inherit" }}>
+                      style={{ display:"flex", alignItems:"center", gap:5, background:actif?"#db2777":"#1a2540", color:actif?"#fff":"#94a3b8", border:"1px solid "+(actif?"#ec4899":"#3d5270"), borderRadius:6, padding:"4px 10px", fontSize:10, fontWeight:600, cursor:"pointer", fontFamily:"inherit" }}>
                       <span style={{ display:"inline-block", background:actif?"#fff":"#94a3b8",
                         width: f==="ovale"?14:f==="rect"?16:11, height: f==="ovale"?9:f==="rect"?8:11,
                         borderRadius: (f==="rond"||f==="ovale")?"50%":(f==="carre"||f==="rect")?2:0,
@@ -13064,7 +13068,7 @@ function AuditScoreEvolutionChart({ audits }) {
         <text x={W-PAD+4} y={y85+4} fontSize="9" fill="#22c55e">Conforme</text>
         <line x1={PAD} x2={W-PAD} y1={y60} y2={y60} stroke="#f59e0b" strokeDasharray="5,3" strokeWidth="1.5"/>
         <text x={W-PAD+4} y={y60+4} fontSize="9" fill="#f59e0b">Partiel</text>
-        {sorted.length>1 && <polyline points={sorted.map((a,i)=>xPos(i)+","+yPos(a.score||0)).join(" ")} fill="none" stroke="#3b82f6" strokeWidth="2.5" strokeLinejoin="round"/>}
+        {sorted.length>1 && <polyline points={sorted.map((a,i)=>xPos(i)+","+yPos(a.score||0)).join(" ")} fill="none" stroke="#ec4899" strokeWidth="2.5" strokeLinejoin="round"/>}
         {sorted.map((a,i)=>{
           const col = scoreColorStatic(a.score||0);
           return (
@@ -13120,7 +13124,7 @@ function AuditScoreEvolutionChart({ audits }) {
     {collapsed && (
       <div onClick={()=>setCollapsed(false)} style={{background:"#243352",border:"1px solid #3d5270",borderRadius:10,padding:"10px 16px",marginBottom:16,cursor:"pointer",display:"flex",justifyContent:"space-between",alignItems:"center"}}>
         <span style={{fontSize:12,color:"#94a3b8"}}>Évolution du score d'audit - masqué</span>
-        <span style={{fontSize:11,color:"#3b82f6",fontWeight:700}}>+ Afficher</span>
+        <span style={{fontSize:11,color:"#ec4899",fontWeight:700}}>+ Afficher</span>
       </div>
     )}
     </>
@@ -13151,7 +13155,7 @@ function AuditScoreParSectionChart({ audits, grille }) {
     const score = max > 0 ? Math.round(total/max*100) : 0;
     return { label: section.section, value: score };
   });
-  return <BarChartHorizontal title="Score moyen par section" chartKey="AuditScoreParSection" color="#3b82f6" data={data}/>;
+  return <BarChartHorizontal title="Score moyen par section" chartKey="AuditScoreParSection" color="#ec4899" data={data}/>;
 }
 
 function AuditObservationsParZoneChart({ audits }) {
@@ -13459,7 +13463,7 @@ function Audit({ seuilsGlobaux }) {
       ? "<div style='margin-top:20px'><h2 style='color:#0f2864;border-bottom:2px solid #0f2864;padding-bottom:6px'>Observations</h2>" +
         (a.obsItems||[]).map(function(obs, i) {
           const statCol = obs.statut==="Non conforme" ? "#ef4444" : "#f59e0b";
-          const PCOL = { haute:"#ef4444", moyenne:"#f59e0b", basse:"#3b82f6" };
+          const PCOL = { haute:"#ef4444", moyenne:"#f59e0b", basse:"#ec4899" };
           const prioHtml = obs.priorite ? "<span style='font-weight:700;color:"+(PCOL[obs.priorite]||"#6b7280")+";margin-left:10px;text-transform:uppercase;font-size:11px'>"+obs.priorite+"</span>" : "";
           const descHtml = obs.description ? "<p style='margin:4px 0;color:#374151'><strong>Description :</strong> "+obs.description+"</p>" : "";
           const actHtml = obs.action ? "<p style='margin:4px 0;color:#374151'><strong>Action corrective :</strong> "+obs.action+"</p>" : "";
@@ -13500,15 +13504,15 @@ function Audit({ seuilsGlobaux }) {
           <div style={{fontSize:13,color:"#7a90aa"}}>{audits.length} audit(s) - {allItems.length} critères évalués</div>
         </div>
         <button onClick={()=>{resetForm();setShowForm(v=>!v);}}
-          style={{background:"#1d4ed8",color:"#fff",border:"none",borderRadius:9,padding:"10px 18px",fontSize:13,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>
+          style={{background:"#db2777",color:"#fff",border:"none",borderRadius:9,padding:"10px 18px",fontSize:13,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>
           + Nouvel audit
         </button>
       </div>
 
-      <div style={{background:"#1e3a5f22",border:"1px solid #3b82f633",borderRadius:12,padding:"12px 18px",marginBottom:20,display:"flex",gap:12,alignItems:"flex-start"}}>
+      <div style={{background:"#4a1e3822",border:"1px solid #ec489933",borderRadius:12,padding:"12px 18px",marginBottom:20,display:"flex",gap:12,alignItems:"flex-start"}}>
         <span style={{fontSize:20}}>📋</span>
         <div>
-          <div style={{fontSize:13,fontWeight:700,color:"#3b82f6",marginBottom:4}}>Audit interne 3D — Contrôle qualité du dispositif de lutte antiparasitaire</div>
+          <div style={{fontSize:13,fontWeight:700,color:"#ec4899",marginBottom:4}}>Audit interne 3D — Contrôle qualité du dispositif de lutte antiparasitaire</div>
           <div style={{fontSize:12,color:"#94a3b8",lineHeight:1.6}}>Vérification périodique de la conformité du dispositif 3D : état des postes, fréquence des passages, produits biocides, documents réglementaires et actions correctives. Conforme au référentiel IFS Food v8 section 4.14 et aux exigences de traçabilité du plan de lutte intégrée.</div>
         </div>
       </div>
@@ -13548,7 +13552,7 @@ function Audit({ seuilsGlobaux }) {
           {/* Grille d'audit */}
           {GRILLE.map(section=>(
             <div key={section.section} style={{marginBottom:16}}>
-              <div style={{fontSize:12,fontWeight:700,color:"#3b82f6",textTransform:"uppercase",letterSpacing:1,marginBottom:8,borderLeft:"3px solid #3b82f6",paddingLeft:8}}>
+              <div style={{fontSize:12,fontWeight:700,color:"#ec4899",textTransform:"uppercase",letterSpacing:1,marginBottom:8,borderLeft:"3px solid #ec4899",paddingLeft:8}}>
                 {section.section}
               </div>
               {section.items.map(item=>{
@@ -13597,7 +13601,7 @@ function Audit({ seuilsGlobaux }) {
 
           {/* Section Observations dynamiques */}
           <div style={{marginBottom:16}}>
-            <div style={{fontSize:12,fontWeight:700,color:"#3b82f6",textTransform:"uppercase",letterSpacing:1,marginBottom:10,borderLeft:"3px solid #3b82f6",paddingLeft:8}}>
+            <div style={{fontSize:12,fontWeight:700,color:"#ec4899",textTransform:"uppercase",letterSpacing:1,marginBottom:10,borderLeft:"3px solid #ec4899",paddingLeft:8}}>
               Observations
             </div>
             {obsItems.map((obs,idx)=>(
@@ -13630,7 +13634,7 @@ function Audit({ seuilsGlobaux }) {
                     <div style={{display:"flex",gap:5}}>
                       {["haute","moyenne","basse"].map(p=>{
                         const active=obs.priorite===p;
-                        const col=p==="haute"?"#ef4444":p==="moyenne"?"#f59e0b":"#3b82f6";
+                        const col=p==="haute"?"#ef4444":p==="moyenne"?"#f59e0b":"#ec4899";
                         const label=p.charAt(0).toUpperCase()+p.slice(1);
                         return <button key={p} onClick={()=>setObsItems(prev=>prev.map(o=>o.id===obs.id?{...o,priorite:p}:o))}
                           style={{background:active?col+"33":"#243352",color:active?col:"#7a90aa",border:"1px solid "+(active?col:"#3d5270"),borderRadius:6,padding:"3px 10px",fontSize:10,fontWeight:active?700:400,cursor:"pointer",fontFamily:"inherit"}}>
@@ -13668,7 +13672,7 @@ function Audit({ seuilsGlobaux }) {
                           <button onClick={()=>setObsItems(prev=>prev.map(o=>o.id===obs.id?{...o,photos:o.photos.filter((_,k)=>k!==j)}:o))}
                             style={{position:"absolute",top:-4,right:-4,background:"#ef4444",color:"#fff",border:"none",borderRadius:"50%",width:15,height:15,fontSize:8,cursor:"pointer"}}>✕</button>
                           <a href={ph.url} download={ph.name||"photo.jpg"}
-                            style={{position:"absolute",bottom:-4,right:-4,background:"#3b82f6",color:"#fff",borderRadius:"50%",width:15,height:15,fontSize:9,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",textDecoration:"none"}}>↓</a>
+                            style={{position:"absolute",bottom:-4,right:-4,background:"#ec4899",color:"#fff",borderRadius:"50%",width:15,height:15,fontSize:9,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",textDecoration:"none"}}>↓</a>
                         </div>
                       ))}
                     </div>
@@ -13677,7 +13681,7 @@ function Audit({ seuilsGlobaux }) {
               </div>
             ))}
             <button onClick={()=>setObsItems(prev=>[...prev,{id:"obs_"+Date.now()+"_"+Math.random().toString(36).slice(2,8),zone:"",statut:"Non conforme",priorite:"moyenne",description:"",action:"",photos:[]}])}
-              style={{background:"#243352",color:"#3b82f6",border:"1px dashed #3b82f644",borderRadius:8,padding:"8px 16px",fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:"inherit",width:"100%"}}>
+              style={{background:"#243352",color:"#ec4899",border:"1px dashed #ec489944",borderRadius:8,padding:"8px 16px",fontSize:12,fontWeight:600,cursor:"pointer",fontFamily:"inherit",width:"100%"}}>
               + Ajouter une observation
             </button>
           </div>
@@ -13690,7 +13694,7 @@ function Audit({ seuilsGlobaux }) {
             <textarea rows={3} value={draft.observations} onChange={e=>setDraft(p=>({...p,observations:e.target.value}))} style={{...inp(),resize:"vertical"}}/>
           </div>
           <div style={{display:"flex",gap:8}}>
-            <button onClick={save} style={{background:"#1d4ed8",color:"#fff",border:"none",borderRadius:8,padding:"8px 16px",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>
+            <button onClick={save} style={{background:"#db2777",color:"#fff",border:"none",borderRadius:8,padding:"8px 16px",fontSize:12,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>
               {editId?"Mettre à jour":"Enregistrer l'audit"}
             </button>
             <button onClick={()=>{resetForm();setShowForm(false);}} style={{background:"transparent",color:"#7a90aa",border:"1px solid #3d5270",borderRadius:8,padding:"8px 14px",fontSize:12,cursor:"pointer",fontFamily:"inherit"}}>
@@ -13727,7 +13731,7 @@ function Audit({ seuilsGlobaux }) {
                   PDF
                 </button>
                 <button onClick={()=>openEdit(a)}
-                  style={{background:"#1d4ed822",color:"#3b82f6",border:"1px solid #3b82f644",borderRadius:6,padding:"4px 10px",fontSize:11,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>
+                  style={{background:"#db277722",color:"#ec4899",border:"1px solid #ec489944",borderRadius:6,padding:"4px 10px",fontSize:11,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>
                   Edit
                 </button>
                 <button onClick={()=>{setAudits(prev=>prev.filter(x=>x.id!==a.id));setSel(null);sbDelete("audits",a.id);}}
@@ -13740,7 +13744,7 @@ function Audit({ seuilsGlobaux }) {
               <div style={{marginTop:12,paddingTop:12,borderTop:"1px solid #3d5270"}}>
                 {GRILLE.map(s=>(
                   <div key={s.section} style={{marginBottom:10}}>
-                    <div style={{fontSize:10,fontWeight:700,color:"#3b82f6",textTransform:"uppercase",marginBottom:5}}>{s.section}</div>
+                    <div style={{fontSize:10,fontWeight:700,color:"#ec4899",textTransform:"uppercase",marginBottom:5}}>{s.section}</div>
                     {s.items.map(item=>{
                       const v=a.reponses[item.id]||"Non évalué";
                       const col=NOTE_COL[v]||"#5a7090";
@@ -13756,13 +13760,13 @@ function Audit({ seuilsGlobaux }) {
                 {a.observations&&<div style={{marginTop:8,fontSize:12,color:"#94a3b8"}}><strong style={{color:"#7a90aa"}}>Conclusion :</strong> {a.observations}</div>}
                 {(a.obsItems||[]).length>0&&(
                   <div style={{marginTop:10,paddingTop:10,borderTop:"1px solid #3d5270"}}>
-                    <div style={{fontSize:10,fontWeight:700,color:"#3b82f6",textTransform:"uppercase",marginBottom:8}}>Observations ({a.obsItems.length})</div>
+                    <div style={{fontSize:10,fontWeight:700,color:"#ec4899",textTransform:"uppercase",marginBottom:8}}>Observations ({a.obsItems.length})</div>
                     {a.obsItems.map((obs,i)=>(
                       <div key={obs.id} style={{background:"#1a2540",borderRadius:8,padding:"8px 12px",marginBottom:6}}>
                         <div style={{display:"flex",justifyContent:"space-between",marginBottom:4,gap:8,flexWrap:"wrap"}}>
                           <span style={{fontSize:11,fontWeight:700,color:"#f1f5f9"}}>{obs.zone||"Zone non précisée"}</span>
                           <div style={{display:"flex",gap:6,alignItems:"center"}}>
-                            {obs.priorite&&<span style={{fontSize:9,fontWeight:700,color:obs.priorite==="haute"?"#ef4444":obs.priorite==="moyenne"?"#f59e0b":"#3b82f6",background:(obs.priorite==="haute"?"#ef4444":obs.priorite==="moyenne"?"#f59e0b":"#3b82f6")+"22",borderRadius:4,padding:"1px 6px",textTransform:"uppercase"}}>{obs.priorite}</span>}
+                            {obs.priorite&&<span style={{fontSize:9,fontWeight:700,color:obs.priorite==="haute"?"#ef4444":obs.priorite==="moyenne"?"#f59e0b":"#ec4899",background:(obs.priorite==="haute"?"#ef4444":obs.priorite==="moyenne"?"#f59e0b":"#ec4899")+"22",borderRadius:4,padding:"1px 6px",textTransform:"uppercase"}}>{obs.priorite}</span>}
                             <span style={{fontSize:10,fontWeight:700,color:obs.statut==="Non conforme"?"#ef4444":"#f59e0b"}}>{obs.statut}</span>
                           </div>
                         </div>
@@ -13774,7 +13778,7 @@ function Audit({ seuilsGlobaux }) {
                           <div key={j} style={{position:"relative"}}>
                             <img src={ph.url} style={{width:50,height:50,objectFit:"cover",borderRadius:5,border:"1px solid #3d5270"}}/>
                             <a href={ph.url} download={ph.name||"photo.jpg"}
-                              style={{position:"absolute",bottom:-4,right:-4,background:"#3b82f6",color:"#fff",border:"none",borderRadius:"50%",width:16,height:16,fontSize:9,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",textDecoration:"none"}}>↓</a>
+                              style={{position:"absolute",bottom:-4,right:-4,background:"#ec4899",color:"#fff",border:"none",borderRadius:"50%",width:16,height:16,fontSize:9,cursor:"pointer",display:"flex",alignItems:"center",justifyContent:"center",textDecoration:"none"}}>↓</a>
                           </div>
                         ))}
                           </div>
@@ -13782,7 +13786,7 @@ function Audit({ seuilsGlobaux }) {
                         <div onClick={e=>e.stopPropagation()}>
                           {obs.actionId ? (() => {
                             const stAction = actionsStatuts[obs.actionId] || "Planifiée";
-                            const SCOLOR_ACTION = { "En cours":"#f59e0b", "Planifiée":"#3b82f6", "Résolue":"#22c55e", Vigilance:"#f59e0b" };
+                            const SCOLOR_ACTION = { "En cours":"#f59e0b", "Planifiée":"#ec4899", "Résolue":"#22c55e", Vigilance:"#f59e0b" };
                             const col = SCOLOR_ACTION[stAction] || "#7a90aa";
                             return (
                               <span style={{fontSize:10,fontWeight:700,color:col,background:col+"22",border:"1px solid "+col+"44",borderRadius:6,padding:"3px 9px",display:"inline-block"}}>
@@ -13791,7 +13795,7 @@ function Audit({ seuilsGlobaux }) {
                             );
                           })() : (
                             <button onClick={()=>creerActionDepuisObservation(a, obs)} disabled={creatingAction===obs.id}
-                              style={{background:"#1d4ed822",color:"#3b82f6",border:"1px solid #3b82f644",borderRadius:6,padding:"4px 10px",fontSize:10,fontWeight:700,cursor:creatingAction===obs.id?"default":"pointer",fontFamily:"inherit",opacity:creatingAction===obs.id?0.6:1}}>
+                              style={{background:"#db277722",color:"#ec4899",border:"1px solid #ec489944",borderRadius:6,padding:"4px 10px",fontSize:10,fontWeight:700,cursor:creatingAction===obs.id?"default":"pointer",fontFamily:"inherit",opacity:creatingAction===obs.id?0.6:1}}>
                               {creatingAction===obs.id ? "Creation..." : "+ Creer une action"}
                             </button>
                           )}
@@ -13853,7 +13857,7 @@ function NavBtn({ id, label, page, setPage, narrow }) {
   const paths = iconPath.split(" M ").map((p,i) => i===0?p:"M "+p);
   return (
     <button onClick={() => setPage(id)} title={narrow ? label : ""}
-      style={{ width: "100%", textAlign: "left", padding: narrow ? "10px 0" : "8px 14px", display: "flex", alignItems: "center", justifyContent: narrow ? "center" : "flex-start", gap: 9, background: active ? "#1d4ed811" : "transparent", borderLeft: narrow ? "none" : (active ? "3px solid #3b82f6" : "3px solid transparent"), borderBottom: narrow && active ? "2px solid #3b82f6" : "none", border: "none", cursor: "pointer", fontSize: 12, fontWeight: active ? 700 : 400, color: active ? "#f1f5f9" : "#7a90aa", fontFamily: "inherit", transition: "all .12s" }}>
+      style={{ width: "100%", textAlign: "left", padding: narrow ? "10px 0" : "8px 14px", display: "flex", alignItems: "center", justifyContent: narrow ? "center" : "flex-start", gap: 9, background: active ? "#db277711" : "transparent", borderLeft: narrow ? "none" : (active ? "3px solid #ec4899" : "3px solid transparent"), borderBottom: narrow && active ? "2px solid #ec4899" : "none", border: "none", cursor: "pointer", fontSize: 12, fontWeight: active ? 700 : 400, color: active ? "#f1f5f9" : "#7a90aa", fontFamily: "inherit", transition: "all .12s" }}>
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" style={{flexShrink:0,opacity:active?1:0.7}}>
         {paths.map((d,i) => <path key={i} d={d}/>)}
       </svg>
@@ -14093,8 +14097,8 @@ function ParametresModal({ onClose }) {
         </div>
 
         <div style={{ display:"flex", gap:6, marginBottom:20, background:"#243352", borderRadius:9, padding:3, width:"fit-content" }}>
-          <button onClick={()=>setTab("client")} style={{ background:tab==="client"?"#1d4ed8":"transparent", color:tab==="client"?"#fff":"#94a3b8", border:"none", borderRadius:7, padding:"7px 16px", fontSize:12, fontWeight:600, cursor:"pointer", fontFamily:"inherit" }}>Client</button>
-          <button onClick={()=>setTab("aads")} style={{ background:tab==="aads"?"#1d4ed8":"transparent", color:tab==="aads"?"#fff":"#94a3b8", border:"none", borderRadius:7, padding:"7px 16px", fontSize:12, fontWeight:600, cursor:"pointer", fontFamily:"inherit" }}>AADS</button>
+          <button onClick={()=>setTab("client")} style={{ background:tab==="client"?"#db2777":"transparent", color:tab==="client"?"#fff":"#94a3b8", border:"none", borderRadius:7, padding:"7px 16px", fontSize:12, fontWeight:600, cursor:"pointer", fontFamily:"inherit" }}>Client</button>
+          <button onClick={()=>setTab("aads")} style={{ background:tab==="aads"?"#db2777":"transparent", color:tab==="aads"?"#fff":"#94a3b8", border:"none", borderRadius:7, padding:"7px 16px", fontSize:12, fontWeight:600, cursor:"pointer", fontFamily:"inherit" }}>AADS</button>
           <button onClick={()=>setTab("sites")} style={{ background:tab==="sites"?"#8b5cf6":"transparent", color:tab==="sites"?"#fff":"#94a3b8", border:"none", borderRadius:7, padding:"7px 16px", fontSize:12, fontWeight:600, cursor:"pointer", fontFamily:"inherit" }}>Sites</button>
         </div>
 
@@ -14184,7 +14188,7 @@ function ParametresModal({ onClose }) {
               const active = certifications.includes(c);
               return (
                 <button key={c} onClick={()=>toggleCertif(c)}
-                  style={{ background:active?"#1d4ed8":"#243352", color:active?"#fff":"#94a3b8", border:"1px solid "+(active?"#3b82f6":"#3d5270"), borderRadius:20, padding:"6px 14px", fontSize:12, fontWeight:active?700:500, cursor:"pointer", fontFamily:"inherit" }}>
+                  style={{ background:active?"#db2777":"#243352", color:active?"#fff":"#94a3b8", border:"1px solid "+(active?"#ec4899":"#3d5270"), borderRadius:20, padding:"6px 14px", fontSize:12, fontWeight:active?700:500, cursor:"pointer", fontFamily:"inherit" }}>
                   {active ? "✓ " : ""}{c}
                 </button>
               );
@@ -14198,7 +14202,7 @@ function ParametresModal({ onClose }) {
 
         <div style={{ display:"flex", gap:10, alignItems:"center" }}>
           <button onClick={handleSave} disabled={saving}
-            style={{ background:"#1d4ed8", color:"#fff", border:"none", borderRadius:8, padding:"10px 22px", fontSize:13, fontWeight:700, cursor:saving?"default":"pointer", fontFamily:"inherit", opacity:saving?0.6:1 }}>
+            style={{ background:"#db2777", color:"#fff", border:"none", borderRadius:8, padding:"10px 22px", fontSize:13, fontWeight:700, cursor:saving?"default":"pointer", fontFamily:"inherit", opacity:saving?0.6:1 }}>
             {saving ? "Enregistrement..." : "Enregistrer"}
           </button>
           {saved && <span style={{ color:"#22c55e", fontSize:13, fontWeight:600 }}>✓ Enregistré — rechargez la page pour tout mettre à jour</span>}
@@ -14255,7 +14259,7 @@ function ParametresModal({ onClose }) {
 
         <div style={{ display:"flex", gap:10, alignItems:"center" }}>
           <button onClick={handleSaveAads} disabled={savingAads}
-            style={{ background:"#1d4ed8", color:"#fff", border:"none", borderRadius:8, padding:"10px 22px", fontSize:13, fontWeight:700, cursor:savingAads?"default":"pointer", fontFamily:"inherit", opacity:savingAads?0.6:1 }}>
+            style={{ background:"#db2777", color:"#fff", border:"none", borderRadius:8, padding:"10px 22px", fontSize:13, fontWeight:700, cursor:savingAads?"default":"pointer", fontFamily:"inherit", opacity:savingAads?0.6:1 }}>
             {savingAads ? "Enregistrement..." : "Enregistrer"}
           </button>
           {savedAads && <span style={{ color:"#22c55e", fontSize:13, fontWeight:600 }}>✓ Enregistré</span>}
@@ -14382,7 +14386,7 @@ export default function App() {
             {authError && <div style={{color:"#ef4444",fontSize:12,marginTop:6,fontWeight:600}}>{authError}</div>}
           </div>
           <button onClick={handleLogin} disabled={authLoading||!authInput}
-            style={{width:"100%",background:"#1d4ed8",color:"#fff",border:"none",borderRadius:9,padding:"12px",fontSize:14,fontWeight:700,cursor:authLoading||!authInput?"default":"pointer",fontFamily:"inherit",opacity:authLoading||!authInput?0.6:1,transition:"opacity 0.2s"}}>
+            style={{width:"100%",background:"#db2777",color:"#fff",border:"none",borderRadius:9,padding:"12px",fontSize:14,fontWeight:700,cursor:authLoading||!authInput?"default":"pointer",fontFamily:"inherit",opacity:authLoading||!authInput?0.6:1,transition:"opacity 0.2s"}}>
             {authLoading ? "Vérification..." : "Accéder au portail"}
           </button>
           <div style={{textAlign:"center",marginTop:20,fontSize:11,color:"#3d5270"}}>
@@ -14684,7 +14688,7 @@ function AppPortail({ isAdmin, onLogout }) {
               e.preventDefault();
             }}
             style={{ position: "absolute", right: 0, top: 0, bottom: 0, width: 5, cursor: "col-resize", zIndex: 10, background: "transparent" }}
-            onMouseEnter={e => { e.currentTarget.style.background = "#3b82f633"; }}
+            onMouseEnter={e => { e.currentTarget.style.background = "#ec489933"; }}
             onMouseLeave={e => { if (!sidebarResizing.current) e.currentTarget.style.background = "transparent"; }}
           />
           <div style={{ borderBottom: "1px solid #243352", position:"relative" }}>
@@ -14692,7 +14696,7 @@ function AppPortail({ isAdmin, onLogout }) {
               {bannerUrl
                 ? <img src={bannerUrl} alt="AADS" style={{ width: "100%", height: 120, objectFit: "cover", objectPosition: "center", display: "block" }} />
                 : <div style={{ padding: "14px", textAlign: "center" }}>
-                    <div style={{ fontSize: 14, fontWeight: 800, color: "#3b82f6" }}>AADS</div>
+                    <div style={{ fontSize: 14, fontWeight: 800, color: "#ec4899" }}>AADS</div>
                   </div>
               }
               <div style={{position:"absolute",inset:0,background:"rgba(15,23,42,0)",transition:"background 0.15s",display:"flex",alignItems:"center",justifyContent:"center"}}
@@ -14715,7 +14719,7 @@ function AppPortail({ isAdmin, onLogout }) {
             )}
             <div style={{ padding: "6px 16px 10px", borderTop: "1px solid #24335244", display: "flex", alignItems: "center", gap: 8 }}>
               <div onClick={()=>setShowParametres(true)} style={{ fontSize: 10, color: CLIENT_CONFIG.nom?"#94a3b8":"#f59e0b", fontWeight: 600, flex:1, cursor:"pointer" }} title="Cliquer pour modifier les paramètres client">{CLIENT_CONFIG.nom ? "⚙ Paramètres" : "⚙ Configurer le client"}</div>
-              <span style={{fontSize:9,fontWeight:700,background:isAdmin?"#1d4ed822":"#22c55e22",color:isAdmin?"#3b82f6":"#22c55e",border:"1px solid "+(isAdmin?"#3b82f644":"#22c55e44"),borderRadius:4,padding:"1px 6px"}}>{isAdmin?"Admin":"Client"}</span>
+              <span style={{fontSize:9,fontWeight:700,background:isAdmin?"#db277722":"#22c55e22",color:isAdmin?"#ec4899":"#22c55e",border:"1px solid "+(isAdmin?"#ec489944":"#22c55e44"),borderRadius:4,padding:"1px 6px"}}>{isAdmin?"Admin":"Client"}</span>
               <button onClick={onLogout} title="Se déconnecter" style={{background:"transparent",border:"1px solid #3d5270",borderRadius:6,color:"#7a90aa",fontSize:11,cursor:"pointer",padding:"2px 7px",fontFamily:"inherit"}}>⏻</button>
             </div>
           </div>
@@ -14763,7 +14767,7 @@ function AppPortail({ isAdmin, onLogout }) {
 
           <div style={{ padding: "10px 14px", borderTop: "1px solid #243352" }}>
             <button onClick={() => setShowNavConfig(v => !v)}
-              style={{ width: "100%", background: showNavConfig ? "#1d4ed822" : "transparent", color: "#7a90aa", border: "1px solid #3d5270", borderRadius: 7, padding: "6px 12px", fontSize: 11, cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>
+              style={{ width: "100%", background: showNavConfig ? "#db277722" : "transparent", color: "#7a90aa", border: "1px solid #3d5270", borderRadius: 7, padding: "6px 12px", fontSize: 11, cursor: "pointer", fontFamily: "inherit", fontWeight: 600 }}>
               {showNavConfig ? "x Fermer config" : "Configurer les onglets"}
             </button>
 
@@ -14791,7 +14795,7 @@ function AppPortail({ isAdmin, onLogout }) {
                             setNavVisible(next);
                             try { localStorage.setItem("aads_nav_visible", JSON.stringify(next)); } catch(_e) { return; }
                           }}
-                          style={{ accentColor: "#3b82f6" }} />
+                          style={{ accentColor: "#ec4899" }} />
                         <span style={{ fontSize: 11, color: item.required ? "#5a7090" : navVisible[item.id] !== false ? "#f1f5f9" : "#7a90aa" }}>{item.label}</span>
                         {item.required && <span style={{ fontSize: 9, color: "#5a7090" }}>(requis)</span>}
                       </label>
