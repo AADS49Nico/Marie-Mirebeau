@@ -6899,7 +6899,7 @@ function PlanActions() {
     const isObs = (draft.nature === "observation");
     // Observation : on ne conserve que zone, date et commentaire.
     const dr = isObs
-      ? { ...draft, titre5m:"", type:"", priorite:"", piegeRef:"", technicien:"", description:"", recommandation:"" }
+      ? { ...draft, titre5m:"", type:"", priorite:"", piegeRef:"", technicien:"", recommandation:"", commentaire:"" }
       : draft;
     const phs = isObs ? [] : draftPhotos;
     if (editId !== null) {
@@ -7019,7 +7019,7 @@ function PlanActions() {
                 ? "<br/><div style='margin-top:6px'>"+(a.photos||[]).map(p=>"<img src='"+p.url+"' style='max-width:80px;max-height:60px;border-radius:4px;margin:2px;object-fit:cover;border:1px solid #e5e7eb'/>").join("")+"</div>"
                 : "";
               const comm = (a.commentaire && a.commentaire.replace(/<[^>]+>/g,"").replace(/&nbsp;/gi," ").trim()) ? a.commentaire : "";
-              return "<tr><td>"+badge(natLabel(a),nc)+"</td><td>"+(a.dateDetection||"—")+"</td><td>"+(a.zone||"")+"</td><td>"+(a.titre5m?badge(a.titre5m,mc):"—")+photosHtml+"</td><td>"+(a.priorite?badge(a.priorite,pc):"—")+"</td><td>"+badge(a.statut,sc)+"</td><td>"+(a.description||"")+"</td><td>"+comm+"</td></tr>";
+              return "<tr><td>"+badge(natLabel(a),nc)+"</td><td>"+(a.dateDetection||"—")+"</td><td>"+(a.zone||"")+"</td><td>"+(a.titre5m?badge(a.titre5m,mc):"—")+photosHtml+"</td><td>"+(a.priorite?badge(a.priorite,pc):"—")+"</td><td>"+(a.nature==="observation"?"—":badge(a.statut,sc))+"</td><td>"+(a.description||"")+"</td><td>"+comm+"</td></tr>";
             }).join("");
             const natTxt = natureFilter==="action" ? "Actions" : natureFilter==="observation" ? "Observations" : "Actions + observations";
             exportHTML("Plan d'actions - " + CLIENT_CONFIG.nom,
@@ -7125,19 +7125,29 @@ function PlanActions() {
             </div>
             )}
           </div>
-          {draft.nature!=="observation" && ["description", "recommandation"].map(f => (
-            <div key={f} style={{ marginBottom: 8 }}>
-              <label style={{ fontSize: 10, color: "var(--text-label)", fontWeight: 600, textTransform: "uppercase", display: "block", marginBottom: 3 }}>{f}</label>
-              <textarea rows={2} value={draft[f]} onChange={e => setDraft(p => ({ ...p, [f]: e.target.value }))}
+          {/* Description (+ Recommandation pour les actions) sur une même ligne */}
+          <div style={{ display: "grid", gridTemplateColumns: draft.nature==="observation" ? "1fr" : "1fr 1fr", gap: 10, marginBottom: 8 }}>
+            <div>
+              <label style={{ fontSize: 10, color: "var(--text-label)", fontWeight: 600, textTransform: "uppercase", display: "block", marginBottom: 3 }}>Description</label>
+              <textarea rows={2} value={draft.description} onChange={e => setDraft(p => ({ ...p, description: e.target.value }))}
                 style={{ ...inp(), resize: "vertical" }} />
             </div>
-          ))}
+            {draft.nature!=="observation" && (
+            <div>
+              <label style={{ fontSize: 10, color: "var(--text-label)", fontWeight: 600, textTransform: "uppercase", display: "block", marginBottom: 3 }}>Recommandation</label>
+              <textarea rows={2} value={draft.recommandation} onChange={e => setDraft(p => ({ ...p, recommandation: e.target.value }))}
+                style={{ ...inp(), resize: "vertical" }} />
+            </div>
+            )}
+          </div>
 
-          {/* Commentaire enrichi */}
+          {/* Commentaire enrichi : actions uniquement */}
+          {draft.nature!=="observation" && (
           <div style={{ marginBottom: 10 }}>
             <label style={{ fontSize: 10, color: "var(--text-label)", fontWeight: 600, textTransform: "uppercase", display: "block", marginBottom: 3 }}>Commentaire (gras, souligné, retour à la ligne)</label>
             <CommentEditor value={draft.commentaire||""} onChange={html=>setDraft(p=>({ ...p, commentaire: html }))} />
           </div>
+          )}
 
           {/* Photos (masquées pour une observation) */}
           {draft.nature!=="observation" && (
@@ -7232,7 +7242,7 @@ function PlanActions() {
       {/* Tableau */}
       <Card style={{ padding: 0, overflow: "hidden" }}>
         <div style={{ background: "var(--bg-1)", padding: "9px 16px", display: "grid", gridTemplateColumns: "60px 90px 100px 110px 80px 100px 1fr 170px", gap: 8, fontSize: 10, fontWeight: 700, color: "var(--text-label)", textTransform: "uppercase" }}>
-          <div>Type</div><div>Date creation</div><div>Zone</div><div>5M</div><div>Priorité</div><div>Statut</div><div>Commentaires</div><div style={{textAlign:"right"}}>Actions</div>
+          <div>Type</div><div>Date creation</div><div>Zone</div><div>5M</div><div>Priorité</div><div>Statut</div><div>Description</div><div style={{textAlign:"right"}}>Actions</div>
         </div>
         <div style={{ maxHeight: 500, overflowY: "auto" }}>
           {filtered.map((a, i) => {
@@ -7263,14 +7273,19 @@ function PlanActions() {
                       : <span style={{ fontSize: 10, color: "var(--text-faint)" }}>—</span>}
                   </div>
                   <div>
+                    {a.nature === "observation" ? (
+                      <span style={{ fontSize: 12, color: "var(--text-faint)" }}>—</span>
+                    ) : (
                     <select value={a.statut} onChange={e => { e.stopPropagation(); changeStatut(a.id, e.target.value); }}
                       style={{ background: (SCOLOR[a.statut] || "var(--text-label)") + "22", color: SCOLOR[a.statut] || "var(--text-label)", border: "1px solid " + (SCOLOR[a.statut] || "var(--text-label)") + "44", borderRadius: 6, padding: "3px 7px", fontSize: 10, fontWeight: 700, fontFamily: "inherit", cursor: "pointer" }}
                       onClick={e => e.stopPropagation()}>
                       {["En cours", "Planifiée", "Résolue", "Vigilance"].map(s => <option key={s} value={s}>{s}</option>)}
                     </select>
+                    )}
                   </div>
-                  <div style={{ fontSize: 11, color: "var(--text-muted)", maxHeight: 54, overflow: "auto", whiteSpace: "pre-wrap", wordBreak: "break-word" }}
-                    dangerouslySetInnerHTML={{ __html: (a.commentaire && a.commentaire.replace(/<[^>]+>/g,"").replace(/&nbsp;/gi," ").trim()) ? a.commentaire : "<span style='color:var(--text-faint)'>—</span>" }} />
+                  <div style={{ fontSize: 11, color: "var(--text-muted)", maxHeight: 54, overflow: "auto", whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
+                    {a.description ? a.description : <span style={{ color: "var(--text-faint)" }}>—</span>}
+                  </div>
                   <div style={{ display: "flex", gap: 4, justifyContent: "flex-end" }} onClick={e=>e.stopPropagation()}>
                     <button onClick={() => openEdit(a)}
                       style={{ background: "#1d4ed822", color: "#3b82f6", border: "1px solid #3b82f644", borderRadius: 5, padding: "3px 8px", fontSize: 10, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>✏</button>
