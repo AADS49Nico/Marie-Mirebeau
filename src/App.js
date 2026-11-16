@@ -6896,18 +6896,24 @@ function PlanActions() {
 
   function saveAction() {
     setPrevActions(actions);
+    const isObs = (draft.nature === "observation");
+    // Observation : on ne conserve que zone, date et commentaire.
+    const dr = isObs
+      ? { ...draft, titre5m:"", type:"", priorite:"", piegeRef:"", technicien:"", description:"", recommandation:"" }
+      : draft;
+    const phs = isObs ? [] : draftPhotos;
     if (editId !== null) {
       setActions(prev => prev.map(a => {
         if (a.id !== editId) return a;
-        const updated = { ...a, ...draft, photos: draftPhotos };
-        sbUpsert("plan_actions", { id:updated.id, contrat:CLIENT_CONFIG.contrat, nature:draft.nature||"action", titre5m:draft.titre5m, type:draft.type, priorite:draft.priorite, zone:draft.zone, description:draft.description, recommandation:draft.recommandation, technicien:draft.technicien, piege_ref:draft.piegeRef||"", statut:updated.statut||"Planifiée", date_detection:updated.dateDetection||"", commentaire:draft.commentaire||"", photos:JSON.stringify(draftPhotos) });
+        const updated = { ...a, ...dr, photos: phs };
+        sbUpsert("plan_actions", { id:updated.id, contrat:CLIENT_CONFIG.contrat, nature:dr.nature||"action", titre5m:dr.titre5m, type:dr.type, priorite:dr.priorite, zone:dr.zone, description:dr.description, recommandation:dr.recommandation, technicien:dr.technicien, piege_ref:dr.piegeRef||"", statut:updated.statut||"Planifiée", date_detection:updated.dateDetection||"", commentaire:dr.commentaire||"", photos:JSON.stringify(phs) });
         return updated;
       }));
     } else {
       const newId = String(Date.now());
-      const newAction = { ...draft, id: newId, statut: "Planifiée", photos: draftPhotos, dateDetection: draft.dateDetection || new Date().toLocaleDateString("fr-FR") };
+      const newAction = { ...dr, id: newId, statut: "Planifiée", photos: phs, dateDetection: dr.dateDetection || new Date().toLocaleDateString("fr-FR") };
       setActions(prev => [newAction, ...prev]);
-      const actionData = { id:newId, contrat:CLIENT_CONFIG.contrat, nature:draft.nature||"action", titre5m:draft.titre5m, type:draft.type, priorite:draft.priorite, zone:draft.zone, description:draft.description, recommandation:draft.recommandation, technicien:draft.technicien, piege_ref:draft.piegeRef||"", statut:"Planifiée", date_detection:newAction.dateDetection, commentaire:draft.commentaire||"", photos:JSON.stringify(draftPhotos) };
+      const actionData = { id:newId, contrat:CLIENT_CONFIG.contrat, nature:dr.nature||"action", titre5m:dr.titre5m, type:dr.type, priorite:dr.priorite, zone:dr.zone, description:dr.description, recommandation:dr.recommandation, technicien:dr.technicien, piege_ref:dr.piegeRef||"", statut:"Planifiée", date_detection:newAction.dateDetection, commentaire:dr.commentaire||"", photos:JSON.stringify(phs) };
       if (navigator.onLine) {
         sbUpsert("plan_actions", actionData);
       } else {
@@ -7013,7 +7019,7 @@ function PlanActions() {
                 ? "<br/><div style='margin-top:6px'>"+(a.photos||[]).map(p=>"<img src='"+p.url+"' style='max-width:80px;max-height:60px;border-radius:4px;margin:2px;object-fit:cover;border:1px solid #e5e7eb'/>").join("")+"</div>"
                 : "";
               const comm = (a.commentaire && a.commentaire.replace(/<[^>]+>/g,"").replace(/&nbsp;/gi," ").trim()) ? a.commentaire : "";
-              return "<tr><td>"+badge(natLabel(a),nc)+"</td><td>"+(a.dateDetection||"—")+"</td><td>"+(a.zone||"")+"</td><td>"+badge(a.titre5m||"",mc)+photosHtml+"</td><td>"+badge(a.priorite,pc)+"</td><td>"+badge(a.statut,sc)+"</td><td>"+(a.description||"")+"</td><td>"+comm+"</td></tr>";
+              return "<tr><td>"+badge(natLabel(a),nc)+"</td><td>"+(a.dateDetection||"—")+"</td><td>"+(a.zone||"")+"</td><td>"+(a.titre5m?badge(a.titre5m,mc):"—")+photosHtml+"</td><td>"+(a.priorite?badge(a.priorite,pc):"—")+"</td><td>"+badge(a.statut,sc)+"</td><td>"+(a.description||"")+"</td><td>"+comm+"</td></tr>";
             }).join("");
             const natTxt = natureFilter==="action" ? "Actions" : natureFilter==="observation" ? "Observations" : "Actions + observations";
             exportHTML("Plan d'actions - " + CLIENT_CONFIG.nom,
@@ -7054,20 +7060,20 @@ function PlanActions() {
                 <option value="observation">Observation</option>
               </select>
             </div>
-            {[
-              ["piegeRef", "Poste(s)", "text"],
-            ].map(([key, label, type]) => (
-              <div key={key}>
-                <label style={{ fontSize: 10, color: "var(--text-label)", fontWeight: 600, textTransform: "uppercase", display: "block", marginBottom: 3 }}>{label}</label>
-                <input type={type} value={draft[key]} onChange={e => setDraft(p => ({ ...p, [key]: e.target.value }))} style={inp()} />
-              </div>
-            ))}
+            {draft.nature!=="observation" && (
+            <div>
+              <label style={{ fontSize: 10, color: "var(--text-label)", fontWeight: 600, textTransform: "uppercase", display: "block", marginBottom: 3 }}>Poste(s)</label>
+              <input type="text" value={draft.piegeRef} onChange={e => setDraft(p => ({ ...p, piegeRef: e.target.value }))} style={inp()} />
+            </div>
+            )}
+            {draft.nature!=="observation" && (
             <div>
               <label style={{ fontSize: 10, color: "var(--text-label)", fontWeight: 600, textTransform: "uppercase", display: "block", marginBottom: 3 }}>5M *</label>
               <select value={draft.titre5m} onChange={e => setDraft(p => ({ ...p, titre5m: e.target.value }))} style={inp()}>
                 {CINQ_M.map(m => <option key={m} value={m}>{m}</option>)}
               </select>
             </div>
+            )}
             <div>
               <label style={{ fontSize: 10, color: "var(--text-label)", fontWeight: 600, textTransform: "uppercase", display: "block", marginBottom: 3 }}>Date de création</label>
               <input type="date"
@@ -7079,6 +7085,7 @@ function PlanActions() {
                 }}
                 style={inp()} />
             </div>
+            {draft.nature!=="observation" && (
             <div>
               <label style={{ fontSize: 10, color: "var(--text-label)", fontWeight: 600, textTransform: "uppercase", display: "block", marginBottom: 3 }}>Technicien</label>
               <select value={draft.technicien||""} onChange={e => setDraft(p => ({ ...p, technicien: e.target.value }))} style={inp()}>
@@ -7086,6 +7093,7 @@ function PlanActions() {
                 {TECHNICIENS.map(t => <option key={t} value={t}>{t}</option>)}
               </select>
             </div>
+            )}
             <div>
               <label style={{ fontSize: 10, color: "var(--text-label)", fontWeight: 600, textTransform: "uppercase", display: "block", marginBottom: 3 }}>Zone</label>
               <select value={draft.zone} onChange={e => setDraft(p => ({ ...p, zone: e.target.value }))} style={inp()}>
@@ -7097,6 +7105,7 @@ function PlanActions() {
                 <button onClick={()=>addZone(newZoneInput)} style={{background:"#22c55e",color:"#fff",border:"none",borderRadius:5,padding:"4px 9px",fontSize:11,fontWeight:700,cursor:"pointer",fontFamily:"inherit"}}>+</button>
               </div>
             </div>
+            {draft.nature!=="observation" && (
             <div>
               <label style={{ fontSize: 10, color: "var(--text-label)", fontWeight: 600, textTransform: "uppercase", display: "block", marginBottom: 3 }}>Type</label>
               <select value={draft.type} onChange={e => setDraft(p => ({ ...p, type: e.target.value }))} style={inp()}>
@@ -7104,6 +7113,8 @@ function PlanActions() {
                 <option value="preventive">Préventive</option>
               </select>
             </div>
+            )}
+            {draft.nature!=="observation" && (
             <div>
               <label style={{ fontSize: 10, color: "var(--text-label)", fontWeight: 600, textTransform: "uppercase", display: "block", marginBottom: 3 }}>Priorité</label>
               <select value={draft.priorite} onChange={e => setDraft(p => ({ ...p, priorite: e.target.value }))} style={inp()}>
@@ -7112,8 +7123,9 @@ function PlanActions() {
                 <option value="basse">Basse</option>
               </select>
             </div>
+            )}
           </div>
-          {["description", "recommandation"].map(f => (
+          {draft.nature!=="observation" && ["description", "recommandation"].map(f => (
             <div key={f} style={{ marginBottom: 8 }}>
               <label style={{ fontSize: 10, color: "var(--text-label)", fontWeight: 600, textTransform: "uppercase", display: "block", marginBottom: 3 }}>{f}</label>
               <textarea rows={2} value={draft[f]} onChange={e => setDraft(p => ({ ...p, [f]: e.target.value }))}
@@ -7127,7 +7139,8 @@ function PlanActions() {
             <CommentEditor value={draft.commentaire||""} onChange={html=>setDraft(p=>({ ...p, commentaire: html }))} />
           </div>
 
-          {/* Photos */}
+          {/* Photos (masquées pour une observation) */}
+          {draft.nature!=="observation" && (
           <div style={{ marginBottom: 12 }}>
             <label style={{ fontSize: 10, color: "var(--text-label)", fontWeight: 600, textTransform: "uppercase", display: "block", marginBottom: 6 }}>
               Photos ({draftPhotos.length})
@@ -7155,6 +7168,7 @@ function PlanActions() {
               </label>
             </div>
           </div>
+          )}
 
           <div style={{ display: "flex", gap: 8 }}>
             <button onClick={saveAction} style={{ background: "#1d4ed8", color: "#fff", border: "none", borderRadius: 8, padding: "8px 16px", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>
@@ -7244,7 +7258,9 @@ function PlanActions() {
                     )}
                   </div>
                   <div>
-                    <span style={{ fontSize: 10, fontWeight: 700, color: PCOLOR[a.priorite] || "var(--text-label)", background: (PCOLOR[a.priorite] || "var(--text-label)") + "18", borderRadius: 4, padding: "2px 6px" }}>{a.priorite}</span>
+                    {a.priorite
+                      ? <span style={{ fontSize: 10, fontWeight: 700, color: PCOLOR[a.priorite] || "var(--text-label)", background: (PCOLOR[a.priorite] || "var(--text-label)") + "18", borderRadius: 4, padding: "2px 6px" }}>{a.priorite}</span>
+                      : <span style={{ fontSize: 10, color: "var(--text-faint)" }}>—</span>}
                   </div>
                   <div>
                     <select value={a.statut} onChange={e => { e.stopPropagation(); changeStatut(a.id, e.target.value); }}
