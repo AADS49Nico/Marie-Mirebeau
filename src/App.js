@@ -12395,9 +12395,9 @@ function PlanImplantation({ seuilsGlobaux }) {
   }
   // Rend une pastille de poste dans la forme voulue, couleur pilotee par le mode.
   // Le label est centre par-dessus. isHov agrandit legerement au survol.
-  function renderPastille(forme, taille, col, labelNode, isHov) {
+  function renderPastille(forme, taille, col, labelNode, isHov, isDrag) {
     var scale = isHov ? "scale(1.2)" : "scale(1)";
-    var ombre = "0 2px 8px rgba(0,0,0,0.7)";
+    var ombre = isDrag ? "none" : "0 2px 8px rgba(0,0,0,0.7)";
     // Epaisseur de contour configuree : 0 => AUCUN contour (ne pas retomber sur 1.5).
     var bw = (pastilleCfg.contourSize==null ? 1.5 : pastilleCfg.contourSize);
     var bc = pastilleCfg.contourColor || "#fff";
@@ -12405,7 +12405,7 @@ function PlanImplantation({ seuilsGlobaux }) {
     if (forme === "triangle") {
       var w = taille * 1.25, h = taille * 1.1;
       return (
-        <div style={{ position:"relative", width:w, height:h, transform:scale, transition:"transform 0.05s", cursor:"grab", filter:"drop-shadow("+ombre+")" }}>
+        <div style={{ position:"relative", width:w, height:h, transform:scale, transition:"transform 0.05s", cursor:"grab", filter: isDrag ? "none" : "drop-shadow(0 2px 8px rgba(0,0,0,0.7))" }}>
           <svg width={w} height={h} viewBox="0 0 100 90" style={{ display:"block" }}>
             <polygon points="50,4 96,86 4,86" fill={col} stroke={bw>0?bc:"none"} strokeWidth={bw>0?bw*4:0} strokeLinejoin="round"/>
           </svg>
@@ -13481,7 +13481,7 @@ function PlanImplantation({ seuilsGlobaux }) {
               const isMov=movingPoste===pt.id;
               return (
                 <div key={pt.id}
-                  style={{position:"absolute",left:pt.x+"%",top:pt.y+"%",transform:"translate(-50%,-50%)",zIndex:dragId===pt.id?40:10,willChange:dragId===pt.id?"left, top":"auto"}}
+                  style={{position:"absolute",left:pt.x+"%",top:pt.y+"%",transform:dragId===pt.id?"translate(-50%,-50%) translateZ(0)":"translate(-50%,-50%)",zIndex:dragId===pt.id?40:10,willChange:dragId===pt.id?"transform":"auto"}}
                   onMouseDown={e=>{
                     e.stopPropagation();
                     e.preventDefault();
@@ -13545,7 +13545,8 @@ function PlanImplantation({ seuilsGlobaux }) {
                   {renderPastille(
                     posteFormes[categorieForme(p)] || "rond", pastilleCfg.taille, col,
                     <span style={{fontSize:posteLabelFontSize(pt.id,pastilleCfg.numSize),fontWeight:900,color:pastilleCfg.labelColor||"#fff",textShadow:"0 1px 2px rgba(0,0,0,0.6)"}}>{posteLabel(pt.id)}</span>,
-                    isHov && !dragId
+                    isHov && !dragId,
+                    dragId===pt.id
                   )}
                   {isHov && !dragId && (
                     <div style={{position:"absolute",left:"50%",top:-38,transform:"translateX(-50%)",background:"var(--bg-2)",border:"1px solid "+col,borderRadius:7,padding:"4px 10px",fontSize:10,color:"var(--text-1)",whiteSpace:"nowrap",zIndex:20,boxShadow:"0 2px 8px rgba(0,0,0,0.5)"}}>
