@@ -378,7 +378,7 @@ function transformElGlobal(el) {
   return parts.length ? parts.join(" ") : undefined;
 }
 
-function svgPastilleForme(forme, x, y, r, col, ns) {
+function svgPastilleForme(forme, x, y, r, col, ns, contourW, contourColor) {
   var g = document.createElementNS(ns, "g");
   var shape;
   if (forme === "triangle") {
@@ -401,14 +401,16 @@ function svgPastilleForme(forme, x, y, r, col, ns) {
     shape = document.createElementNS(ns, "circle");
     shape.setAttribute("cx", x); shape.setAttribute("cy", y); shape.setAttribute("r", r);
   }
-  shape.setAttribute("fill", col); shape.setAttribute("stroke", "#fff");
-  shape.setAttribute("stroke-width", 2); shape.setAttribute("stroke-linejoin", "round");
+  var _cw = (contourW==null?2:contourW); var _cc = contourColor||"#fff";
+  shape.setAttribute("fill", col);
+  shape.setAttribute("stroke", _cw>0?_cc:"none");
+  shape.setAttribute("stroke-width", _cw>0?_cw:0); shape.setAttribute("stroke-linejoin", "round");
   g.appendChild(shape);
   return g;
 }
 
 // Trace une pastille de forme donnee sur un canvas 2D (exports rasterises).
-function canvasPastilleForme(ctx, forme, x, y, r, col) {
+function canvasPastilleForme(ctx, forme, x, y, r, col, contourW, contourColor) {
   ctx.beginPath();
   if (forme === "triangle") {
     var h = r * 1.7;
@@ -423,7 +425,8 @@ function canvasPastilleForme(ctx, forme, x, y, r, col) {
     ctx.arc(x, y, r, 0, Math.PI*2);
   }
   ctx.fillStyle = col; ctx.fill();
-  ctx.strokeStyle = "#fff"; ctx.lineWidth = 2; ctx.lineJoin = "round"; ctx.stroke();
+  var _cw = (contourW==null?2:contourW);
+  if (_cw>0){ ctx.strokeStyle = contourColor||"#fff"; ctx.lineWidth = _cw; ctx.lineJoin = "round"; ctx.stroke(); }
 }
 const NUISIBLE_COLORS = {
   Rongeurs: "#3b82f6",
@@ -502,13 +505,19 @@ const ZONES_MACRO = [
 const POSTES_INIT = []; // Données chargées depuis Supabase
 
 const CRITERES_IFS = [
-  { ref: "4.14.1", libelle: "Plan de lutte antiparasitaire documenté", statut: "Conforme", date: "28/01/2026" },
-  { ref: "4.14.2", libelle: "Inspection régulière des dispositifs", statut: "Conforme", date: "24/03/2026" },
-  { ref: "4.14.3", libelle: "Enregistrement des résultats d'inspection", statut: "Conforme", date: "24/03/2026" },
-  { ref: "4.14.4", libelle: "Mesures correctives documentées", statut: "En cours", date: "28/01/2026" },
-  { ref: "4.14.5", libelle: "Personnel formé - lutte antiparasitaire", statut: "Conforme", date: "28/01/2026" },
-  { ref: "4.14.6", libelle: "Produits biocides homologués et FDS à jour", statut: "Conforme", date: "28/01/2026" },
-  { ref: "4.14.7", libelle: "Cartographie des points de contrôle", statut: "Conforme", date: "28/01/2026" },
+  { id: "ifs1",  ref: "4.13.7", libelle: "Analyse des tendances / efficacité de la lutte antiparasitaire", statut: "Conforme", date: "01/01/2026" },
+  { id: "ifs2",  ref: "4.13.2", libelle: "Analyse de risques + plan de lutte documenté", statut: "Conforme", date: "28/01/2026" },
+  { id: "ifs3",  ref: "4.13.4", libelle: "Inspection régulière des dispositifs", statut: "Conforme", date: "24/03/2026" },
+  { id: "ifs4",  ref: "4.13.4", libelle: "Enregistrement des résultats d'inspection", statut: "Conforme", date: "24/03/2026" },
+  { id: "ifs5",  ref: "4.13.4", libelle: "Mesures correctives documentées", statut: "Conforme", date: "28/01/2026" },
+  { id: "ifs6",  ref: "4.13.3", libelle: "Responsable interne compétent identifié et formé au suivi", statut: "Conforme", date: "28/01/2026" },
+  { id: "ifs7",  ref: "4.13.2", libelle: "Produits biocides homologués et FDS à jour", statut: "Conforme", date: "28/01/2026" },
+  { id: "ifs8",  ref: "4.13.2", libelle: "Cartographie des points de contrôle", statut: "Conforme", date: "28/01/2026" },
+  { id: "ifs9",  ref: "4.13.7", libelle: "Analyse de tendance des captures/consommations", statut: "Conforme", date: "01/01/2026" },
+  { id: "ifs10", ref: "4.13.7", libelle: "Seuils d'alerte définis", statut: "Conforme", date: "01/01/2026" },
+  { id: "ifs11", ref: "4.13.5", libelle: "Dispositifs conformes et fonctionnels", statut: "Conforme", date: "01/01/2026" },
+  { id: "ifs12", ref: "4.13.2", libelle: "Contrôle des zones structurelles à risque", statut: "Conforme", date: "01/01/2026" },
+  { id: "ifs13", ref: "4.13.6", libelle: "Contrôle des livraisons", statut: "Conforme", date: "01/01/2026" },
 ];
 
 const ACTIONS_INIT = []; // Données chargées depuis Supabase
@@ -3153,7 +3162,7 @@ function Conformite() {
   useEffect(() => {
     sbGet("conformite_ifs").then(data => {
       if (data && data.length > 0) setCriteres(data);
-      else CRITERES_IFS.forEach(c => sbUpsert("conformite_ifs", { id: c.ref, contrat: CLIENT_CONFIG.contrat, ref: c.ref, libelle: c.libelle, statut: c.statut, date: c.date||"" }));
+      else CRITERES_IFS.forEach(c => sbUpsert("conformite_ifs", { id: c.id, contrat: CLIENT_CONFIG.contrat, ref: c.ref, libelle: c.libelle, statut: c.statut, date: c.date||"" }));
     }).catch(()=>{});
   }, []);
 
@@ -3163,24 +3172,25 @@ function Conformite() {
   const pct        = criteres.length > 0 ? Math.round(conformes / criteres.filter(c=>c.statut!=="Non applicable").length * 100) : 0;
   const pctColor   = pct >= 90 ? "#22c55e" : pct >= 70 ? "#f59e0b" : "#ef4444";
 
-  function startEdit(c) { setEditing(c.ref); setDraft({...c}); }
+  function startEdit(c) { setEditing(c.id); setDraft({...c}); }
   function saveEdit() {
     const dateFmt = draft.date && draft.date.includes("-") ? draft.date.split("-").reverse().join("/") : draft.date;
     const updated = {...draft, date: dateFmt};
-    setCriteres(prev => prev.map(c => c.ref === editing ? updated : c));
-    sbUpdate("conformite_ifs", editing, { libelle:updated.libelle, statut:updated.statut, date:updated.date||"" });
+    setCriteres(prev => prev.map(c => c.id === editing ? updated : c));
+    sbUpdate("conformite_ifs", editing, { ref:updated.ref, libelle:updated.libelle, statut:updated.statut, date:updated.date||"" });
     setEditing(null);
   }
-  function deleteCritere(ref) {
-    setCriteres(prev => prev.filter(c => c.ref !== ref));
-    sbDelete("conformite_ifs", ref);
+  function deleteCritere(id) {
+    setCriteres(prev => prev.filter(c => c.id !== id));
+    sbDelete("conformite_ifs", id);
   }
   function addCritere() {
     if (!newC.ref || !newC.libelle) return;
     const dateFmt = newC.date && newC.date.includes("-") ? newC.date.split("-").reverse().join("/") : newC.date;
-    const c = {...newC, date: dateFmt};
+    const id = "ifs_"+Date.now();
+    const c = {...newC, id, date: dateFmt};
     setCriteres(prev => [...prev, c]);
-    sbUpsert("conformite_ifs", { id: c.ref, contrat: CLIENT_CONFIG.contrat, ref: c.ref, libelle: c.libelle, statut: c.statut, date: c.date||"" });
+    sbUpsert("conformite_ifs", { id: c.id, contrat: CLIENT_CONFIG.contrat, ref: c.ref, libelle: c.libelle, statut: c.statut, date: c.date||"" });
     setNewC({ ref:"", libelle:"", statut:"En cours", date:"" });
     setShowAdd(false);
   }
@@ -3268,8 +3278,8 @@ function Conformite() {
           <div>Ref.</div><div>Exigence</div><div>Statut</div><div>Verifie le</div><div>Action</div>
         </div>
         {criteres.map((c, i) => (
-          <div key={c.ref}>
-            {editing === c.ref ? (
+          <div key={c.id}>
+            {editing === c.id ? (
               <div style={{ padding:"12px 18px", borderTop:"1px solid var(--border)", background:"var(--bg-2)" }}>
                 <div style={{ display:"grid", gridTemplateColumns:"80px 1fr 130px 110px 80px", gap:10, alignItems:"center" }}>
                   <input value={draft.ref} onChange={e=>setDraft(p=>({...p,ref:e.target.value}))} style={{...inpStyle,fontSize:11}}/>
@@ -3292,7 +3302,7 @@ function Conformite() {
                 <div style={{ fontSize:12, color:"var(--text-label)" }}>{c.date}</div>
                 <div style={{ display:"flex", gap:4 }}>
                   <button onClick={()=>startEdit(c)} style={{ background:"#1d4ed822", color:"#3b82f6", border:"1px solid #3b82f644", borderRadius:5, padding:"2px 7px", fontSize:10, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>Edit</button>
-                  <button onClick={()=>deleteCritere(c.ref)} style={{ background:"#ef444422", color:"#ef4444", border:"1px solid #ef444433", borderRadius:5, padding:"2px 6px", fontSize:10, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>X</button>
+                  <button onClick={()=>deleteCritere(c.id)} style={{ background:"#ef444422", color:"#ef4444", border:"1px solid #ef444433", borderRadius:5, padding:"2px 6px", fontSize:10, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>X</button>
                 </div>
               </div>
             )}
@@ -9837,22 +9847,30 @@ function ContratDevis() {
 // RÉGLEMENTATIONS 3D — nettoyées
 // ============================================================
 function Reglementations() {
-  const FAMILLES_INIT = ["Biocides", "Certiphyto", "IFS", "Desinsectisation", "General"];
-  const STATUTS  = ["En vigueur", "Applicable", "Abroge"];
-  const FCOL_BASE = { Biocides:"#3b82f6", Certiphyto:"#8b5cf6", IFS:"#22c55e", Desinsectisation:"#f59e0b", General:"var(--text-label)" };
+  const FAMILLES_INIT = ["Biocides", "Certibiocide", "Rodenticides", "Sécurité", "Alimentaire / IFS", "Normes"];
+  const STATUTS  = ["Réglementaire", "Référentiel", "Norme volontaire", "Selon AMM"];
+  const FCOL_BASE = { Biocides:"#3b82f6", Certibiocide:"#8b5cf6", Rodenticides:"#ef4444", "Sécurité":"#f59e0b", "Alimentaire / IFS":"#22c55e", Normes:"#06b6d4" };
+  // Couleur du badge de statut (reprend les couleurs du portail Hemp It).
+  const SCOLOR_REG = { "Réglementaire":"#22c55e", "Référentiel":"#3b82f6", "Norme volontaire":"#f59e0b", "Selon AMM":"#8b5cf6" };
+  const scolReg = s => SCOLOR_REG[s] || "#f59e0b";
   const EXTRA_COLORS = ["#ef4444","#06b6d4","#f97316","#3b82f6","#14b8a6","#a855f7","#84cc16","#fb923c"];
   const inpStyle = inp();
 
   const REGLEMENTS_INIT = [
-    { id:"1", ref:"Reglement UE 528/2012", titre:"Mise sur le marche des produits biocides", famille:"Biocides", statut:"En vigueur", impact:"Verification AMM SECUVIA et KRYPTO — renouvellement obligatoire avant expiration." },
-    { id:"2", ref:"Arrete du 7 fevrier 2012", titre:"Agrements et certifications — protection des vegetaux", famille:"Certiphyto", statut:"En vigueur", impact:"Certiphyto obligatoire — validite 5 ans — recyclage obligatoire." },
-    { id:"3", ref:"IFS Food v8 — Section 4.14", titre:"Lutte antiparasitaire en sites de production alimentaire", famille:"IFS", statut:"En vigueur", impact:"Plan documente, cartographie, inspections regulieres, enregistrement des resultats." },
-    { id:"4", ref:"Reglement UE 2021/1099", titre:"Approbation conditionnelle anticoagulants 2e generation", famille:"Biocides", statut:"En vigueur", impact:"Usage SECUVIA restreint aux BOBBYBOX exterieurs fermes — aucun appat libre." },
-    { id:"5", ref:"Circulaire DGS 2004-185", titre:"Lutte contre insectes vecteurs en milieu alimentaire", famille:"Desinsectisation", statut:"En vigueur", impact:"Plan de gestion et historique des traitements obligatoires." },
-    { id:"6", ref:"NF X50-790 AFNOR", titre:"Entreprises de services 3D — bonnes pratiques", famille:"General", statut:"Applicable", impact:"AADS respecte les principes de cette norme dans toutes ses prestations." },
-    { id:"7", ref:"Paquet hygiene CE 852/2004", titre:"Hygiene des denrees alimentaires", famille:"IFS", statut:"En vigueur", impact:"Applicable aux sites de production alimentaire — tracabilite obligatoire." },
-    { id:"8", ref:"Arrete du 9 octobre 2013 — Art. 6", titre:"Alternance des molecules rodenticides", famille:"Biocides", statut:"En vigueur", impact:"Obligation de rotation des matieres actives anticoagulantes. L alternance doit etre documentee." },
-    { id:"9", ref:"Arrete du 9 octobre 2013 — Art. 8", titre:"Appatage non permanent — sauf justification ecrite", famille:"Biocides", statut:"En vigueur", impact:"L appatage permanent est interdit sauf justification ecrite motivee. Postes interieurs en placebo par defaut." },
+    { id:"r1",  ref:"Règlement (UE) n° 528/2012", titre:"Mise à disposition sur le marché et utilisation des produits biocides", famille:"Biocides", statut:"Réglementaire", impact:"" },
+    { id:"r2",  ref:"Règlement CE n° 852/2004", titre:"Hygiène alimentaire et maîtrise des organismes nuisibles", famille:"Alimentaire / IFS", statut:"Réglementaire", impact:"" },
+    { id:"r3",  ref:"IFS Food v8 – § 4.13", titre:"Surveillance et maîtrise des nuisibles en industrie alimentaire", famille:"Alimentaire / IFS", statut:"Référentiel", impact:"" },
+    { id:"r4",  ref:"NF EN 16636", titre:"Services de gestion des nuisibles – exigences et compétences", famille:"Normes", statut:"Norme volontaire", impact:"" },
+    { id:"r5",  ref:"Conditions d'AMM des rodenticides utilisés", titre:"Appâtage permanent, fréquence de contrôle et conditions d'utilisation", famille:"Rodenticides", statut:"Selon AMM", impact:"" },
+    { id:"r6",  ref:"Code de l'environnement – gestion des déchets dangereux", titre:"Gestion des produits, appâts et emballages usagés", famille:"Sécurité", statut:"Réglementaire", impact:"" },
+    { id:"r7",  ref:"Code de l'environnement – art. L.522-1 à L.522-19", titre:"Autorisation et utilisation des produits biocides en France", famille:"Biocides", statut:"Réglementaire", impact:"" },
+    { id:"r8",  ref:"Arrêté du 9 octobre 2013 modifié", titre:"Certibiocide nuisibles", famille:"Certibiocide", statut:"Réglementaire", impact:"" },
+    { id:"r9",  ref:"Arrêté du 9 octobre 2013 modifié", titre:"Certibiocide désinfectants", famille:"Certibiocide", statut:"Réglementaire", impact:"" },
+    { id:"r10", ref:"AMM du produit biocide utilisé", titre:"Respect des usages et conditions d'emploi autorisés", famille:"Biocides", statut:"Réglementaire", impact:"" },
+    { id:"r11", ref:"Règlement REACH (CE) n° 1907/2006", titre:"Fiches de données de sécurité des produits", famille:"Sécurité", statut:"Réglementaire", impact:"" },
+    { id:"r12", ref:"Règlement CLP (CE) n° 1272/2008", titre:"Étiquetage, classification et emballage des produits chimiques", famille:"Sécurité", statut:"Réglementaire", impact:"" },
+    { id:"r13", ref:"Code du travail – R.4412-1 et suivants", titre:"Prévention du risque chimique des salariés", famille:"Sécurité", statut:"Réglementaire", impact:"" },
+    { id:"r14", ref:"Code de la santé publique – R.3116-12", titre:"Dératisation, désinsectisation et utilisation de gaz toxiques", famille:"Sécurité", statut:"Réglementaire", impact:"" },
   ];
 
   const [reglements, setReglements] = useState(REGLEMENTS_INIT);
@@ -9917,7 +9935,7 @@ function Reglementations() {
               <td style="font-weight:700;color:${fc};width:15%">${r.famille}</td>
               <td style="font-family:monospace;font-size:11px;width:20%">${r.ref}</td>
               <td style="font-weight:700;width:30%">${r.titre}</td>
-              <td style="width:10%;text-align:center;font-weight:700;color:${r.statut==="En vigueur"?"#16a34a":"#d97706"}">${r.statut}</td>
+              <td style="width:10%;text-align:center;font-weight:700;color:${scolReg(r.statut)}">${r.statut}</td>
               <td style="font-size:12px">${r.impact||""}</td>
             </tr>`;
           }).join("");
@@ -10019,7 +10037,7 @@ function Reglementations() {
                 <div style={{ fontSize:11, color:"var(--text-label)", fontFamily:"monospace", marginBottom:1 }}>{r.ref}</div>
                 <div style={{ fontSize:13, fontWeight:700, color:"var(--text-1)" }}>{r.titre}</div>
               </div>
-              <Badge label={r.statut} color={r.statut==="En vigueur"?"#22c55e":"#f59e0b"}/>
+              <Badge label={r.statut} color={scolReg(r.statut)}/>
               <div style={{ display:"flex", gap:4 }} onClick={e=>e.stopPropagation()}>
                 <button onClick={()=>startEdit(r)} style={{ background:"#1d4ed822", color:"#3b82f6", border:"1px solid #3b82f644", borderRadius:5, padding:"2px 8px", fontSize:10, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>Edit</button>
                 <button onClick={()=>deleteRegl(r.id)} style={{ background:"#ef444422", color:"#ef4444", border:"1px solid #ef444433", borderRadius:5, padding:"2px 6px", fontSize:10, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>X</button>
@@ -12661,6 +12679,10 @@ function PlanImplantation({ seuilsGlobaux }) {
     const activePlanData2 = plans.find(p=>p.id===activePlan);
     if (!activePlanData2) { alert("Aucun plan a exporter"); return; }
     const pts = getPts(activePlan);
+    // Réglages d'apparence (contour/couleur du numéro) appliqués à l'export PDF.
+    const cw = (pastilleCfg.contourSize==null?2:pastilleCfg.contourSize);
+    const cc = pastilleCfg.contourColor||"#fff";
+    const lc = pastilleCfg.labelColor||"#fff";
 
     // Export pour plans dessinés (sans image PNG/JPG)
     if (!activePlanData2.img && activePlanData2.dessine) {
@@ -12681,10 +12703,10 @@ function PlanImplantation({ seuilsGlobaux }) {
         const y = (parseFloat(pt.y)/100) * 600;
         const label = posteLabel(p.id);
         const ns = "http://www.w3.org/2000/svg";
-        svgClone.appendChild(svgPastilleForme(posteFormes[categorieForme(p)]||"rond", x, y, 12, col, ns));
+        svgClone.appendChild(svgPastilleForme(posteFormes[categorieForme(p)]||"rond", x, y, 12, col, ns, cw, cc));
         const text = document.createElementNS(ns, "text");
         text.setAttribute("x", x); text.setAttribute("y", y+3); text.setAttribute("font-size", posteLabelFontSize(label,8));
-        text.setAttribute("fill", "#fff"); text.setAttribute("text-anchor", "middle"); text.setAttribute("font-weight", "900");
+        text.setAttribute("fill", lc); text.setAttribute("text-anchor", "middle"); text.setAttribute("font-weight", "900");
         text.textContent = label;
         svgClone.appendChild(text);
       });
@@ -12766,11 +12788,11 @@ function PlanImplantation({ seuilsGlobaux }) {
         const r = 12;
 
         // Pastille (forme selon le type de poste)
-        canvasPastilleForme(ctx, posteFormes[categorieForme(p)]||"rond", x, y, r, col);
+        canvasPastilleForme(ctx, posteFormes[categorieForme(p)]||"rond", x, y, r, col, cw, cc);
 
         // Label
         const label = posteLabel(p.id);
-        ctx.fillStyle = "#fff";
+        ctx.fillStyle = lc;
         ctx.font = "bold "+posteLabelFontSize(label,8)+"px sans-serif";
         ctx.textAlign = "center";
         ctx.textBaseline = "middle";
