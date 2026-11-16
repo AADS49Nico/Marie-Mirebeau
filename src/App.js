@@ -12285,6 +12285,8 @@ function PlanImplantation({ seuilsGlobaux }) {
   const [editingPlanId, setEditingPlanId] = useState(null);
   const [editingPlanLabel, setEditingPlanLabel] = useState("");
   const [hover, setHover]             = useState(null);
+  const [dragId, setDragId]           = useState(null);   // pastille en cours de déplacement
+  const draggingRef                   = React.useRef(false);
   const [placingPoste, setPlacingPoste] = useState("");
   const [showAddPosteMenu, setShowAddPosteMenu] = useState(false);
   const [selectedPostesToAdd, setSelectedPostesToAdd] = useState([]);
@@ -13470,7 +13472,7 @@ function PlanImplantation({ seuilsGlobaux }) {
             {planPostes.map(pt=>{
               const p=postes.find(p=>p.id===pt.id);
               if(!p)return null;
-              if(filterNuisibleArr.length>0&&!filterNuisibleArr.some(f=>{const id=p.id||"";if(f==="__RE")return /^RE/i.test(id);if(f==="__RI")return /^(RI|R\d|S\d)/i.test(id)&&!/^RE/i.test(id);return (p.nuisible||"Rongeurs")===f;}))return null;
+              if(filterNuisibleArr.length>0&&!filterNuisibleArr.some(f=>{const id=p.id||"";if(f==="__RE")return p.type==="RE"||/^RE/i.test(id)||/egout/i.test(id);if(f==="__RI")return (p.type==="RI"||/^(RI|R\d|S\d)/i.test(id))&&p.type!=="RE"&&!/^RE/i.test(id)&&!/egout/i.test(id);return (p.nuisible||"Rongeurs")===f;}))return null;
               if(filtreProduitsNusPlan==="oui" && !p.zone_produits_nus) return null;
               if(filtreProduitsNusPlan==="non" && p.zone_produits_nus) return null;
               if(filtreDeivTypePlan!=="tous" && (p.deiv_type||"")!==filtreDeivTypePlan) return null;
@@ -13479,13 +13481,14 @@ function PlanImplantation({ seuilsGlobaux }) {
               const isMov=movingPoste===pt.id;
               return (
                 <div key={pt.id}
-                  style={{position:"absolute",left:pt.x+"%",top:pt.y+"%",transform:"translate(-50%,-50%)",zIndex:10}}
+                  style={{position:"absolute",left:pt.x+"%",top:pt.y+"%",transform:"translate(-50%,-50%)",zIndex:dragId===pt.id?40:10,willChange:dragId===pt.id?"left, top":"auto"}}
                   onMouseDown={e=>{
                     e.stopPropagation();
                     e.preventDefault();
                     if(placingPoste) return;
                     const planEl = document.getElementById("plan-export-zone");
                     if(!planEl) return;
+                    draggingRef.current = true; setDragId(pt.id); setHover(null);
                     const onMove = ev => {
                       const rect = planEl.getBoundingClientRect();
                       const xPct = Math.max(0,Math.min(100,((ev.clientX-rect.left)/rect.width*100))).toFixed(2);
@@ -13495,6 +13498,7 @@ function PlanImplantation({ seuilsGlobaux }) {
                     const onUp = ev => {
                       document.removeEventListener("mousemove", onMove);
                       document.removeEventListener("mouseup", onUp);
+                      draggingRef.current = false; setDragId(null);
                       const rect = planEl.getBoundingClientRect();
                       const xPct = Math.max(0,Math.min(100,((ev.clientX-rect.left)/rect.width*100))).toFixed(2);
                       const yPct = Math.max(0,Math.min(100,((ev.clientY-rect.top)/rect.height*100))).toFixed(2);
@@ -13511,6 +13515,7 @@ function PlanImplantation({ seuilsGlobaux }) {
                     if(placingPoste) return;
                     const planEl = document.getElementById("plan-export-zone");
                     if(!planEl) return;
+                    draggingRef.current = true; setDragId(pt.id); setHover(null);
                     const onTouchMove = ev => {
                       ev.preventDefault();
                       const touch = ev.touches[0];
@@ -13522,6 +13527,7 @@ function PlanImplantation({ seuilsGlobaux }) {
                     const onTouchEnd = ev => {
                       document.removeEventListener("touchmove", onTouchMove);
                       document.removeEventListener("touchend", onTouchEnd);
+                      draggingRef.current = false; setDragId(null);
                       const touch = ev.changedTouches[0];
                       const rect = planEl.getBoundingClientRect();
                       const xPct = Math.max(0,Math.min(100,((touch.clientX-rect.left)/rect.width*100))).toFixed(2);
@@ -13535,13 +13541,13 @@ function PlanImplantation({ seuilsGlobaux }) {
                     document.addEventListener("touchend", onTouchEnd);
                   }}
                   onContextMenu={e=>{e.preventDefault();e.stopPropagation();removePosteFromPlan(pt.id);}}
-                  onMouseEnter={()=>setHover(pt.id)} onMouseLeave={()=>setHover(null)}>
+                  onMouseEnter={()=>{ if(!draggingRef.current) setHover(pt.id); }} onMouseLeave={()=>setHover(null)}>
                   {renderPastille(
                     posteFormes[categorieForme(p)] || "rond", pastilleCfg.taille, col,
                     <span style={{fontSize:posteLabelFontSize(pt.id,pastilleCfg.numSize),fontWeight:900,color:pastilleCfg.labelColor||"#fff",textShadow:"0 1px 2px rgba(0,0,0,0.6)"}}>{posteLabel(pt.id)}</span>,
-                    isHov
+                    isHov && !dragId
                   )}
-                  {isHov&&(
+                  {isHov && !dragId && (
                     <div style={{position:"absolute",left:"50%",top:-38,transform:"translateX(-50%)",background:"var(--bg-2)",border:"1px solid "+col,borderRadius:7,padding:"4px 10px",fontSize:10,color:"var(--text-1)",whiteSpace:"nowrap",zIndex:20,boxShadow:"0 2px 8px rgba(0,0,0,0.5)"}}>
                       <strong>{pt.id}</strong> — {(p.zone||"").slice(0,25)}
                       <button onClick={e=>{e.stopPropagation();removePosteFromPlan(pt.id);}}
@@ -14909,7 +14915,7 @@ function ParametresModal({ onClose }) {
 }
 
 
-const AADS_THEME_CSS = ".aads-root{--bg-1:#1a2540;--bg-2:#243352;--bg-3:#2d3f62;--bg-sel:#2d4a7a;--bg-accent-soft:#1a3360;--bg-side:#0d1526;--bg-deep:#0f1e38;--border:#3d5270;--line:#243352;--text-1:#f1f5f9;--text-1b:#e2e8f0;--text-2:#cbd5e1;--text-muted:#94a3b8;--text-label:#7a90aa;--text-faint:#5a7090;}.aads-root *{transition:background-color .15s ease, border-color .15s ease, color .15s ease;}.aads-root[data-theme=\"light\"]{--bg-1:#ffffff;--bg-2:#f1f5f9;--bg-3:#e7edf6;--bg-sel:#d9e5fb;--bg-accent-soft:#dde9fc;--bg-side:#eef2f8;--bg-deep:#e4eaf3;--border:#d4dce9;--line:#e6ebf3;--text-1:#132138;--text-1b:#1f2b43;--text-2:#33425e;--text-muted:#55647e;--text-label:#64748b;--text-faint:#8d9ab0;}.aads-root[data-theme=\"light\"] input,.aads-root[data-theme=\"light\"] select,.aads-root[data-theme=\"light\"] textarea{color:#132138;}.aads-root[data-theme=\"light\"] input::placeholder,.aads-root[data-theme=\"light\"] textarea::placeholder{color:#94a3b8;}";
+const AADS_THEME_CSS = ".aads-root{--bg-1:#223150;--bg-2:#2d3e61;--bg-3:#374a70;--bg-sel:#35538a;--bg-accent-soft:#244177;--bg-side:#16223c;--bg-deep:#1b2c4a;--border:#47608a;--line:#2d3e61;--text-1:#f6f9fc;--text-1b:#e8eef6;--text-2:#d2dbe8;--text-muted:#aab8ce;--text-label:#8ba0bb;--text-faint:#6b82a4;}.aads-root *{transition:background-color .15s ease, border-color .15s ease, color .15s ease;}.aads-root[data-theme=\"light\"]{--bg-1:#ffffff;--bg-2:#f1f5f9;--bg-3:#e7edf6;--bg-sel:#d9e5fb;--bg-accent-soft:#dde9fc;--bg-side:#eef2f8;--bg-deep:#e4eaf3;--border:#d4dce9;--line:#e6ebf3;--text-1:#132138;--text-1b:#1f2b43;--text-2:#33425e;--text-muted:#55647e;--text-label:#64748b;--text-faint:#8d9ab0;}.aads-root[data-theme=\"light\"] input,.aads-root[data-theme=\"light\"] select,.aads-root[data-theme=\"light\"] textarea{color:#132138;}.aads-root[data-theme=\"light\"] input::placeholder,.aads-root[data-theme=\"light\"] textarea::placeholder{color:#94a3b8;}";
 
 export default function App() {
   // Enregistrement PWA service worker
