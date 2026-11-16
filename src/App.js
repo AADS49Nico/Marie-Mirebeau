@@ -7241,15 +7241,14 @@ function PlanActions() {
 
       {/* Tableau */}
       <Card style={{ padding: 0, overflow: "hidden" }}>
-        <div style={{ background: "var(--bg-1)", padding: "9px 16px", display: "grid", gridTemplateColumns: "60px 90px 100px 110px 80px 100px 1fr 170px", gap: 8, fontSize: 10, fontWeight: 700, color: "var(--text-label)", textTransform: "uppercase" }}>
-          <div>Type</div><div>Date creation</div><div>Zone</div><div>5M</div><div>Priorité</div><div>Statut</div><div>Description</div><div style={{textAlign:"right"}}>Actions</div>
+        <div style={{ background: "var(--bg-1)", padding: "9px 16px", display: "grid", gridTemplateColumns: "56px 84px 94px 92px 68px 92px 1.2fr 1fr 1fr 150px", gap: 8, fontSize: 10, fontWeight: 700, color: "var(--text-label)", textTransform: "uppercase" }}>
+          <div>Type</div><div>Date creation</div><div>Zone</div><div>5M</div><div>Priorité</div><div>Statut</div><div>Description</div><div>Recommandation</div><div>Commentaire</div><div style={{textAlign:"right"}}>Actions</div>
         </div>
         <div style={{ maxHeight: 500, overflowY: "auto" }}>
           {filtered.map((a, i) => {
-            const isSel = sel === a.id;
             return (
               <div key={a.id}>
-                <div onClick={()=>setSel(isSel?null:a.id)} style={{ padding: "10px 16px", display: "grid", gridTemplateColumns: "60px 90px 100px 110px 80px 100px 1fr 170px", gap: 8, alignItems: "center", borderTop: "1px solid var(--line)", background: isSel?"var(--bg-2)":i%2===0?"transparent":"#ffffff04", cursor:"pointer" }}>
+                <div style={{ padding: "10px 16px", display: "grid", gridTemplateColumns: "56px 84px 94px 92px 68px 92px 1.2fr 1fr 1fr 150px", gap: 8, alignItems: "start", borderTop: "1px solid var(--line)", background: i%2===0?"transparent":"#ffffff04" }}>
                   <div>
                     {a.nature === "observation" ? (
                       <span style={{ fontSize: 9, fontWeight: 700, background: "#8b5cf622", color: "#8b5cf6", border: "1px solid #8b5cf644", borderRadius: 4, padding: "1px 5px" }}>OBS</span>
@@ -7286,6 +7285,11 @@ function PlanActions() {
                   <div style={{ fontSize: 11, color: "var(--text-muted)", maxHeight: 54, overflow: "auto", whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
                     {a.description ? a.description : <span style={{ color: "var(--text-faint)" }}>—</span>}
                   </div>
+                  <div style={{ fontSize: 11, color: "var(--text-muted)", maxHeight: 54, overflow: "auto", whiteSpace: "pre-wrap", wordBreak: "break-word" }}>
+                    {a.recommandation ? a.recommandation : <span style={{ color: "var(--text-faint)" }}>—</span>}
+                  </div>
+                  <div style={{ fontSize: 11, color: "var(--text-muted)", maxHeight: 54, overflow: "auto", whiteSpace: "pre-wrap", wordBreak: "break-word" }}
+                    dangerouslySetInnerHTML={{ __html: (a.commentaire && a.commentaire.replace(/<[^>]+>/g,"").replace(/&nbsp;/gi," ").trim()) ? a.commentaire : "<span style='color:var(--text-faint)'>—</span>" }} />
                   <div style={{ display: "flex", gap: 4, justifyContent: "flex-end" }} onClick={e=>e.stopPropagation()}>
                     <button onClick={() => openEdit(a)}
                       style={{ background: "#1d4ed822", color: "#3b82f6", border: "1px solid #3b82f644", borderRadius: 5, padding: "3px 8px", fontSize: 10, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>✏</button>
@@ -7330,26 +7334,6 @@ function PlanActions() {
                     }} style={{ background:"#22c55e22", color:"#22c55e", border:"1px solid #22c55e44", borderRadius:5, padding:"3px 7px", fontSize:10, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>Excel</button>
                   </div>
                 </div>
-
-                {/* Détails au clic */}
-                {isSel && (
-                  <div style={{ padding:"12px 16px", background:"var(--bg-1)", borderTop:"1px solid var(--line)" }}>
-                    <div style={{ display:"grid", gridTemplateColumns:"repeat(auto-fit,minmax(200px,1fr))", gap:12, marginBottom:10 }}>
-                      {a.description&&<div><div style={{fontSize:10,color:"var(--text-label)",fontWeight:700,textTransform:"uppercase",marginBottom:3}}>Description</div><div style={{fontSize:12,color:"var(--text-muted)"}}>{a.description}</div></div>}
-                      {a.recommandation&&<div><div style={{fontSize:10,color:"var(--text-label)",fontWeight:700,textTransform:"uppercase",marginBottom:3}}>Recommandation</div><div style={{fontSize:12,color:"var(--text-muted)"}}>{a.recommandation}</div></div>}
-                      {a.technicien&&<div><div style={{fontSize:10,color:"var(--text-label)",fontWeight:700,textTransform:"uppercase",marginBottom:3}}>Technicien</div><div style={{fontSize:12,color:"var(--text-1)"}}>{a.technicien}</div></div>}
-                      {a.dateDetection&&<div><div style={{fontSize:10,color:"var(--text-label)",fontWeight:700,textTransform:"uppercase",marginBottom:3}}>Détection</div><div style={{fontSize:12,color:"var(--text-1)"}}>{a.dateDetection}</div></div>}
-                    </div>
-                    {a.photos&&a.photos.length>0&&(
-                      <div style={{display:"flex",flexWrap:"wrap",gap:6}}>
-                        {a.photos.map((ph,j)=>(
-                          <img key={j} src={ph.url} alt={ph.name} onClick={()=>setLightbox(ph)}
-                            style={{width:80,height:80,objectFit:"cover",borderRadius:6,border:"1px solid var(--border)",cursor:"zoom-in"}}/>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                )}
               </div>
             );
           })}
