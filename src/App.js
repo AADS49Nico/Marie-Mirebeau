@@ -7019,11 +7019,11 @@ function PlanActions() {
                 ? "<br/><div style='margin-top:6px'>"+(a.photos||[]).map(p=>"<img src='"+p.url+"' style='max-width:80px;max-height:60px;border-radius:4px;margin:2px;object-fit:cover;border:1px solid #e5e7eb'/>").join("")+"</div>"
                 : "";
               const comm = (a.commentaire && a.commentaire.replace(/<[^>]+>/g,"").replace(/&nbsp;/gi," ").trim()) ? a.commentaire : "";
-              return "<tr><td>"+badge(natLabel(a),nc)+"</td><td>"+(a.dateDetection||"—")+"</td><td>"+(a.zone||"")+"</td><td>"+(a.titre5m?badge(a.titre5m,mc):"—")+photosHtml+"</td><td>"+(a.priorite?badge(a.priorite,pc):"—")+"</td><td>"+(a.nature==="observation"?"—":badge(a.statut,sc))+"</td><td>"+(a.description||"")+"</td><td>"+comm+"</td></tr>";
+              return "<tr><td>"+badge(natLabel(a),nc)+"</td><td>"+(a.dateDetection||"—")+"</td><td>"+(a.zone||"")+"</td><td>"+(a.titre5m?badge(a.titre5m,mc):"—")+photosHtml+"</td><td>"+(a.priorite?badge(a.priorite,pc):"—")+"</td><td>"+(a.nature==="observation"?"—":badge(a.statut,sc))+"</td><td>"+(a.description||"")+"</td><td>"+(a.recommandation||"")+"</td><td>"+comm+"</td></tr>";
             }).join("");
             const natTxt = natureFilter==="action" ? "Actions" : natureFilter==="observation" ? "Observations" : "Actions + observations";
             exportHTML("Plan d'actions - " + CLIENT_CONFIG.nom,
-              "<h1>Plan d'actions</h1><p style='color:#6b7280;margin-bottom:12px'>"+natTxt+" — statut : "+filter+" — "+chrono.length+" fiche(s) — ordre chronologique</p><table><thead><tr><th>Nature</th><th>Date de création</th><th>Zone</th><th>5M</th><th>Priorité</th><th>Statut</th><th>Description</th><th>Commentaire</th></tr></thead><tbody>"+rows+"</tbody></table>");
+              "<h1>Plan d'actions</h1><p style='color:#6b7280;margin-bottom:12px'>"+natTxt+" — statut : "+filter+" — "+chrono.length+" fiche(s) — ordre chronologique</p><table><thead><tr><th>Nature</th><th>Date de création</th><th>Zone</th><th>5M</th><th>Priorité</th><th>Statut</th><th>Description</th><th>Recommandation</th><th>Commentaire</th></tr></thead><tbody>"+rows+"</tbody></table>");
           }} />
           <button onClick={() => {
             const headers = ["Type","Date creation","Zone","5M","Priorité","Statut","Poste(s)","Technicien","Description","Nb photos","Noms photos"];
