@@ -6770,6 +6770,34 @@ function PrioriteActionsChart({ actions }) {
 }
 
 
+// Petit éditeur de commentaire enrichi (gras, souligné, retour à la ligne).
+// Stocke du HTML ; non contrôlé (le DOM garde le curseur), sauvegarde au blur.
+function CommentEditor({ value, onSave }) {
+  const ref = React.useRef(null);
+  const focusedRef = React.useRef(false);
+  // Injecte la valeur initiale (et les MAJ externes) seulement hors édition.
+  React.useEffect(() => {
+    if (ref.current && !focusedRef.current && ref.current.innerHTML !== (value||"")) {
+      ref.current.innerHTML = value || "";
+    }
+  }, [value]);
+  function cmd(c) { try { document.execCommand(c, false, null); } catch(_e){} if (ref.current) ref.current.focus(); }
+  const btn = { background:"var(--bg-1)", color:"var(--text-2)", border:"1px solid var(--border)", borderRadius:4, width:22, height:20, fontSize:11, cursor:"pointer", fontFamily:"inherit", padding:0, lineHeight:1 };
+  return (
+    <div onClick={e=>e.stopPropagation()}>
+      <div style={{ display:"flex", gap:3, marginBottom:3 }}>
+        <button type="button" title="Gras" onMouseDown={e=>{e.preventDefault(); cmd("bold");}} style={btn}><b>G</b></button>
+        <button type="button" title="Souligné" onMouseDown={e=>{e.preventDefault(); cmd("underline");}} style={{...btn, textDecoration:"underline"}}>S</button>
+      </div>
+      <div ref={ref} contentEditable suppressContentEditableWarning
+        onFocus={()=>{ focusedRef.current = true; }}
+        onBlur={e=>{ focusedRef.current = false; onSave(e.currentTarget.innerHTML); }}
+        data-ph="Commentaire…"
+        style={{ minHeight:30, width:"100%", boxSizing:"border-box", background:"var(--bg-2)", color:"var(--text-1)", border:"1px solid var(--border)", borderRadius:6, padding:"4px 8px", fontSize:11, fontFamily:"inherit", whiteSpace:"pre-wrap", wordBreak:"break-word", outline:"none" }}/>
+    </div>
+  );
+}
+
 function PlanActions() {
   const TECHNICIENS = useTechniciens();
   const [actions, setActions] = useState(ACTIONS_INIT.map(a => ({ ...a, photos: a.photos || [] })));
@@ -6825,6 +6853,7 @@ function PlanActions() {
           titre5m: a.titre5m||a.titre||"Méthode",
           dateDetection: a.date_detection||a.dateDetection||"",
           piegeRef: a.piege_ref||a.piegeRef||"",
+          commentaire: a.commentaire||"",
           photos: typeof a.photos === "string" ? JSON.parse(a.photos || "[]") : (a.photos || [])
         })).sort((x,y)=>{
           const pd=d=>{const p=(d||"").split("/");return p.length===3?new Date(p[2]+"-"+p[1]+"-"+p[0]):new Date(0);};
@@ -6869,14 +6898,14 @@ function PlanActions() {
       setActions(prev => prev.map(a => {
         if (a.id !== editId) return a;
         const updated = { ...a, ...draft, photos: draftPhotos };
-        sbUpsert("plan_actions", { id:updated.id, contrat:CLIENT_CONFIG.contrat, titre5m:draft.titre5m, type:draft.type, priorite:draft.priorite, zone:draft.zone, description:draft.description, recommandation:draft.recommandation, technicien:draft.technicien, piege_ref:draft.piegeRef||"", statut:updated.statut||"Planifiée", date_detection:updated.dateDetection||"", photos:JSON.stringify(draftPhotos) });
+        sbUpsert("plan_actions", { id:updated.id, contrat:CLIENT_CONFIG.contrat, titre5m:draft.titre5m, type:draft.type, priorite:draft.priorite, zone:draft.zone, description:draft.description, recommandation:draft.recommandation, technicien:draft.technicien, piege_ref:draft.piegeRef||"", statut:updated.statut||"Planifiée", date_detection:updated.dateDetection||"", commentaire:updated.commentaire||"", photos:JSON.stringify(draftPhotos) });
         return updated;
       }));
     } else {
       const newId = String(Date.now());
       const newAction = { ...draft, id: newId, statut: "Planifiée", photos: draftPhotos, dateDetection: draft.dateDetection || new Date().toLocaleDateString("fr-FR") };
       setActions(prev => [newAction, ...prev]);
-      const actionData = { id:newId, contrat:CLIENT_CONFIG.contrat, titre5m:draft.titre5m, type:draft.type, priorite:draft.priorite, zone:draft.zone, description:draft.description, recommandation:draft.recommandation, technicien:draft.technicien, piege_ref:draft.piegeRef||"", statut:"Planifiée", date_detection:newAction.dateDetection, photos:JSON.stringify(draftPhotos) };
+      const actionData = { id:newId, contrat:CLIENT_CONFIG.contrat, titre5m:draft.titre5m, type:draft.type, priorite:draft.priorite, zone:draft.zone, description:draft.description, recommandation:draft.recommandation, technicien:draft.technicien, piege_ref:draft.piegeRef||"", statut:"Planifiée", date_detection:newAction.dateDetection, commentaire:"", photos:JSON.stringify(draftPhotos) };
       if (navigator.onLine) {
         sbUpsert("plan_actions", actionData);
       } else {
@@ -6906,6 +6935,29 @@ function PlanActions() {
         description: updated.description, recommandation: updated.recommandation, technicien: updated.technicien,
         piege_ref: updated.piegeRef||"",
         statut: updated.statut, date_detection: updated.dateDetection||"",
+        commentaire: updated.commentaire||"",
+        photos: JSON.stringify(updated.photos || [])
+      });
+      return updated;
+    }));
+  }
+
+  // Met à jour le commentaire localement (frappe) sans écrire en base.
+  function setCommentaireLocal(id, val) {
+    setActions(prev => prev.map(a => a.id===id ? { ...a, commentaire: val } : a));
+  }
+  // Persiste le commentaire en base (au blur), sans écraser les autres champs.
+  function changeCommentaire(id, commentaire) {
+    setActions(prev => prev.map(a => {
+      if (a.id !== id) return a;
+      const updated = { ...a, commentaire };
+      sbUpsert("plan_actions", {
+        id: updated.id, contrat: CLIENT_CONFIG.contrat,
+        titre5m: updated.titre5m, type: updated.type, priorite: updated.priorite, zone: updated.zone,
+        description: updated.description, recommandation: updated.recommandation, technicien: updated.technicien,
+        piege_ref: updated.piegeRef||"",
+        statut: updated.statut, date_detection: updated.dateDetection||"",
+        commentaire: updated.commentaire||"",
         photos: JSON.stringify(updated.photos || [])
       });
       return updated;
@@ -7129,15 +7181,15 @@ function PlanActions() {
 
       {/* Tableau */}
       <Card style={{ padding: 0, overflow: "hidden" }}>
-        <div style={{ background: "var(--bg-1)", padding: "9px 16px", display: "grid", gridTemplateColumns: "60px 90px 100px 110px 80px 90px 80px", gap: 8, fontSize: 10, fontWeight: 700, color: "var(--text-label)", textTransform: "uppercase" }}>
-          <div>Type</div><div>Date creation</div><div>Zone</div><div>5M</div><div>Priorité</div><div>Statut</div><div>Actions</div>
+        <div style={{ background: "var(--bg-1)", padding: "9px 16px", display: "grid", gridTemplateColumns: "60px 90px 100px 110px 80px 100px 1fr 170px", gap: 8, fontSize: 10, fontWeight: 700, color: "var(--text-label)", textTransform: "uppercase" }}>
+          <div>Type</div><div>Date creation</div><div>Zone</div><div>5M</div><div>Priorité</div><div>Statut</div><div>Commentaires</div><div style={{textAlign:"right"}}>Actions</div>
         </div>
         <div style={{ maxHeight: 500, overflowY: "auto" }}>
           {filtered.map((a, i) => {
             const isSel = sel === a.id;
             return (
               <div key={a.id}>
-                <div onClick={()=>setSel(isSel?null:a.id)} style={{ padding: "10px 16px", display: "grid", gridTemplateColumns: "60px 90px 100px 110px 80px 90px 80px", gap: 8, alignItems: "center", borderTop: "1px solid var(--line)", background: isSel?"var(--bg-2)":i%2===0?"transparent":"#ffffff04", cursor:"pointer" }}>
+                <div onClick={()=>setSel(isSel?null:a.id)} style={{ padding: "10px 16px", display: "grid", gridTemplateColumns: "60px 90px 100px 110px 80px 100px 1fr 170px", gap: 8, alignItems: "center", borderTop: "1px solid var(--line)", background: isSel?"var(--bg-2)":i%2===0?"transparent":"#ffffff04", cursor:"pointer" }}>
                   <div>
                     <span style={{ fontSize: 9, fontWeight: 700, background: a.type === "corrective" ? "#ef444422" : "#3b82f622", color: a.type === "corrective" ? "#ef4444" : "#3b82f6", border: "1px solid " + (a.type === "corrective" ? "#ef444444" : "#3b82f644"), borderRadius: 4, padding: "1px 5px" }}>
                       {a.type === "corrective" ? "COR" : "PRÉ"}
@@ -7161,7 +7213,8 @@ function PlanActions() {
                       {["En cours", "Planifiée", "Résolue", "Vigilance"].map(s => <option key={s} value={s}>{s}</option>)}
                     </select>
                   </div>
-                  <div style={{ display: "flex", gap: 4 }} onClick={e=>e.stopPropagation()}>
+                  <CommentEditor value={a.commentaire||""} onSave={html=>changeCommentaire(a.id, html)} />
+                  <div style={{ display: "flex", gap: 4, justifyContent: "flex-end" }} onClick={e=>e.stopPropagation()}>
                     <button onClick={() => openEdit(a)}
                       style={{ background: "#1d4ed822", color: "#3b82f6", border: "1px solid #3b82f644", borderRadius: 5, padding: "3px 8px", fontSize: 10, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>✏</button>
                     <button onClick={() => deleteAction(a.id)}
@@ -7179,6 +7232,7 @@ function PlanActions() {
                           <tr><td style="font-weight:700;background:#f9fafb;padding:7px 12px;border:1px solid #e5e7eb">Technicien</td><td style="padding:7px 12px;border:1px solid #e5e7eb">${a.technicien||"—"}</td></tr>
                           <tr><td style="font-weight:700;background:#f9fafb;padding:7px 12px;border:1px solid #e5e7eb">Date de creation</td><td style="padding:7px 12px;border:1px solid #e5e7eb">${a.dateDetection||"—"}</td></tr>
                           <tr><td style="font-weight:700;background:#f9fafb;padding:7px 12px;border:1px solid #e5e7eb">Statut</td><td style="padding:7px 12px;border:1px solid #e5e7eb">${a.statut}</td></tr>
+                          <tr><td style="font-weight:700;background:#f9fafb;padding:7px 12px;border:1px solid #e5e7eb">Commentaire</td><td style="padding:7px 12px;border:1px solid #e5e7eb">${(a.commentaire && a.commentaire.replace(/<[^>]+>/g,"").replace(/&nbsp;/gi," ").trim()) ? a.commentaire : "—"}</td></tr>
                           <tr><td style="font-weight:700;background:#f9fafb;padding:7px 12px;border:1px solid #e5e7eb">Description</td><td style="padding:7px 12px;border:1px solid #e5e7eb">${a.description||"—"}</td></tr>
                           <tr><td style="font-weight:700;background:#f9fafb;padding:7px 12px;border:1px solid #e5e7eb">Recommandation</td><td style="padding:7px 12px;border:1px solid #e5e7eb">${a.recommandation||"—"}</td></tr>
                         </table>
@@ -7186,8 +7240,9 @@ function PlanActions() {
                       );
                     }} style={{ background:"#22c55e22", color:"#22c55e", border:"1px solid #22c55e44", borderRadius:5, padding:"3px 7px", fontSize:10, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>PDF</button>
                     <button onClick={()=>{
-                      const headers = ["5M","Type","Priorité","Zone","Poste(s)","Technicien","Date creation","Statut","Description","Recommandation","Nb photos","Noms photos"];
-                      const row = [a.titre5m||"", a.type, a.priorite, a.zone||"", a.piegeRef||"", a.technicien||"", a.dateDetection||"", a.statut, a.description||"", a.recommandation||"", (a.photos||[]).length, (a.photos||[]).map(p=>p.name).join(", ")];
+                      const headers = ["5M","Type","Priorité","Zone","Poste(s)","Technicien","Date creation","Statut","Commentaire","Description","Recommandation","Nb photos","Noms photos"];
+                      const commentTxt = (a.commentaire||"").replace(/<br\s*\/?>/gi,"\n").replace(/<\/(div|p)>/gi,"\n").replace(/<[^>]+>/g,"").replace(/&nbsp;/gi," ").trim();
+                      const row = [a.titre5m||"", a.type, a.priorite, a.zone||"", a.piegeRef||"", a.technicien||"", a.dateDetection||"", a.statut, commentTxt, a.description||"", a.recommandation||"", (a.photos||[]).length, (a.photos||[]).map(p=>p.name).join(", ")];
                       exportCSV("fiche_action_"+a.id, headers, [row]);
                       // Telecharger aussi chaque photo individuellement
                       (a.photos||[]).forEach((p,idx)=>{
