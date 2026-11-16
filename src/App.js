@@ -6772,7 +6772,7 @@ function PrioriteActionsChart({ actions }) {
 
 // Petit éditeur de commentaire enrichi (gras, souligné, retour à la ligne).
 // Stocke du HTML ; non contrôlé (le DOM garde le curseur), sauvegarde au blur.
-function CommentEditor({ value, onSave }) {
+function CommentEditor({ value, onChange, onSave }) {
   const ref = React.useRef(null);
   const focusedRef = React.useRef(false);
   // Injecte la valeur initiale (et les MAJ externes) seulement hors édition.
@@ -6781,19 +6781,19 @@ function CommentEditor({ value, onSave }) {
       ref.current.innerHTML = value || "";
     }
   }, [value]);
-  function cmd(c) { try { document.execCommand(c, false, null); } catch(_e){} if (ref.current) ref.current.focus(); }
-  const btn = { background:"var(--bg-1)", color:"var(--text-2)", border:"1px solid var(--border)", borderRadius:4, width:22, height:20, fontSize:11, cursor:"pointer", fontFamily:"inherit", padding:0, lineHeight:1 };
+  function cmd(c) { try { document.execCommand(c, false, null); } catch(_e){} if (ref.current) { if(onChange) onChange(ref.current.innerHTML); ref.current.focus(); } }
+  const btn = { background:"var(--bg-1)", color:"var(--text-2)", border:"1px solid var(--border)", borderRadius:4, width:24, height:22, fontSize:12, cursor:"pointer", fontFamily:"inherit", padding:0, lineHeight:1 };
   return (
     <div onClick={e=>e.stopPropagation()}>
-      <div style={{ display:"flex", gap:3, marginBottom:3 }}>
+      <div style={{ display:"flex", gap:4, marginBottom:4 }}>
         <button type="button" title="Gras" onMouseDown={e=>{e.preventDefault(); cmd("bold");}} style={btn}><b>G</b></button>
         <button type="button" title="Souligné" onMouseDown={e=>{e.preventDefault(); cmd("underline");}} style={{...btn, textDecoration:"underline"}}>S</button>
       </div>
       <div ref={ref} contentEditable suppressContentEditableWarning
         onFocus={()=>{ focusedRef.current = true; }}
-        onBlur={e=>{ focusedRef.current = false; onSave(e.currentTarget.innerHTML); }}
-        data-ph="Commentaire…"
-        style={{ minHeight:30, width:"100%", boxSizing:"border-box", background:"var(--bg-2)", color:"var(--text-1)", border:"1px solid var(--border)", borderRadius:6, padding:"4px 8px", fontSize:11, fontFamily:"inherit", whiteSpace:"pre-wrap", wordBreak:"break-word", outline:"none" }}/>
+        onInput={e=>{ if(onChange) onChange(e.currentTarget.innerHTML); }}
+        onBlur={e=>{ focusedRef.current = false; if(onSave) onSave(e.currentTarget.innerHTML); }}
+        style={{ minHeight:54, width:"100%", boxSizing:"border-box", background:"var(--bg-2)", color:"var(--text-1)", border:"1px solid var(--border)", borderRadius:6, padding:"6px 10px", fontSize:12, fontFamily:"inherit", whiteSpace:"pre-wrap", wordBreak:"break-word", outline:"none", lineHeight:1.4 }}/>
     </div>
   );
 }
@@ -6803,13 +6803,14 @@ function PlanActions() {
   const [actions, setActions] = useState(ACTIONS_INIT.map(a => ({ ...a, photos: a.photos || [] })));
   const [prevActions, setPrevActions] = useState(null);
   const [filter, setFilter] = useState("Toutes");
+  const [natureFilter, setNatureFilter] = useState("Toutes"); // Toutes | action | observation
   const [filterAnneeTable, setFilterAnneeTable] = useState("Toutes");
   const [filterMoisTable, setFilterMoisTable] = useState("Tous");
   const [showForm, setShowForm] = useState(false);
   const [editId, setEditId] = useState(null);
   const [lightbox, setLightbox] = useState(null);
   const [sel, setSel] = useState(null);
-  const [draft, setDraft] = useState({ titre5m: "Méthode", type: "corrective", priorite: "haute", zone: "", description: "", recommandation: "", technicien: "", piegeRef: "", dateDetection: new Date().toLocaleDateString("fr-FR") });
+  const [draft, setDraft] = useState({ nature: "action", titre5m: "Méthode", type: "corrective", priorite: "haute", zone: "", description: "", recommandation: "", technicien: "", piegeRef: "", commentaire: "", dateDetection: new Date().toLocaleDateString("fr-FR") });
   const [draftPhotos, setDraftPhotos] = useState([]);
   const [zonesList, setZonesList] = useState(["Extérieur", "Intérieur", "Locaux techniques", "Combles", "Emballages", "Conditionnement", "Maintenance", "Stockage"]);
   const [newZoneInput, setNewZoneInput] = useState("");
@@ -6850,6 +6851,7 @@ function PlanActions() {
       if (data && data.length > 0) {
         setActions(data.map(a => ({
           ...a,
+          nature: a.nature||"action",
           titre5m: a.titre5m||a.titre||"Méthode",
           dateDetection: a.date_detection||a.dateDetection||"",
           piegeRef: a.piege_ref||a.piegeRef||"",
@@ -6863,19 +6865,19 @@ function PlanActions() {
     }).catch(() => {});
   }, []);
 
-  function resetDraft() {
-    setDraft({ titre5m: "Méthode", type: "corrective", priorite: "haute", zone: "", description: "", recommandation: "", technicien: "", piegeRef: "", dateDetection: new Date().toLocaleDateString("fr-FR") });
+  function resetDraft(nature) {
+    setDraft({ nature: nature || "action", titre5m: "Méthode", type: "corrective", priorite: "haute", zone: "", description: "", recommandation: "", technicien: "", piegeRef: "", commentaire: "", dateDetection: new Date().toLocaleDateString("fr-FR") });
     setDraftPhotos([]);
     setEditId(null);
   }
 
-  function openNew() {
-    resetDraft();
+  function openNew(nature) {
+    resetDraft(nature || "action");
     setShowForm(true);
   }
 
   function openEdit(a) {
-    setDraft({ titre5m: a.titre5m||"Méthode", type: a.type, priorite: a.priorite, zone: a.zone, description: a.description, recommandation: a.recommandation, technicien: a.technicien || "", piegeRef: a.piegeRef || "", dateDetection: a.dateDetection || new Date().toLocaleDateString("fr-FR") });
+    setDraft({ nature: a.nature||"action", titre5m: a.titre5m||"Méthode", type: a.type, priorite: a.priorite, zone: a.zone, description: a.description, recommandation: a.recommandation, technicien: a.technicien || "", piegeRef: a.piegeRef || "", commentaire: a.commentaire || "", dateDetection: a.dateDetection || new Date().toLocaleDateString("fr-FR") });
     setDraftPhotos(a.photos || []);
     setEditId(a.id);
     setShowForm(true);
@@ -6898,14 +6900,14 @@ function PlanActions() {
       setActions(prev => prev.map(a => {
         if (a.id !== editId) return a;
         const updated = { ...a, ...draft, photos: draftPhotos };
-        sbUpsert("plan_actions", { id:updated.id, contrat:CLIENT_CONFIG.contrat, titre5m:draft.titre5m, type:draft.type, priorite:draft.priorite, zone:draft.zone, description:draft.description, recommandation:draft.recommandation, technicien:draft.technicien, piege_ref:draft.piegeRef||"", statut:updated.statut||"Planifiée", date_detection:updated.dateDetection||"", commentaire:updated.commentaire||"", photos:JSON.stringify(draftPhotos) });
+        sbUpsert("plan_actions", { id:updated.id, contrat:CLIENT_CONFIG.contrat, nature:draft.nature||"action", titre5m:draft.titre5m, type:draft.type, priorite:draft.priorite, zone:draft.zone, description:draft.description, recommandation:draft.recommandation, technicien:draft.technicien, piege_ref:draft.piegeRef||"", statut:updated.statut||"Planifiée", date_detection:updated.dateDetection||"", commentaire:draft.commentaire||"", photos:JSON.stringify(draftPhotos) });
         return updated;
       }));
     } else {
       const newId = String(Date.now());
       const newAction = { ...draft, id: newId, statut: "Planifiée", photos: draftPhotos, dateDetection: draft.dateDetection || new Date().toLocaleDateString("fr-FR") };
       setActions(prev => [newAction, ...prev]);
-      const actionData = { id:newId, contrat:CLIENT_CONFIG.contrat, titre5m:draft.titre5m, type:draft.type, priorite:draft.priorite, zone:draft.zone, description:draft.description, recommandation:draft.recommandation, technicien:draft.technicien, piege_ref:draft.piegeRef||"", statut:"Planifiée", date_detection:newAction.dateDetection, commentaire:"", photos:JSON.stringify(draftPhotos) };
+      const actionData = { id:newId, contrat:CLIENT_CONFIG.contrat, nature:draft.nature||"action", titre5m:draft.titre5m, type:draft.type, priorite:draft.priorite, zone:draft.zone, description:draft.description, recommandation:draft.recommandation, technicien:draft.technicien, piege_ref:draft.piegeRef||"", statut:"Planifiée", date_detection:newAction.dateDetection, commentaire:draft.commentaire||"", photos:JSON.stringify(draftPhotos) };
       if (navigator.onLine) {
         sbUpsert("plan_actions", actionData);
       } else {
@@ -6930,7 +6932,7 @@ function PlanActions() {
       if (a.id !== id) return a;
       const updated = { ...a, statut };
       sbUpsert("plan_actions", {
-        id: updated.id, contrat: CLIENT_CONFIG.contrat,
+        id: updated.id, contrat: CLIENT_CONFIG.contrat, nature: updated.nature||"action",
         titre5m: updated.titre5m, type: updated.type, priorite: updated.priorite, zone: updated.zone,
         description: updated.description, recommandation: updated.recommandation, technicien: updated.technicien,
         piege_ref: updated.piegeRef||"",
@@ -6952,7 +6954,7 @@ function PlanActions() {
       if (a.id !== id) return a;
       const updated = { ...a, commentaire };
       sbUpsert("plan_actions", {
-        id: updated.id, contrat: CLIENT_CONFIG.contrat,
+        id: updated.id, contrat: CLIENT_CONFIG.contrat, nature: updated.nature||"action",
         titre5m: updated.titre5m, type: updated.type, priorite: updated.priorite, zone: updated.zone,
         description: updated.description, recommandation: updated.recommandation, technicien: updated.technicien,
         piege_ref: updated.piegeRef||"",
@@ -6969,6 +6971,7 @@ function PlanActions() {
   const anneesDispoTable = [...new Set(actions.map(a=>{ const d=pdFilter(a.dateDetection); return d&&!isNaN(d)?d.getFullYear():null; }).filter(Boolean))].sort((a,b)=>b-a);
   const MOIS_LABELS_TABLE = ["Janvier","Fevrier","Mars","Avril","Mai","Juin","Juillet","Aout","Septembre","Octobre","Novembre","Decembre"];
   const filtered = filteredByStatut.filter(a => {
+    if (natureFilter !== "Toutes" && (a.nature||"action") !== natureFilter) return false;
     const d = pdFilter(a.dateDetection);
     if (filterAnneeTable !== "Toutes") {
       if (!d || isNaN(d) || d.getFullYear() !== parseInt(filterAnneeTable)) return false;
@@ -6984,7 +6987,7 @@ function PlanActions() {
       <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", marginBottom: 16, flexWrap: "wrap", gap: 10 }}>
         <div>
           <div style={{ fontSize: 22, fontWeight: 800, color: "var(--text-1)", marginBottom: 2 }}>Plan d'actions</div>
-          <div style={{ fontSize: 13, color: "var(--text-label)" }}>{actions.length} fiches — correctives et préventives</div>
+          <div style={{ fontSize: 13, color: "var(--text-label)" }}>{actions.filter(a=>(a.nature||"action")!=="observation").length} action(s) · {actions.filter(a=>a.nature==="observation").length} observation(s)</div>
         </div>
         <div style={{ display: "flex", gap: 8 }}>
           {prevActions && (
@@ -6998,17 +7001,23 @@ function PlanActions() {
             const SCOLOR = { "En cours":"#f59e0b", "Planifiée":"#3b82f6", "Résolue":"#22c55e", Vigilance:"#f59e0b" };
             const MCOLOR = { "Méthode":"#3b82f6","Milieu":"#22c55e","Matière":"#f59e0b","Main d'oeuvre":"#8b5cf6","Matériel":"#ef4444" };
             const badge = (val, color) => `<span style='background:${color}22;color:${color};border:1px solid ${color}44;border-radius:4px;padding:2px 7px;font-size:10px;font-weight:700'>${val}</span>`;
-            const rows = filtered.map(a => {
+            // Toujours en ordre chronologique (du plus ancien au plus récent).
+            const chrono = [...filtered].sort((x,y)=>pdFilter(x.dateDetection)-pdFilter(y.dateDetection));
+            const natLabel = a => a.nature==="observation" ? "Observation" : (a.type==="corrective"?"Corrective":"Préventive");
+            const rows = chrono.map(a => {
               const pc = PCOLOR[a.priorite]||"var(--text-label)";
               const sc = SCOLOR[a.statut]||"var(--text-label)";
               const mc = MCOLOR[a.titre5m]||"var(--text-label)";
+              const nc = a.nature==="observation" ? "#8b5cf6" : (a.type==="corrective"?"#ef4444":"#3b82f6");
               const photosHtml = (a.photos||[]).length > 0
                 ? "<br/><div style='margin-top:6px'>"+(a.photos||[]).map(p=>"<img src='"+p.url+"' style='max-width:80px;max-height:60px;border-radius:4px;margin:2px;object-fit:cover;border:1px solid #e5e7eb'/>").join("")+"</div>"
                 : "";
-              return "<tr><td>"+a.type+"</td><td>"+(a.dateDetection||"—")+"</td><td>"+(a.zone||"")+"</td><td>"+badge(a.titre5m||"",mc)+photosHtml+"</td><td>"+badge(a.priorite,pc)+"</td><td>"+badge(a.statut,sc)+"</td><td>"+(a.description||"")+"</td></tr>";
+              const comm = (a.commentaire && a.commentaire.replace(/<[^>]+>/g,"").replace(/&nbsp;/gi," ").trim()) ? a.commentaire : "";
+              return "<tr><td>"+badge(natLabel(a),nc)+"</td><td>"+(a.dateDetection||"—")+"</td><td>"+(a.zone||"")+"</td><td>"+badge(a.titre5m||"",mc)+photosHtml+"</td><td>"+badge(a.priorite,pc)+"</td><td>"+badge(a.statut,sc)+"</td><td>"+(a.description||"")+"</td><td>"+comm+"</td></tr>";
             }).join("");
+            const natTxt = natureFilter==="action" ? "Actions" : natureFilter==="observation" ? "Observations" : "Actions + observations";
             exportHTML("Plan d'actions - " + CLIENT_CONFIG.nom,
-              "<h1>Plan d'actions</h1><p style='color:#6b7280;margin-bottom:12px'>Filtre : "+filter+" — "+filtered.length+" action(s)</p><table><thead><tr><th>Type</th><th>Date de création</th><th>Zone</th><th>5M</th><th>Priorité</th><th>Statut</th><th>Action</th></tr></thead><tbody>"+rows+"</tbody></table>");
+              "<h1>Plan d'actions</h1><p style='color:#6b7280;margin-bottom:12px'>"+natTxt+" — statut : "+filter+" — "+chrono.length+" fiche(s) — ordre chronologique</p><table><thead><tr><th>Nature</th><th>Date de création</th><th>Zone</th><th>5M</th><th>Priorité</th><th>Statut</th><th>Description</th><th>Commentaire</th></tr></thead><tbody>"+rows+"</tbody></table>");
           }} />
           <button onClick={() => {
             const headers = ["Type","Date creation","Zone","5M","Priorité","Statut","Poste(s)","Technicien","Description","Nb photos","Noms photos"];
@@ -7022,8 +7031,12 @@ function PlanActions() {
             style={{ background:"#22c55e22", color:"#22c55e", border:"1px solid #22c55e44", borderRadius:9, padding:"10px 16px", fontSize:12, fontWeight:700, cursor:"pointer", fontFamily:"inherit" }}>
             Export Excel
           </button>
-          <button onClick={()=>window.__isAdmin&&openNew()}
-            style={{ background: "#1d4ed8", opacity:window.__isAdmin?1:0.4, cursor:window.__isAdmin?"pointer":"not-allowed", color: "#fff", border: "none", borderRadius: 9, padding: "10px 18px", fontSize: 13, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>
+          <button onClick={()=>window.__isAdmin&&openNew("observation")}
+            style={{ background: "#8b5cf6", opacity:window.__isAdmin?1:0.4, color: "#fff", border: "none", borderRadius: 9, padding: "10px 18px", fontSize: 13, fontWeight: 700, cursor:window.__isAdmin?"pointer":"not-allowed", fontFamily: "inherit" }}>
+            + Observation
+          </button>
+          <button onClick={()=>window.__isAdmin&&openNew("action")}
+            style={{ background: "#1d4ed8", opacity:window.__isAdmin?1:0.4, cursor:window.__isAdmin?"pointer":"not-allowed", color: "#fff", border: "none", borderRadius: 9, padding: "10px 18px", fontSize: 13, fontWeight: 700, fontFamily: "inherit" }}>
             + Nouvelle action
           </button>
         </div>
@@ -7032,8 +7045,15 @@ function PlanActions() {
       {/* Formulaire création/édition */}
       {showForm && (
         <Card style={{ marginBottom: 16 }}>
-          <div style={{ fontSize: 14, fontWeight: 700, color: "var(--text-1)", marginBottom: 14 }}>{editId ? "Modifier l'action" : "Nouvelle fiche action"}</div>
+          <div style={{ fontSize: 14, fontWeight: 700, color: "var(--text-1)", marginBottom: 14 }}>{editId ? (draft.nature==="observation" ? "Modifier l'observation" : "Modifier l'action") : (draft.nature==="observation" ? "Nouvelle observation" : "Nouvelle fiche action")}</div>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(160px,1fr))", gap: 10, marginBottom: 10 }}>
+            <div>
+              <label style={{ fontSize: 10, color: "var(--text-label)", fontWeight: 600, textTransform: "uppercase", display: "block", marginBottom: 3 }}>Nature</label>
+              <select value={draft.nature||"action"} onChange={e => setDraft(p => ({ ...p, nature: e.target.value }))} style={inp()}>
+                <option value="action">Action</option>
+                <option value="observation">Observation</option>
+              </select>
+            </div>
             {[
               ["piegeRef", "Poste(s)", "text"],
             ].map(([key, label, type]) => (
@@ -7101,6 +7121,12 @@ function PlanActions() {
             </div>
           ))}
 
+          {/* Commentaire enrichi */}
+          <div style={{ marginBottom: 10 }}>
+            <label style={{ fontSize: 10, color: "var(--text-label)", fontWeight: 600, textTransform: "uppercase", display: "block", marginBottom: 3 }}>Commentaire (gras, souligné, retour à la ligne)</label>
+            <CommentEditor value={draft.commentaire||""} onChange={html=>setDraft(p=>({ ...p, commentaire: html }))} />
+          </div>
+
           {/* Photos */}
           <div style={{ marginBottom: 12 }}>
             <label style={{ fontSize: 10, color: "var(--text-label)", fontWeight: 600, textTransform: "uppercase", display: "block", marginBottom: 6 }}>
@@ -7153,6 +7179,16 @@ function PlanActions() {
             </button>
           );
         })}
+        <div style={{ width: 1, alignSelf: "stretch", background: "var(--border)", margin: "0 4px" }} />
+        {[["Toutes","Tout"],["action","Actions"],["observation","Observations"]].map(([v,lbl])=>{
+          const cnt = v==="Toutes" ? actions.length : actions.filter(a=>(a.nature||"action")===v).length;
+          return (
+            <button key={v} onClick={()=>setNatureFilter(v)}
+              style={{ background: natureFilter===v ? "#8b5cf6" : "var(--bg-2)", color: natureFilter===v ? "#fff" : "var(--text-label)", border:"1px solid "+(natureFilter===v?"#8b5cf6":"var(--border)"), borderRadius:20, padding:"5px 12px", fontSize:12, fontWeight:600, cursor:"pointer", fontFamily:"inherit" }}>
+              {lbl} ({cnt})
+            </button>
+          );
+        })}
         <div style={{ marginLeft: "auto", display: "flex", gap: 6 }}>
           <div>
             <label style={{ fontSize: 9, color: "var(--text-label)", display: "block", marginBottom: 2 }}>Annee</label>
@@ -7191,9 +7227,13 @@ function PlanActions() {
               <div key={a.id}>
                 <div onClick={()=>setSel(isSel?null:a.id)} style={{ padding: "10px 16px", display: "grid", gridTemplateColumns: "60px 90px 100px 110px 80px 100px 1fr 170px", gap: 8, alignItems: "center", borderTop: "1px solid var(--line)", background: isSel?"var(--bg-2)":i%2===0?"transparent":"#ffffff04", cursor:"pointer" }}>
                   <div>
-                    <span style={{ fontSize: 9, fontWeight: 700, background: a.type === "corrective" ? "#ef444422" : "#3b82f622", color: a.type === "corrective" ? "#ef4444" : "#3b82f6", border: "1px solid " + (a.type === "corrective" ? "#ef444444" : "#3b82f644"), borderRadius: 4, padding: "1px 5px" }}>
-                      {a.type === "corrective" ? "COR" : "PRÉ"}
-                    </span>
+                    {a.nature === "observation" ? (
+                      <span style={{ fontSize: 9, fontWeight: 700, background: "#8b5cf622", color: "#8b5cf6", border: "1px solid #8b5cf644", borderRadius: 4, padding: "1px 5px" }}>OBS</span>
+                    ) : (
+                      <span style={{ fontSize: 9, fontWeight: 700, background: a.type === "corrective" ? "#ef444422" : "#3b82f622", color: a.type === "corrective" ? "#ef4444" : "#3b82f6", border: "1px solid " + (a.type === "corrective" ? "#ef444444" : "#3b82f644"), borderRadius: 4, padding: "1px 5px" }}>
+                        {a.type === "corrective" ? "COR" : "PRÉ"}
+                      </span>
+                    )}
                   </div>
                   <div style={{ fontSize: 11, color: "var(--text-muted)" }}>{a.dateDetection || "—"}</div>
                   <div style={{ fontSize: 11, color: "var(--text-muted)" }}>{a.zone || "—"}</div>
@@ -7213,7 +7253,8 @@ function PlanActions() {
                       {["En cours", "Planifiée", "Résolue", "Vigilance"].map(s => <option key={s} value={s}>{s}</option>)}
                     </select>
                   </div>
-                  <CommentEditor value={a.commentaire||""} onSave={html=>changeCommentaire(a.id, html)} />
+                  <div style={{ fontSize: 11, color: "var(--text-muted)", maxHeight: 54, overflow: "auto", whiteSpace: "pre-wrap", wordBreak: "break-word" }}
+                    dangerouslySetInnerHTML={{ __html: (a.commentaire && a.commentaire.replace(/<[^>]+>/g,"").replace(/&nbsp;/gi," ").trim()) ? a.commentaire : "<span style='color:var(--text-faint)'>—</span>" }} />
                   <div style={{ display: "flex", gap: 4, justifyContent: "flex-end" }} onClick={e=>e.stopPropagation()}>
                     <button onClick={() => openEdit(a)}
                       style={{ background: "#1d4ed822", color: "#3b82f6", border: "1px solid #3b82f644", borderRadius: 5, padding: "3px 8px", fontSize: 10, fontWeight: 700, cursor: "pointer", fontFamily: "inherit" }}>✏</button>
