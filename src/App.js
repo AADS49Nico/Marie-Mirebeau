@@ -1982,6 +1982,7 @@ function Cartographie({ seuilsGlobaux }) {
   const [search, setSearch] = useState("");
   const [sel, setSel] = useState(null);
   const [filterMacro, setFilterMacro] = useState("Toutes");
+  const [filterIntExt, setFilterIntExt] = useState("Tous"); // Tous | int | ext (par N° de poste)
   const [filterAnnee, setFilterAnnee] = useState(null);
   const [editingConso, setEditingConso] = useState(false);
   const [consoEdit, setConsoEdit] = useState({});
@@ -2147,6 +2148,8 @@ function Cartographie({ seuilsGlobaux }) {
     if (subtab === "insectes" && !INSECTES_TYPES.includes(nuisible)) return false;
     if (subtab === "insectes" && filterInsecte !== "Tous" && nuisible !== filterInsecte) return false;
     if (filterMacro !== "Toutes" && p.macro !== filterMacro) return false;
+    if (filterIntExt === "ext" && !(/^RE/i.test(p.id) || /egout/i.test(p.id))) return false;
+    if (filterIntExt === "int" && !(/^[SR]/i.test(p.id) && !/^RE/i.test(p.id) && !/egout/i.test(p.id))) return false;
     if (search) {
       const s = search.toLowerCase();
       return p.id.toLowerCase().includes(s) || p.zone.toLowerCase().includes(s);
@@ -2271,6 +2274,12 @@ function Cartographie({ seuilsGlobaux }) {
         <select value={filterMacro} onChange={e => setFilterMacro(e.target.value)}
           style={{ background: "var(--bg-2)", border: "1px solid var(--border)", borderRadius: 8, padding: "8px 12px", color: "var(--text-1)", fontSize: 12, fontFamily: "inherit" }}>
           {macros.map(m => <option key={m}>{m}</option>)}
+        </select>
+        <select value={filterIntExt} onChange={e => setFilterIntExt(e.target.value)}
+          style={{ background: filterIntExt!=="Tous"?"#1d4ed8":"var(--bg-2)", border: "1px solid "+(filterIntExt!=="Tous"?"#1d4ed8":"var(--border)"), borderRadius: 8, padding: "8px 12px", color: filterIntExt!=="Tous"?"#fff":"var(--text-1)", fontSize: 12, fontFamily: "inherit" }}>
+          <option value="Tous">Int. + Ext.</option>
+          <option value="int">Intérieurs (S/R)</option>
+          <option value="ext">Extérieurs (RE/égouts)</option>
         </select>
         {anneesDispo.length > 0 && (
           <select value={filterAnnee || "Toutes"} onChange={e => setFilterAnnee(e.target.value)}
@@ -12267,6 +12276,7 @@ function PlanImplantation({ seuilsGlobaux }) {
   const [filterNuisibleArr, setFilterNuisibleArr] = useState([]);
   const [filtreProduitsNusPlan, setFiltreProduitsNusPlan] = useState("tous"); // tous | oui | non
   const [filtreDeivTypePlan, setFiltreDeivTypePlan] = useState("tous"); // tous | moniteur | destructeur
+  const [filtreMacroPlan, setFiltreMacroPlan] = useState("Toutes"); // filtre zone macro du plan
   const [modeColor, setModeColor]     = useState("type");
   const [zoom, setZoom]               = useState(()=>{
     try { const saved = window.localStorage && window.localStorage.getItem("aads_plan_zoom"); return saved ? parseInt(saved) : 80; } catch(e) { return 80; }
@@ -12506,11 +12516,10 @@ function PlanImplantation({ seuilsGlobaux }) {
   }
 
   // Get saisie for a poste on a date — fusionne tous les passages de cette date (rongeurs + DEIV)
-  function getSaisie(posteId, date) {
-    const passagesDate = passages.filter(p=>p.date===date);
-    if (!passagesDate.length) return null;
+  // Fusionne les saisies de tous les passages d'une date en un index {poste_id: saisie}.
+  function mergeSaisiesPourDate(date) {
     const merged = {};
-    passagesDate.forEach(passage=>{
+    (passages||[]).filter(p=>p.date===date).forEach(passage=>{
       const saisies = typeof passage.saisies==="string"?JSON.parse(passage.saisies||"{}"):passage.saisies||{};
       Object.entries(saisies).forEach(([id, s])=>{
         if (!merged[id]) merged[id] = {...s};
@@ -12522,6 +12531,17 @@ function PlanImplantation({ seuilsGlobaux }) {
         }
       });
     });
+    return merged;
+  }
+  // Index mémoïsé pour la date affichée : calculé une seule fois (et non pour
+  // chaque pastille à chaque rendu) -> affichage du plan et filtres instantanés.
+  const saisieParPosteSel = React.useMemo(() => mergeSaisiesPourDate(selDate), [passages, selDate]);
+  // Index poste par id (évite un .find sur ~200 postes pour chaque pastille).
+  const posteById = React.useMemo(() => { const m = {}; (postes||[]).forEach(p=>{ m[p.id]=p; }); return m; }, [postes]);
+
+  function getSaisie(posteId, date) {
+    if (date === selDate) return saisieParPosteSel[posteId] || null;
+    const merged = mergeSaisiesPourDate(date);
     return merged[posteId]||null;
   }
 
@@ -12565,8 +12585,8 @@ function PlanImplantation({ seuilsGlobaux }) {
     const totalCap = (parseInt(s.cap_souris||0))+(parseInt(s.cap_ratBrun||0))+(parseInt(s.cap_ratNoir||0));
     if (totalCap > 0) {
       const id = poste.id || "";
-      const isExt = /^RE/i.test(id);
-      const isInt = /^(RI|R\d|S\d)/i.test(id) && !isExt;
+      const isExt = /^RE/i.test(id) || /egout/i.test(id);
+      const isInt = /^[SR]/i.test(id) && !isExt;
       if (isExt) {
         const sl = (seuilsGlobaux?.rongeursExt?.leger) ?? 1;
         const sm = (seuilsGlobaux?.rongeursExt?.moyen) ?? 3;
@@ -12808,9 +12828,9 @@ function PlanImplantation({ seuilsGlobaux }) {
 
       // Ajouter pastilles au clone SVG
       pts.forEach(pt => {
-        const p = postes.find(x=>x.id===pt.id);
+        const p = posteById[pt.id];
         if (!p) return;
-        if (filterNuisibleArr.length>0 && !filterNuisibleArr.some(f=>{const id=p.id||"";if(f==="__RE")return /^RE/i.test(id);if(f==="__RI")return /^(RI|R\d|S\d)/i.test(id)&&!/^RE/i.test(id);return (p.nuisible||"Rongeurs")===f;})) return;
+        if (filterNuisibleArr.length>0 && !filterNuisibleArr.some(f=>{const id=p.id||"";if(f==="__RE")return /^RE/i.test(id)||/egout/i.test(id);if(f==="__RI")return /^[SR]/i.test(id)&&!/^RE/i.test(id)&&!/egout/i.test(id);return (p.nuisible||"Rongeurs")===f;})) return;
         const col = getPosteColor(p, selDate);
         const x = (parseFloat(pt.x)/100) * 900;
         const y = (parseFloat(pt.y)/100) * 600;
@@ -12892,9 +12912,9 @@ function PlanImplantation({ seuilsGlobaux }) {
 
       // Draw pastilles
       pts.forEach(pt => {
-        const p = postes.find(x=>x.id===pt.id);
+        const p = posteById[pt.id];
         if (!p) return;
-        if (filterNuisibleArr.length>0 && !filterNuisibleArr.some(f=>{const id=p.id||"";if(f==="__RE")return /^RE/i.test(id);if(f==="__RI")return /^(RI|R\d|S\d)/i.test(id)&&!/^RE/i.test(id);return (p.nuisible||"Rongeurs")===f;})) return;
+        if (filterNuisibleArr.length>0 && !filterNuisibleArr.some(f=>{const id=p.id||"";if(f==="__RE")return /^RE/i.test(id)||/egout/i.test(id);if(f==="__RI")return /^[SR]/i.test(id)&&!/^RE/i.test(id)&&!/egout/i.test(id);return (p.nuisible||"Rongeurs")===f;})) return;
         const col = getPosteColor(p, selDate);
         const x = (parseFloat(pt.x)/100) * img.width;
         const y = (parseFloat(pt.y)/100) * img.height;
@@ -13015,6 +13035,14 @@ function PlanImplantation({ seuilsGlobaux }) {
               <button key={v} onClick={()=>setFiltreDeivTypePlan(v)} style={{background:filtreDeivTypePlan===v?"#1d4ed8":"transparent",color:filtreDeivTypePlan===v?"#fff":"var(--text-label)",border:"1px solid "+(filtreDeivTypePlan===v?"#1d4ed8":"var(--border)"),borderRadius:6,padding:"4px 10px",fontSize:11,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>{l}</button>
             ))}
           </div>
+          <div style={{display:"flex",alignItems:"center",gap:6}}>
+            <span style={{fontSize:10,fontWeight:700,color:"var(--text-label)",textTransform:"uppercase"}}>Zone macro</span>
+            <select value={filtreMacroPlan} onChange={e=>setFiltreMacroPlan(e.target.value)}
+              style={{background:filtreMacroPlan!=="Toutes"?"#1d4ed8":"var(--bg-2)",color:filtreMacroPlan!=="Toutes"?"#fff":"var(--text-1)",border:"1px solid "+(filtreMacroPlan!=="Toutes"?"#1d4ed8":"var(--border)"),borderRadius:6,padding:"4px 10px",fontSize:11,fontWeight:600,cursor:"pointer",fontFamily:"inherit"}}>
+              <option value="Toutes">Toutes</option>
+              {[...new Set(postes.map(p=>p.macro).filter(Boolean))].sort().map(m=><option key={m} value={m}>{m}</option>)}
+            </select>
+          </div>
         </div>
       </Card>
 
@@ -13028,7 +13056,7 @@ function PlanImplantation({ seuilsGlobaux }) {
           </button>
           {/* Rongeurs Extérieurs */}
           {(()=>{
-            const count = postes.filter(p=>p.id&&/^RE/i.test(p.id)).length;
+            const count = postes.filter(p=>p.id&&(/^RE/i.test(p.id)||/egout/i.test(p.id))).length;
             if(count===0 || nuisiblesMasques.indexOf("__RE")>=0) return null;
             const active = filterNuisibleArr.includes("__RE");
             const colRE = nuisibleColors["__RE"]||"#1e40af";
@@ -13042,7 +13070,7 @@ function PlanImplantation({ seuilsGlobaux }) {
           })()}
           {/* Rongeurs Intérieurs */}
           {(()=>{
-            const count = postes.filter(p=>p.id&&/^(RI|R\d|S\d)/i.test(p.id)&&!/^RE/i.test(p.id)).length;
+            const count = postes.filter(p=>p.id&&/^[SR]/i.test(p.id)&&!/^RE/i.test(p.id)&&!/egout/i.test(p.id)).length;
             if(count===0 || nuisiblesMasques.indexOf("__RI")>=0) return null;
             const active = filterNuisibleArr.includes("__RI");
             const colRI = nuisibleColors["__RI"]||"#60a5fa";
@@ -13423,11 +13451,12 @@ function PlanImplantation({ seuilsGlobaux }) {
                       : <div style={{width:"100%",height:200,display:"flex",alignItems:"center",justifyContent:"center",color:"var(--text-muted)",fontSize:13}}>Aucune image</div>
                     }
                     {pts.map(pt=>{
-                      const p = postes.find(x=>x.id===pt.id);
+                      const p = posteById[pt.id];
                       if (!p) return null;
                       if (filtreProduitsNusPlan==="oui" && !p.zone_produits_nus) return null;
                       if (filtreProduitsNusPlan==="non" && p.zone_produits_nus) return null;
                       if (filtreDeivTypePlan!=="tous" && (p.deiv_type||"")!==filtreDeivTypePlan) return null;
+                      if (filtreMacroPlan!=="Toutes" && (p.macro||"")!==filtreMacroPlan) return null;
                       const col = getPosteColor(p, selDate);
                       const label = posteLabel(p.id);
                       return (
@@ -13470,12 +13499,13 @@ function PlanImplantation({ seuilsGlobaux }) {
             }
             {/* Pastilles */}
             {planPostes.map(pt=>{
-              const p=postes.find(p=>p.id===pt.id);
+              const p=posteById[pt.id];
               if(!p)return null;
-              if(filterNuisibleArr.length>0&&!filterNuisibleArr.some(f=>{const id=p.id||"";if(f==="__RE")return p.type==="RE"||/^RE/i.test(id)||/egout/i.test(id);if(f==="__RI")return (p.type==="RI"||/^(RI|R\d|S\d)/i.test(id))&&p.type!=="RE"&&!/^RE/i.test(id)&&!/egout/i.test(id);return (p.nuisible||"Rongeurs")===f;}))return null;
+              if(filterNuisibleArr.length>0&&!filterNuisibleArr.some(f=>{const id=p.id||"";if(f==="__RE")return /^RE/i.test(id)||/egout/i.test(id);if(f==="__RI")return /^[SR]/i.test(id)&&!/^RE/i.test(id)&&!/egout/i.test(id);return (p.nuisible||"Rongeurs")===f;}))return null;
               if(filtreProduitsNusPlan==="oui" && !p.zone_produits_nus) return null;
               if(filtreProduitsNusPlan==="non" && p.zone_produits_nus) return null;
               if(filtreDeivTypePlan!=="tous" && (p.deiv_type||"")!==filtreDeivTypePlan) return null;
+              if(filtreMacroPlan!=="Toutes" && (p.macro||"")!==filtreMacroPlan) return null;
               const col=getPosteColor(p,selDate);
               const isHov=hover===pt.id;
               const isMov=movingPoste===pt.id;
