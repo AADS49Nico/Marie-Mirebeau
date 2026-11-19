@@ -13453,6 +13453,7 @@ function PlanImplantation({ seuilsGlobaux }) {
                     {pts.map(pt=>{
                       const p = posteById[pt.id];
                       if (!p) return null;
+                      if (filterNuisibleArr.length>0 && !filterNuisibleArr.some(f=>{const id=p.id||"";if(f==="__RE")return /^RE/i.test(id)||/egout/i.test(id);if(f==="__RI")return /^[SR]/i.test(id)&&!/^RE/i.test(id)&&!/egout/i.test(id);return (p.nuisible||"Rongeurs")===f;})) return null;
                       if (filtreProduitsNusPlan==="oui" && !p.zone_produits_nus) return null;
                       if (filtreProduitsNusPlan==="non" && p.zone_produits_nus) return null;
                       if (filtreDeivTypePlan!=="tous" && (p.deiv_type||"")!==filtreDeivTypePlan) return null;
