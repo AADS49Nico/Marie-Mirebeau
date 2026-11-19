@@ -13018,7 +13018,7 @@ function PlanImplantation({ seuilsGlobaux }) {
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:16,flexWrap:"wrap",gap:10}}>
         <div>
           <div style={{fontSize:22,fontWeight:800,color:"var(--text-1)",marginBottom:2}}>Plan d'implantation</div>
-          <div style={{fontSize:13,color:"var(--text-label)"}}>{CLIENT_CONFIG.nom} — {postes.length} postes <span style={{color:"#22c55e",fontWeight:700}}>· filtres v3</span></div>
+          <div style={{fontSize:13,color:"var(--text-label)"}}>{CLIENT_CONFIG.nom} — {postes.length} postes <span style={{color:"#22c55e",fontWeight:700}}>· filtres v4 [actif: {filterNuisibleArr.length?filterNuisibleArr.join(" , "):"aucun"}]</span></div>
         </div>
         <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
           <button onClick={exportAllPlans}
