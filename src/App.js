@@ -289,6 +289,39 @@ async function sbDelete(table, id) {
   return sbFetch(table + "?id=eq." + id + "&contrat=eq." + CLIENT_CONFIG.contrat + filtreSite(table), "DELETE");
 }
 
+// Compresse une photo (redimensionne + JPEG) AVANT stockage base64, pour que les
+// lignes (audits, actions...) restent légères et s'enregistrent sans dépassement
+// de délai. Renvoie une data-URL JPEG, ou la photo d'origine si la compression échoue.
+function compresserImageFichier(file, maxDim, quality) {
+  return new Promise(function(resolve){
+    try {
+      var reader = new FileReader();
+      reader.onload = function(e){
+        try {
+          var img = new Image();
+          img.onload = function(){
+            try {
+              var w = img.width, h = img.height, m = maxDim || 1400;
+              if (w > m || h > m) {
+                if (w >= h) { h = Math.round(h * m / w); w = m; }
+                else { w = Math.round(w * m / h); h = m; }
+              }
+              var canvas = document.createElement("canvas");
+              canvas.width = w; canvas.height = h;
+              canvas.getContext("2d").drawImage(img, 0, 0, w, h);
+              resolve(canvas.toDataURL("image/jpeg", quality || 0.7));
+            } catch(_e) { resolve(e.target.result); }
+          };
+          img.onerror = function(){ resolve(e.target.result); };
+          img.src = e.target.result;
+        } catch(_e) { resolve(e.target.result); }
+      };
+      reader.onerror = function(){ resolve(null); };
+      reader.readAsDataURL(file);
+    } catch(_e) { resolve(null); }
+  });
+}
+
 // Place ou deplace un poste sur un plan. Un poste ne peut etre que sur un seul plan a la fois
 // (contrainte unique en base sur contrat+poste_id). Si le poste existe deja ailleurs, on le
 // deplace (UPDATE plan_id+x+y) au lieu de tenter un INSERT qui echouerait en doublon.
@@ -14087,11 +14120,20 @@ function Audit({ seuilsGlobaux }) {
     const seuilConforme = seuilsGlobaux?.audit?.conforme ?? 85;
     const seuilPartiel  = seuilsGlobaux?.audit?.partiel  ?? 60;
     const statut = score>=seuilConforme?"Conforme":score>=seuilPartiel?"Partiel":"Non conforme";
+    // Version "légère" des observations (sans les photos base64) pour le repli.
+    const obsItemsLeger = obsItems.map(o=>({...o, photos:(o.photos||[]).map(p=>({name:p.name||""}))}));
     if (editId) {
       const updated = {...audits.find(a=>a.id===editId), date:dateFmt, auditeur:draft.auditeur, observations:draft.observations, actions_depuis:draft.actionsDepuis, reponses, obsItems, score, statut};
       setAudits(prev=>prev.map(a=>a.id===editId?updated:a));
-      sbUpdate("audits", editId, {date:dateFmt, auditeur:draft.auditeur, observations:draft.observations, actions_depuis:draft.actionsDepuis||"", reponses:JSON.stringify(reponses), score, statut, obs_items:JSON.stringify(obsItems)}, {minimal:true})
-        .catch(e=>{ console.error("Audit update error:", e); alert("L'enregistrement de l'audit a échoué (réseau ou délai dépassé). Vérifiez la connexion et réessayez."); });
+      const payloadMaj = {date:dateFmt, auditeur:draft.auditeur, observations:draft.observations, actions_depuis:draft.actionsDepuis||"", reponses:JSON.stringify(reponses), score, statut, obs_items:JSON.stringify(obsItems)};
+      sbUpdate("audits", editId, payloadMaj, {minimal:true})
+        .catch(e=>{
+          console.error("Audit update error:", e);
+          // Repli : on réécrit sans les photos -> au moins les textes sont sauvés.
+          return sbUpdate("audits", editId, {...payloadMaj, obs_items:JSON.stringify(obsItemsLeger)}, {minimal:true})
+            .then(()=>alert("Observations et conclusion enregistrées. En revanche les photos étaient trop lourdes et n'ont pas pu être sauvegardées."))
+            .catch(e2=>{ console.error(e2); alert("L'enregistrement de l'audit a échoué (réseau ou délai dépassé). Vérifiez la connexion et réessayez."); });
+        });
     } else {
       const id = String(Date.now());
       const newAudit = {id, contrat:CLIENT_CONFIG.contrat, date:dateFmt, auditeur:draft.auditeur, observations:draft.observations, actions_depuis:draft.actionsDepuis, reponses, obsItems, score, statut};
@@ -14105,7 +14147,13 @@ function Audit({ seuilsGlobaux }) {
         score, statut
       };
       if (navigator.onLine) {
-        sbUpsert("audits", auditData, {minimal:true}).catch(e=>{ console.error("Audit save error:", e); alert("L'enregistrement de l'audit a échoué (réseau ou délai dépassé). Vérifiez la connexion et réessayez."); });
+        sbUpsert("audits", auditData, {minimal:true}).catch(e=>{
+          console.error("Audit save error:", e);
+          // Repli : réécriture sans les photos -> préserve observations et conclusion.
+          return sbUpsert("audits", {...auditData, obs_items:JSON.stringify(obsItemsLeger)}, {minimal:true})
+            .then(()=>alert("Observations et conclusion enregistrées. En revanche les photos étaient trop lourdes et n'ont pas pu être sauvegardées."))
+            .catch(e2=>{ console.error(e2); alert("L'enregistrement de l'audit a échoué (réseau ou délai dépassé). Vérifiez la connexion et réessayez."); });
+        });
       } else {
         savePendingSaisie({ id:"pending_audit_"+id, data:auditData, table:"audits" }).then(()=>{
           if (window.__setPendingCount) getPendingSaisies().then(p=>window.__setPendingCount(p.length)).catch(()=>{});
@@ -14333,10 +14381,12 @@ function Audit({ seuilsGlobaux }) {
                     + Ajouter photos
                     <input type="file" accept="image/*" multiple style={{display:"none"}} onChange={e=>{
                       Array.from(e.target.files).forEach(file=>{
-                        const r=new FileReader();
-                        r.onload=ev=>setObsItems(prev=>prev.map(o=>o.id===obs.id?{...o,photos:[...(o.photos||[]),{url:ev.target.result,name:file.name}]}:o));
-                        r.readAsDataURL(file);
+                        compresserImageFichier(file, 1400, 0.7).then(url=>{
+                          if(!url) return;
+                          setObsItems(prev=>prev.map(o=>o.id===obs.id?{...o,photos:[...(o.photos||[]),{url,name:file.name}]}:o));
+                        });
                       });
+                      e.target.value="";
                     }}/>
                   </label>
                     {(obs.photos||[]).length>0&&(
