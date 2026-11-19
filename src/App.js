@@ -13018,7 +13018,7 @@ function PlanImplantation({ seuilsGlobaux }) {
       <div style={{display:"flex",justifyContent:"space-between",alignItems:"flex-start",marginBottom:16,flexWrap:"wrap",gap:10}}>
         <div>
           <div style={{fontSize:22,fontWeight:800,color:"var(--text-1)",marginBottom:2}}>Plan d'implantation</div>
-          <div style={{fontSize:13,color:"var(--text-label)"}}>{CLIENT_CONFIG.nom} — {postes.length} postes <span style={{color:"#22c55e",fontWeight:700}}>· filtres v5 [actif: {filterNuisibleArr.length?filterNuisibleArr.join(" , "):"aucun"}]</span></div>
+          <div style={{fontSize:13,color:"var(--text-label)"}}>{CLIENT_CONFIG.nom} — {postes.length} postes <span style={{color:"#22c55e",fontWeight:700}}>· filtres v6 [actif: {filterNuisibleArr.length?filterNuisibleArr.join(" , "):"aucun"}]</span></div>
         </div>
         <div style={{display:"flex",gap:8,flexWrap:"wrap"}}>
           <button onClick={exportAllPlans}
@@ -13094,7 +13094,7 @@ function PlanImplantation({ seuilsGlobaux }) {
             const active = filterNuisibleArr.includes("__RE");
             const colRE = nuisibleColors["__RE"]||"#1e40af";
             return (
-              <button key="__RE" onClick={()=>setFilterNuisibleArr(active?[]:["__RE"])}
+              <button key="__RE" onClick={()=>setFilterNuisibleArr(prev=>prev.includes("__RE")?[]:["__RE"])}
                 style={{display:"flex",alignItems:"center",gap:6,background:active?colRE+"22":"transparent",color:active?colRE:"var(--text-label)",border:"1px solid "+(active?colRE:"var(--border)"),borderRadius:20,padding:"5px 14px",fontSize:12,fontWeight:active?700:500,cursor:"pointer",fontFamily:"inherit"}}>
                 <PuceForme forme={posteFormes["RE"]||"rond"} col={colRE} taille={9}/>
                 Rongeurs ext. ({count})
@@ -13108,7 +13108,7 @@ function PlanImplantation({ seuilsGlobaux }) {
             const active = filterNuisibleArr.includes("__RI");
             const colRI = nuisibleColors["__RI"]||"#60a5fa";
             return (
-              <button key="__RI" onClick={()=>setFilterNuisibleArr(active?[]:["__RI"])}
+              <button key="__RI" onClick={()=>setFilterNuisibleArr(prev=>prev.includes("__RI")?[]:["__RI"])}
                 style={{display:"flex",alignItems:"center",gap:6,background:active?colRI+"22":"transparent",color:active?colRI:"var(--text-label)",border:"1px solid "+(active?colRI:"var(--border)"),borderRadius:20,padding:"5px 14px",fontSize:12,fontWeight:active?700:500,cursor:"pointer",fontFamily:"inherit"}}>
                 <PuceForme forme={posteFormes["RI"]||"rond"} col={colRI} taille={9}/>
                 Rongeurs int. ({count})
@@ -13121,7 +13121,7 @@ function PlanImplantation({ seuilsGlobaux }) {
             const active=filterNuisibleArr.includes(n);
             const count=postes.filter(p=>(p.nuisible||"Rongeurs")===n).length;
             return (
-              <button key={n} onClick={()=>setFilterNuisibleArr(active?[]:[n])}
+              <button key={n} onClick={()=>setFilterNuisibleArr(prev=>prev.includes(n)?[]:[n])}
                 style={{display:"flex",alignItems:"center",gap:6,background:active?"#fff":"transparent",color:active?"var(--bg-1)":"var(--text-label)",border:"1px solid "+(active?"#fff":"var(--border)"),borderRadius:20,padding:"5px 14px",fontSize:12,fontWeight:active?700:500,cursor:"pointer",fontFamily:"inherit"}}>
                 <PuceForme forme={posteFormes[n==="Rongeurs"?"RI":n]||"rond"} col={col} taille={9}/>
                 {n+" ("+count+")"}
