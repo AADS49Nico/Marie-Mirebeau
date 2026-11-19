@@ -14331,7 +14331,7 @@ function Audit({ seuilsGlobaux }) {
                   <label style={{fontSize:9,color:"var(--text-label)",fontWeight:600,textTransform:"uppercase",display:"block",marginBottom:4}}>Photos ({(obs.photos||[]).length})</label>
                   <label style={{background:"var(--bg-2)",border:"1px dashed var(--border)",borderRadius:7,padding:"5px 12px",fontSize:10,color:"var(--text-label)",cursor:"pointer"}}>
                     + Ajouter photos
-                    <input type="file" accept="image/*" capture="environment" multiple style={{display:"none"}} onChange={e=>{
+                    <input type="file" accept="image/*" multiple style={{display:"none"}} onChange={e=>{
                       Array.from(e.target.files).forEach(file=>{
                         const r=new FileReader();
                         r.onload=ev=>setObsItems(prev=>prev.map(o=>o.id===obs.id?{...o,photos:[...(o.photos||[]),{url:ev.target.result,name:file.name}]}:o));
